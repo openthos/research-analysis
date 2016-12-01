@@ -118,8 +118,8 @@
 | Ctrl+f  | 向前移动光标  | 已实现  |
 | Ctrl+Shift+n  | 新终端  | 已实现  |
 | Ctrl+t  |将光标位置的字符和前一个字符进行位置交换   | 已实现  |
-| Shift+Ctrl+C  | 复制  | 已实现（有BUG） |
-| Shift+Ctrl+V  | 粘贴  | 已实现 （有BUG） |
+| Shift+Ctrl+C  | 复制  | 已实现 |
+| Shift+Ctrl+V  | 粘贴  | 已实现 |
 | Ctrl+PgUp/PgDn  | 切换标签页  | 高  |
 | Ctrl+d  |  关闭终端 |  高 |
 |Ctrl+l   |相当于clear，即清屏   |  高 |
