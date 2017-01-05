@@ -78,6 +78,6 @@ swaps:系统上的交换分区及其空间利用信息，如果有多个交换�
 ```
 (example)
 cat /proc/swaps
-Filename				Type		Size	  Used 	Priority
+Filename		Type		Size	  Used 	Priority
 /dev/sda6   partition	 2928636	  0	     -1
 ```
