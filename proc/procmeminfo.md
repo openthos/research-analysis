@@ -72,3 +72,12 @@ procs_blocked 0   当前被阻塞的任务的数目
 softirq 48508837 5 18240586 21946 3278362 596054 0 18229 16346722 0 10006933
 
 ```
+
+### swaps 
+swaps:系统上的交换分区及其空间利用信息，如果有多个交换分区的话，则会每个交换分区的信息分别存储于/proc/swap目录中的单独文件中，而其优先级数字越低，被使用到的可能性越大
+```
+(example)
+cat /proc/swaps
+Filename				Type		Size	  Used 	Priority
+/dev/sda6   partition	 2928636	  0	     -1
+```
