@@ -434,99 +434,28 @@ root@weikang-VirtualBox:/proc/net# cat if_inet6
 00000000000000000000000000000001 01 80 10 80       lo
 fe80000000000000286725bb745ce16b 02 40 20 80   enp0s3
 ```
-###ip6_mr_cache
-**explanation:**
-
+###ip_mr_cache
+**explanation:** 与组播相关的信息  
 **example:**
 ```bash
 root@weikang-VirtualBox:/proc/net# cat ip6_mr_cache 
 Group                            Origin                           Iif      Pkts  Bytes     Wrong  Oifs
 ```
-###connector
-**explanation:**
-
-**example:**
-```bash
-root@weikang-VirtualBox:/proc/net# cat connector 
-Name            ID
-cn_proc         1:1
-```
-###ip6_flowlabel
-**explanation:**
-
-**example:**
-```bash
-root@weikang-VirtualBox:/proc/net# cat ip6_flowlabel 
-Label S Owner  Users  Linger Expires  Dst                              Opt
-```
 ###ip_mr_vif
-**explanation:**
-
+**explanation:** 与组播相关的信息  
 **example:**
 ```bash
 root@weikang-VirtualBox:/proc/net# cat ip_mr_vif
 Interface      BytesIn  PktsIn  BytesOut PktsOut Flags Local    Remote
 ```
-###rt_cache
-**explanation:**
-
-**example:**
-```bash
-root@weikang-VirtualBox:/proc/net# cat ip_mr_cache
-Group    Origin   Iif     Pkts    Bytes    Wrong Oifs
-```
-###psched
-**explanation:**
-
-**example:**
-```bash
-
-```
-###unix
-**explanation:**
-
-**example:**
-```bash
-
-```
 ###ip6_mr_cache
-**explanation:**
-
+**explanation:**IPV6协议中与组播相关的信息
+###ip6_mr_vif
+**explanation:**IPv6协议中与组播相关的信息
+###rt_cache
+**explanation:**路由缓存信息  
 **example:**
 ```bash
-
-```
-###ip_mr_vif
-**explanation:**
-
-**example:**
-```bash
-
-```
-###mcfilter6
-**explanation:**
-
-**example:**
-```bash
-
-```
-###ptype
-**explanation:**
-
-**example:**
-```bash
-
-```
-###rt6_stats
-**explanation:**
-
-**example:**
-```bash
-
-```
-###rt_acct
-**explanation:**  
-**example:**
-```bash
-
+root@weikang-VirtualBox:/proc/net# cat rt_cache 
+Iface	Destination	Gateway 	Flags		RefCnt	Use	Metric	Source		MTU	Window	IRTT	TOS	HHRef	HHUptod	SpecDst                          
 ```
