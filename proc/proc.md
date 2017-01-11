@@ -6,52 +6,52 @@ meminfo:机器的内存使用信息
 (example)
 cat /proc/meminfo
 MemTotal:        8098644 kB   所有可用RAM大小 （即物理内存减去一些预留位和内核的二进制代码大小）
-MemFree:         2256520 kB   LowFree与HighFree的总和，被系统留着未使用的内存
-MemAvailable:    5212720 kB   
-Buffers:          764376 kB   用来给文件做缓冲大小
-Cached:          2582784 kB   被高速缓冲存储器（cache memory）用的内存的大小
-SwapCached:            0 kB   被高速缓冲存储器（cache memory）用的交换空间的大小 已经被交换出来的内存，但仍然被存放在swapfile中。用来在需要的时候很快的被替换而不需要再次打开I/O端口
-Active:          3916628 kB   在活跃使用中的缓冲或高速缓冲存储器页面文件的大小
-Inactive:        1416784 kB
-Active(anon):    1989080 kB
-Inactive(anon):   455696 kB
-Active(file):    1927548 kB
-Inactive(file):   961088 kB
-Unevictable:         176 kB
-Mlocked:             176 kB
+MemFree:         2256520 kB   LowFree与HighFree的总和，被系统留着未使用的物理内存。(MemTotal-MemFree)就是已被用掉的内存。
+MemAvailable:    5212720 kB   (3.14+) An estimate of how much memory is available for starting new applications, without swapping.有些应用程序会根据系统的可用内存大小自动调整内存申请的多少，所以需要一个记录当前可用内存数量的统计值，MemFree并不适用，因为MemFree不能代表全部可用的内存，系统中有些内存虽然已被使用但是可以回收的，比如cache/buffer、slab都有一部分可以回收，所以这部分可回收的内存加上MemFree才是系统可用的内存，即MemAvailable。/proc/meminfo中的MemAvailable是内核使用特定的算法估算出来的，要注意这是一个估计值，并不精确。
+Buffers:          764376 kB   Memory in buffer cache, so relatively temporary storage for raw disk blocks. This shouldn't get very large.　用来给文件做缓冲大小
+Cached:          2582784 kB   Memory in the pagecache (Diskcache and Shared Memory)．　被高速缓冲存储器（cache memory）用的内存的大小
+SwapCached:            0 kB   Memory that is present within main memory, but also in the swapfile. (If memory is needed this area does not need to be swapped out AGAIN because it is already in the swapfile. This saves I/O and increases performance if machine runs short on memory.)　被高速缓冲存储器（cache memory）用的交换空间的大小 已经被交换出来的内存，但仍然被存放在swapfile中。用来在需要的时候很快的被替换而不需要再次打开I/O端口
+Active:          3916628 kB   Memory that has been used more recently and usually not swapped out or reclaimed．　在活跃使用中的缓冲或高速缓冲存储器页面文件的大小
+Inactive:        1416784 kB　　Memory that has not been used recently and can be swapped out or reclaimed．
+Active(anon):    1989080 kB　　Anonymous memory that has been used more recently and usually not swapped out
+Inactive(anon):   455696 kB　　Anonymous memory that has not been used recently and can be swapped out
+Active(file):    1927548 kB　　Pagecache memory that has been used more recently and usually not reclaimed until needed
+Inactive(file):   961088 kB　　Pagecache memory that can be reclaimed without huge performance impact．
+Unevictable:         176 kB　　Unevictable pages can't be swapped out for a variety of reasons
+Mlocked:             176 kB　　Pages locked to memory using the mlock() system call. Mlocked pages are also Unevictable.
 SwapTotal:       2928636 kB   交换空间的总大小
-SwapFree:        2928636 kB
+SwapFree:        2928636 kB　　The remaining swap space available
 Dirty:               232 kB   等待被写回到磁盘的内存大小
 Writeback:             0 kB   正在被写回到磁盘的内存大小
 AnonPages:       1986424 kB   未映射页的内存大小
 Mapped:           949956 kB   设备和文件等映射的大小
-Shmem:            458552 kB
+Shmem:            458552 kB   Total used shared memory (shared between several processes, thus including RAM disks, SYS-V-IPC and BSD like SHMEM)
 Slab:             368420 kB   内核数据结构缓存的大小，可以减少申请和释放内存带来的消耗
 SReclaimable:     320980 kB   可收回Slab的大小
-SUnreclaim:        47440 kB
-KernelStack:       11392 kB
+SUnreclaim:        47440 kB   The part of the Slab that can't be reclaimed under memory pressure
+KernelStack:       11392 kB   The memory the kernel stack uses. This is not reclaimable.
 PageTables:        54132 kB   管理内存分页页面的索引表的大小
-NFS_Unstable:          0 kB   不稳定页表的大小
-Bounce:                0 kB
-WritebackTmp:          0 kB
-CommitLimit:     6977956 kB
-Committed_AS:    7573536 kB
+NFS_Unstable:          0 kB   NFS pages sent to the server, but not yet commited to the storage
+Bounce:                0 kB   Memory used for block device bounce buffers
+WritebackTmp:          0 kB   Memory used by FUSE for temporary writeback buffers
+CommitLimit:     6977956 kB   Based on the overcommit ratio ('vm.overcommit_ratio'), this is the total amount of  memory currently available to be allocated on the system. This limit is only adhered to if strict overcommit accounting is enabled (mode 2 in 'vm.overcommit_memory'). The CommitLimit is calculated with the following formula: CommitLimit = ('vm.overcommit_ratio' * Physical RAM) + Swap 
+Committed_AS:    7573536 kB   An estimate of how much RAM you would need to make a 99.99% guarantee that there never is OOM (out of memory) for this workload.
 VmallocTotal:   34359738367 kB   可以vmalloc虚拟内存大小
-VmallocUsed:      308296 kB
-VmallocChunk:   34358947836 kB
-HardwareCorrupted:     0 kB
-AnonHugePages:    739328 kB
-CmaTotal:              0 kB
-CmaFree:               0 kB
-HugePages_Total:       0
-HugePages_Free:        0
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-Hugepagesize:       2048 kB
-DirectMap4k:      162640 kB
-DirectMap2M:     7100416 kB
-DirectMap1G:     1048576 kB
-```        
+VmallocUsed:      308296 kB      amount of vmalloc area which is used
+VmallocChunk:   34358947836 kB   largest contiguous block of vmalloc area which is free
+HardwareCorrupted:     0 kB      The amount of RAM the kernel identified as corrupted / not working
+AnonHugePages:    739328 kB    Non-file backed huge pages mapped into userspace page tables
+CmaTotal:              0 kB    (3.5+) Total CMA(Contiguous Memory Allocator)  Memory
+CmaFree:               0 kB    (3.5+) Free CMA(Contiguous Memory Allocator) Memory
+HugePages_Total:       0       Number of hugepages being allocated by the kernel (Defined with vm.nr_hugepages). 系统当前总共拥有的HugePages数目。
+HugePages_Free:        0       The number of hugepages not being allocated by a process. 系统当前总共拥有的空闲HugePages数目。
+HugePages_Rsvd:        0       The number of hugepages for which a commitment to allocate from the pool has been made, but no allocation has yet been made.系统当前总共保留的HugePages数目，更具体点就是指程序已经向系统申请，但是由于程序还没有实质的HugePages读写操作，因此系统尚未实际分配给程序的HugePages数目。
+HugePages_Surp:        0       指超过系统设定的常驻HugePages数目的数目。
+Hugepagesize:       2048 kB    The size of a hugepage (usually 2MB on an Intel based system)
+DirectMap4k:      162640 kB    The amount of memory being mapped to standard 4k pages
+DirectMap2M:     7100416 kB    The amount of memory being mapped to hugepages (usually 2MB in size)
+DirectMap1G:     1048576 kB    The amount of memory being mapped to hugepages (usually 1GB in size)
+```
 
 ### stat
 stat:实时追踪自系统上次启动以来的多种统计信息
