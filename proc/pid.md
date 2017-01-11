@@ -9,6 +9,9 @@
 #### 1.3 fscreate
 被进程调用open、mkdir、symlink、mknod创建出来的文件的安全属性
 #### 1.4 keycreate
+
+???
+
 #### 1.5 prev
 上次执行前的上下文，即调用此进程的上下文
 #### 1.6 sockcreate
@@ -32,6 +35,7 @@
 ```
 #(example)
 #cat /proc/1/cgroup
+10:hugetlb:/user.slice/user-1000.slice/session-c2.scope //hugetlb大页使用配置控制
 9:memory:/init.scope        //可以设定cgroup中任务对内存使用量的限定，并且自动生成这些任务对内存资源使用情况的报告
 8:cpuset:/        //可以为cgroup中的任务分配独立的CPU（针对多处理器系统）和内存
 7:pids:/init.scope
@@ -65,7 +69,7 @@ systemd
 
 ### 8. coredump_filter
 指定当前进程出现coredump时要转储的内存段（另外，系统默认不产生coredump文件，因此当需要的时候要打开core文件的限制）。
-文件内容是一个十六进制数，通过低7位来指定七个内存段的转储与否：
+文件内容是一个32位的16进制数，通过低7位来指定七个内存段的转储与否：
 + bit 0 ：anonymous private memory（匿名私有内存段）    
 + bit 1 ：anonymous shared memory（匿名共享内存段）    
 + bit 2 ：file-backed private memory（file-backed 私有内存段）    
@@ -85,7 +89,7 @@ systemd
 
 
 ### 9. cpuset（Problem）
-confine processes to processor and memory node subsets
+confine processes to processor and memory node subsets，即基于cgroup的cpu使用限制配置
 ```
 #(example)
 #cat /proc/1/cpuset
@@ -115,7 +119,7 @@ TERM=linux
 ```
 
 ### 13. fd
-目录文件。记录了所有进程打开的文件，每个文件以其文件描述符号码为名称的软链接表示，这些软链接指明了具体的文件 or ```socket通道```等的位置
+是一个目录。记录了进程打开的所有文件，每个文件以其文件描述符号码为名称的软链接表示，这些软链接指明了具体的文件，pipe,  device, socket等的位置
 ```
 #(example)
 #ls -l /proc/1/fd
@@ -126,28 +130,7 @@ lr-x------ 1 root root 64 Jan  8 05:53 10 -> /proc/1/mountinfo
 lr-x------ 1 root root 64 Jan  8 05:53 11 -> anon_inode:inotify
 lr-x------ 1 root root 64 Jan  8 05:53 12 -> /proc/swaps
 lrwx------ 1 root root 64 Jan  8 05:53 13 -> socket:[9910]
-lrwx------ 1 root root 64 Jan  8 05:53 14 -> socket:[9912]
-lrwx------ 1 root root 64 Jan  8 05:53 15 -> socket:[9914]
-lrwx------ 1 root root 64 Jan  8 05:53 16 -> socket:[9915]
-lrwx------ 1 root root 64 Jan  8 05:53 17 -> socket:[9916]
-lrwx------ 1 root root 64 Jan  8 05:53 18 -> socket:[12800]
-lrwx------ 1 root root 64 Jan  8 05:53 19 -> socket:[14469]
-lrwx------ 1 root root 64 Jan  8 05:47 2 -> /dev/null
-lrwx------ 1 root root 64 Jan  8 05:53 20 -> socket:[14470]
-lrwx------ 1 root root 64 Jan  8 05:53 21 -> socket:[13126]
-lrwx------ 1 root root 64 Jan  8 05:53 22 -> socket:[9919]
-lrwx------ 1 root root 64 Jan  8 05:53 23 -> socket:[9922]
-lrwx------ 1 root root 64 Jan  8 05:53 24 -> socket:[12588]
-lrwx------ 1 root root 64 Jan  8 05:53 25 -> socket:[9925]
-lr-x------ 1 root root 64 Jan  8 05:53 26 -> anon_inode:inotify
-lrwx------ 1 root root 64 Jan  8 05:53 27 -> /run/dmeventd-server
-lrwx------ 1 root root 64 Jan  8 05:53 28 -> /run/dmeventd-client
-lrwx------ 1 root root 64 Jan  8 05:53 29 -> socket:[9929]
-l-wx------ 1 root root 64 Jan  8 05:47 3 -> /dev/kmsg
-lr-x------ 1 root root 64 Jan  8 05:53 30 -> anon_inode:inotify
-lrwx------ 1 root root 64 Jan  8 05:53 31 -> socket:[9930]
-lrwx------ 1 root root 64 Jan  8 05:53 32 -> /run/systemd/initctl/fifo
-lrwx------ 1 root root 64 Jan  8 05:53 33 -> socket:[9935]
+..．
 lrwx------ 1 root root 64 Jan  8 05:53 34 -> socket:[9938]
 lrwx------ 1 root root 64 Jan  8 05:53 35 -> anon_inode:[timerfd]
 lr-x------ 1 root root 64 Jan  8 05:53 36 -> /dev/autofs
@@ -155,32 +138,18 @@ lr-x------ 1 root root 64 Jan  8 05:53 37 -> pipe:[9973]
 lrwx------ 1 root root 64 Jan  8 05:53 38 -> socket:[11334]
 lrwx------ 1 root root 64 Jan  8 05:53 39 -> anon_inode:[timerfd]
 lrwx------ 1 root root 64 Jan  8 05:53 4 -> anon_inode:[eventpoll]
-lrwx------ 1 root root 64 Jan  8 05:53 40 -> socket:[11337]
-lrwx------ 1 root root 64 Jan  8 05:53 41 -> socket:[11723]
-lrwx------ 1 root root 64 Jan  8 05:53 42 -> socket:[11774]
-lrwx------ 1 root root 64 Jan  8 05:53 43 -> socket:[11776]
-lrwx------ 1 root root 64 Jan  8 05:53 44 -> socket:[12202]
-lrwx------ 1 root root 64 Jan  8 05:53 45 -> /dev/rfkill
-lrwx------ 1 root root 64 Jan  8 05:53 46 -> socket:[12304]
-lrwx------ 1 root root 64 Jan  8 05:53 47 -> socket:[13149]
-lrwx------ 1 root root 64 Jan  8 05:53 48 -> socket:[13150]
-lrwx------ 1 root root 64 Jan  8 05:53 5 -> anon_inode:[signalfd]
-lrwx------ 1 root root 64 Jan  8 05:53 59 -> socket:[16654]
-lr-x------ 1 root root 64 Jan  8 05:53 6 -> /sys/fs/cgroup/systemd
-lrwx------ 1 root root 64 Jan  8 05:53 7 -> anon_inode:[timerfd]
-lrwx------ 1 root root 64 Jan  8 05:53 8 -> socket:[9908]
+...
 lrwx------ 1 root root 64 Jan  8 05:53 9 -> anon_inode:[eventpoll]
-
 ```
 
 ### 14. fdinfo
 目录文件，已打开文件的对应信息，具体各参数如下：
 + pos    
-文件偏移量
+  文件偏移量
 + flags    
-对应file结构体中的f_flags字段，表示文件的访问权限
+  对应file结构体中的f_flags字段，表示文件的访问权限
 + mnt_id    
-文件描述符号码
+  文件描述符号码
 
 ```
 #(example)
@@ -189,52 +158,7 @@ total 0
 -r-------- 1 root root 0 Jan  8 05:57 0
 -r-------- 1 root root 0 Jan  8 05:57 1
 -r-------- 1 root root 0 Jan  8 05:57 10
--r-------- 1 root root 0 Jan  8 05:57 11
--r-------- 1 root root 0 Jan  8 05:57 12
--r-------- 1 root root 0 Jan  8 05:57 13
--r-------- 1 root root 0 Jan  8 05:57 14
--r-------- 1 root root 0 Jan  8 05:57 15
--r-------- 1 root root 0 Jan  8 05:57 16
--r-------- 1 root root 0 Jan  8 05:57 17
--r-------- 1 root root 0 Jan  8 05:57 18
--r-------- 1 root root 0 Jan  8 05:57 19
--r-------- 1 root root 0 Jan  8 05:57 2
--r-------- 1 root root 0 Jan  8 05:57 20
--r-------- 1 root root 0 Jan  8 05:57 21
--r-------- 1 root root 0 Jan  8 05:57 22
--r-------- 1 root root 0 Jan  8 05:57 23
--r-------- 1 root root 0 Jan  8 05:57 24
--r-------- 1 root root 0 Jan  8 05:57 25
--r-------- 1 root root 0 Jan  8 05:57 26
--r-------- 1 root root 0 Jan  8 05:57 27
--r-------- 1 root root 0 Jan  8 05:57 28
--r-------- 1 root root 0 Jan  8 05:57 29
--r-------- 1 root root 0 Jan  8 05:57 3
--r-------- 1 root root 0 Jan  8 05:57 30
--r-------- 1 root root 0 Jan  8 05:57 31
--r-------- 1 root root 0 Jan  8 05:57 32
--r-------- 1 root root 0 Jan  8 05:57 33
--r-------- 1 root root 0 Jan  8 05:57 34
--r-------- 1 root root 0 Jan  8 05:57 35
--r-------- 1 root root 0 Jan  8 05:47 36
--r-------- 1 root root 0 Jan  8 05:47 37
--r-------- 1 root root 0 Jan  8 05:57 38
--r-------- 1 root root 0 Jan  8 05:57 39
--r-------- 1 root root 0 Jan  8 05:47 4
--r-------- 1 root root 0 Jan  8 05:57 40
--r-------- 1 root root 0 Jan  8 05:57 41
--r-------- 1 root root 0 Jan  8 05:57 42
--r-------- 1 root root 0 Jan  8 05:57 43
--r-------- 1 root root 0 Jan  8 05:57 44
--r-------- 1 root root 0 Jan  8 05:57 45
--r-------- 1 root root 0 Jan  8 05:57 46
--r-------- 1 root root 0 Jan  8 05:57 47
--r-------- 1 root root 0 Jan  8 05:57 48
--r-------- 1 root root 0 Jan  8 05:47 5
--r-------- 1 root root 0 Jan  8 05:57 59
--r-------- 1 root root 0 Jan  8 05:57 6
--r-------- 1 root root 0 Jan  8 05:57 7
--r-------- 1 root root 0 Jan  8 05:57 8
+...
 -r-------- 1 root root 0 Jan  8 05:57 9
 
 #(example)
@@ -292,113 +216,28 @@ lr-------- 1 root root 64 Jan  8 06:07 5635f4a42000-5635f4b2a000 -> /usr/lib/sys
 lr-------- 1 root root 64 Jan  8 06:07 5635f4b2b000-5635f4b50000 -> /usr/lib/systemd/systemd
 lr-------- 1 root root 64 Jan  8 06:07 5635f4b50000-5635f4b51000 -> /usr/lib/systemd/systemd
 lr-------- 1 root root 64 Jan  8 06:07 7fa7e9798000-7fa7e979c000 -> /usr/lib/libattr.so.1.1.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7e979c000-7fa7e999b000 -> /usr/lib/libattr.so.1.1.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7e999b000-7fa7e999c000 -> /usr/lib/libattr.so.1.1.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7e999c000-7fa7e999d000 -> /usr/lib/libattr.so.1.1.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7e999d000-7fa7e99a1000 -> /usr/lib/libuuid.so.1.3.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7e99a1000-7fa7e9ba0000 -> /usr/lib/libuuid.so.1.3.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7e9ba0000-7fa7e9ba1000 -> /usr/lib/libuuid.so.1.3.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7e9ba1000-7fa7e9ba2000 -> /usr/lib/libuuid.so.1.3.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7e9ba2000-7fa7e9be3000 -> /usr/lib/libblkid.so.1.1.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7e9be3000-7fa7e9de2000 -> /usr/lib/libblkid.so.1.1.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7e9de2000-7fa7e9de6000 -> /usr/lib/libblkid.so.1.1.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7e9de6000-7fa7e9de7000 -> /usr/lib/libblkid.so.1.1.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7e9de8000-7fa7e9dfd000 -> /usr/lib/libz.so.1.2.8
-lr-------- 1 root root 64 Jan  8 06:07 7fa7e9dfd000-7fa7e9ffc000 -> /usr/lib/libz.so.1.2.8
-lr-------- 1 root root 64 Jan  8 06:07 7fa7e9ffc000-7fa7e9ffd000 -> /usr/lib/libz.so.1.2.8
-lr-------- 1 root root 64 Jan  8 06:07 7fa7e9ffd000-7fa7e9ffe000 -> /usr/lib/libz.so.1.2.8
-lr-------- 1 root root 64 Jan  8 06:07 7fa7e9ffe000-7fa7ea000000 -> /usr/lib/libdl-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ea000000-7fa7ea200000 -> /usr/lib/libdl-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ea200000-7fa7ea201000 -> /usr/lib/libdl-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ea201000-7fa7ea202000 -> /usr/lib/libdl-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ea202000-7fa7ea234000 -> /usr/lib/libidn.so.11.6.16
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ea234000-7fa7ea434000 -> /usr/lib/libidn.so.11.6.16
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ea434000-7fa7ea435000 -> /usr/lib/libidn.so.11.6.16
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ea435000-7fa7ea436000 -> /usr/lib/libidn.so.11.6.16
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ea436000-7fa7ea43e000 -> /usr/lib/libacl.so.1.1.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ea43e000-7fa7ea63d000 -> /usr/lib/libacl.so.1.1.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ea63d000-7fa7ea63e000 -> /usr/lib/libacl.so.1.1.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ea63e000-7fa7ea63f000 -> /usr/lib/libacl.so.1.1.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ea63f000-7fa7ea652000 -> /usr/lib/libgpg-error.so.0.21.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ea652000-7fa7ea851000 -> /usr/lib/libgpg-error.so.0.21.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ea851000-7fa7ea852000 -> /usr/lib/libgpg-error.so.0.21.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ea852000-7fa7ea853000 -> /usr/lib/libgpg-error.so.0.21.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ea853000-7fa7ea95a000 -> /usr/lib/libgcrypt.so.20.1.5
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ea95a000-7fa7eab59000 -> /usr/lib/libgcrypt.so.20.1.5
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eab59000-7fa7eab5b000 -> /usr/lib/libgcrypt.so.20.1.5
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eab5b000-7fa7eab62000 -> /usr/lib/libgcrypt.so.20.1.5
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eab62000-7fa7eab73000 -> /usr/lib/liblz4.so.1.7.4
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eab73000-7fa7ead72000 -> /usr/lib/liblz4.so.1.7.4
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ead72000-7fa7ead73000 -> /usr/lib/liblz4.so.1.7.4
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ead73000-7fa7ead74000 -> /usr/lib/liblz4.so.1.7.4
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ead74000-7fa7ead99000 -> /usr/lib/liblzma.so.5.2.3
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ead99000-7fa7eaf98000 -> /usr/lib/liblzma.so.5.2.3
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eaf98000-7fa7eaf99000 -> /usr/lib/liblzma.so.5.2.3
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eaf99000-7fa7eaf9a000 -> /usr/lib/liblzma.so.5.2.3
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eaf9a000-7fa7eafae000 -> /usr/lib/libresolv-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eafae000-7fa7eb1ad000 -> /usr/lib/libresolv-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eb1ad000-7fa7eb1ae000 -> /usr/lib/libresolv-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eb1ae000-7fa7eb1af000 -> /usr/lib/libresolv-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eb1b1000-7fa7eb2b4000 -> /usr/lib/libm-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eb2b4000-7fa7eb4b3000 -> /usr/lib/libm-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eb4b3000-7fa7eb4b4000 -> /usr/lib/libm-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eb4b4000-7fa7eb4b5000 -> /usr/lib/libm-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eb4b5000-7fa7eb4b9000 -> /usr/lib/libcap.so.2.25
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eb4b9000-7fa7eb6b8000 -> /usr/lib/libcap.so.2.25
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eb6b8000-7fa7eb6b9000 -> /usr/lib/libcap.so.2.25
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eb6b9000-7fa7eb84e000 -> /usr/lib/libc-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eb84e000-7fa7eba4d000 -> /usr/lib/libc-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eba4d000-7fa7eba51000 -> /usr/lib/libc-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eba51000-7fa7eba53000 -> /usr/lib/libc-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eba57000-7fa7eba6f000 -> /usr/lib/libpthread-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7eba6f000-7fa7ebc6e000 -> /usr/lib/libpthread-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ebc6e000-7fa7ebc6f000 -> /usr/lib/libpthread-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ebc6f000-7fa7ebc70000 -> /usr/lib/libpthread-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ebc74000-7fa7ebcbe000 -> /usr/lib/libmount.so.1.1.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ebcbe000-7fa7ebebe000 -> /usr/lib/libmount.so.1.1.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ebebe000-7fa7ebebf000 -> /usr/lib/libmount.so.1.1.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ebebf000-7fa7ebec0000 -> /usr/lib/libmount.so.1.1.0
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ebec2000-7fa7ebed7000 -> /usr/lib/libkmod.so.2.3.1
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ebed7000-7fa7ec0d6000 -> /usr/lib/libkmod.so.2.3.1
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ec0d6000-7fa7ec0d7000 -> /usr/lib/libkmod.so.2.3.1
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ec0d7000-7fa7ec0d8000 -> /usr/lib/libkmod.so.2.3.1
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ec0d8000-7fa7ec0e5000 -> /usr/lib/libpam.so.0.84.2
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ec0e5000-7fa7ec2e4000 -> /usr/lib/libpam.so.0.84.2
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ec2e4000-7fa7ec2e5000 -> /usr/lib/libpam.so.0.84.2
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ec2e5000-7fa7ec2e6000 -> /usr/lib/libpam.so.0.84.2
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ec2e6000-7fa7ec312000 -> /usr/lib/libseccomp.so.2.3.1
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ec312000-7fa7ec511000 -> /usr/lib/libseccomp.so.2.3.1
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ec511000-7fa7ec526000 -> /usr/lib/libseccomp.so.2.3.1
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ec526000-7fa7ec527000 -> /usr/lib/libseccomp.so.2.3.1
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ec527000-7fa7ec52e000 -> /usr/lib/librt-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ec52e000-7fa7ec72d000 -> /usr/lib/librt-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ec72d000-7fa7ec72e000 -> /usr/lib/librt-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ec72e000-7fa7ec72f000 -> /usr/lib/librt-2.24.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ec72f000-7fa7ec8bb000 -> /usr/lib/systemd/libsystemd-shared-232.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ec8bb000-7fa7ec945000 -> /usr/lib/systemd/libsystemd-shared-232.so
-lr-------- 1 root root 64 Jan  8 06:07 7fa7ec945000-7fa7ec946000 -> /usr/lib/systemd/libsystemd-shared-232.so
+...
 lr-------- 1 root root 64 Jan  8 06:07 7fa7ec947000-7fa7ec96a000 -> /usr/lib/ld-2.24.so
 lr-------- 1 root root 64 Jan  8 06:07 7fa7ecb69000-7fa7ecb6a000 -> /usr/lib/ld-2.24.so
 lr-------- 1 root root 64 Jan  8 06:07 7fa7ecb6a000-7fa7ecb6b000 -> /usr/lib/ld-2.24.so
-
 
 ```
 
 ### 18. maps
 以文本形式描述的进程运行内存内存图，与当前进程有关联的所有可执行文件和库文件在虚拟内存地址中的映射区域、访问权限等参数形成的列表。
-具体参数如下：
+具体参数如下：	
 + address        
-进程占用的地址空间    
+  进程占用的地址空间    
 + perms        
-访问权限集    
-r=read; w=write; x=execute; s=shared; p=private（copy on write）    
+  访问权限集    
+  r=read; w=write; x=execute; s=shared; p=private（copy on write）    
 + offset        
-文件偏移量    
+  文件偏移量    
 + dev        
-设备号（主设备号：次设备号）    
+  设备号（主设备号：次设备号）    
 + inode        
-文件具体的inode号。    
-0表示没有inode关联互内存区域
+  文件具体的inode号。    
+  0表示没有inode关联互内存区域
 ```
 #(example)
 #cat /proc/1/maps
@@ -406,108 +245,7 @@ r=read; w=write; x=execute; s=shared; p=private（copy on write）
 559235185000-55923526d000 r-xp 00000000 08:01 799480                     /usr/lib/systemd/systemd
 55923526e000-559235293000 r--p 000e8000 08:01 799480                     /usr/lib/systemd/systemd
 559235293000-559235294000 rw-p 0010d000 08:01 799480                     /usr/lib/systemd/systemd
-559235a81000-559235b2e000 rw-p 00000000 00:00 0                          [heap]
-7fc1f4000000-7fc1f4029000 rw-p 00000000 00:00 0 
-7fc1f4029000-7fc1f8000000 ---p 00000000 00:00 0 
-7fc1f8a18000-7fc1f8a19000 ---p 00000000 00:00 0 
-7fc1f8a19000-7fc1f9219000 rw-p 00000000 00:00 0 
-7fc1f9219000-7fc1f921a000 ---p 00000000 00:00 0 
-7fc1f921a000-7fc1f9a1a000 rw-p 00000000 00:00 0 
-7fc1f9a1a000-7fc1f9a1e000 r-xp 00000000 08:01 792978                     /usr/lib/libattr.so.1.1.0
-7fc1f9a1e000-7fc1f9c1d000 ---p 00004000 08:01 792978                     /usr/lib/libattr.so.1.1.0
-7fc1f9c1d000-7fc1f9c1e000 r--p 00003000 08:01 792978                     /usr/lib/libattr.so.1.1.0
-7fc1f9c1e000-7fc1f9c1f000 rw-p 00004000 08:01 792978                     /usr/lib/libattr.so.1.1.0
-7fc1f9c1f000-7fc1f9c23000 r-xp 00000000 08:01 797351                     /usr/lib/libuuid.so.1.3.0
-7fc1f9c23000-7fc1f9e22000 ---p 00004000 08:01 797351                     /usr/lib/libuuid.so.1.3.0
-7fc1f9e22000-7fc1f9e23000 r--p 00003000 08:01 797351                     /usr/lib/libuuid.so.1.3.0
-7fc1f9e23000-7fc1f9e24000 rw-p 00004000 08:01 797351                     /usr/lib/libuuid.so.1.3.0
-7fc1f9e24000-7fc1f9e65000 r-xp 00000000 08:01 797352                     /usr/lib/libblkid.so.1.1.0
-7fc1f9e65000-7fc1fa064000 ---p 00041000 08:01 797352                     /usr/lib/libblkid.so.1.1.0
-7fc1fa064000-7fc1fa068000 r--p 00040000 08:01 797352                     /usr/lib/libblkid.so.1.1.0
-7fc1fa068000-7fc1fa069000 rw-p 00044000 08:01 797352                     /usr/lib/libblkid.so.1.1.0
-7fc1fa069000-7fc1fa06a000 rw-p 00000000 00:00 0 
-7fc1fa06a000-7fc1fa07f000 r-xp 00000000 08:01 797309                     /usr/lib/libz.so.1.2.8
-7fc1fa07f000-7fc1fa27e000 ---p 00015000 08:01 797309                     /usr/lib/libz.so.1.2.8
-7fc1fa27e000-7fc1fa27f000 r--p 00014000 08:01 797309                     /usr/lib/libz.so.1.2.8
-7fc1fa27f000-7fc1fa280000 rw-p 00015000 08:01 797309                     /usr/lib/libz.so.1.2.8
-7fc1fa280000-7fc1fa282000 r-xp 00000000 08:01 789734                     /usr/lib/libdl-2.24.so
-7fc1fa282000-7fc1fa482000 ---p 00002000 08:01 789734                     /usr/lib/libdl-2.24.so
-7fc1fa482000-7fc1fa483000 r--p 00002000 08:01 789734                     /usr/lib/libdl-2.24.so
-7fc1fa483000-7fc1fa484000 rw-p 00003000 08:01 789734                     /usr/lib/libdl-2.24.so
-7fc1fa484000-7fc1fa4b6000 r-xp 00000000 08:01 798286                     /usr/lib/libidn.so.11.6.16
-7fc1fa4b6000-7fc1fa6b6000 ---p 00032000 08:01 798286                     /usr/lib/libidn.so.11.6.16
-7fc1fa6b6000-7fc1fa6b7000 r--p 00032000 08:01 798286                     /usr/lib/libidn.so.11.6.16
-7fc1fa6b7000-7fc1fa6b8000 rw-p 00033000 08:01 798286                     /usr/lib/libidn.so.11.6.16
-7fc1fa6b8000-7fc1fa6c0000 r-xp 00000000 08:01 793044                     /usr/lib/libacl.so.1.1.0
-7fc1fa6c0000-7fc1fa8bf000 ---p 00008000 08:01 793044                     /usr/lib/libacl.so.1.1.0
-7fc1fa8bf000-7fc1fa8c0000 r--p 00007000 08:01 793044                     /usr/lib/libacl.so.1.1.0
-7fc1fa8c0000-7fc1fa8c1000 rw-p 00008000 08:01 793044                     /usr/lib/libacl.so.1.1.0
-7fc1fa8c1000-7fc1fa8d4000 r-xp 00000000 08:01 819362                     /usr/lib/libgpg-error.so.0.21.0
-7fc1fa8d4000-7fc1faad3000 ---p 00013000 08:01 819362                     /usr/lib/libgpg-error.so.0.21.0
-7fc1faad3000-7fc1faad4000 r--p 00012000 08:01 819362                     /usr/lib/libgpg-error.so.0.21.0
-7fc1faad4000-7fc1faad5000 rw-p 00013000 08:01 819362                     /usr/lib/libgpg-error.so.0.21.0
-7fc1faad5000-7fc1fabdc000 r-xp 00000000 08:01 797135                     /usr/lib/libgcrypt.so.20.1.5
-7fc1fabdc000-7fc1faddb000 ---p 00107000 08:01 797135                     /usr/lib/libgcrypt.so.20.1.5
-7fc1faddb000-7fc1faddd000 r--p 00106000 08:01 797135                     /usr/lib/libgcrypt.so.20.1.5
-7fc1faddd000-7fc1fade4000 rw-p 00108000 08:01 797135                     /usr/lib/libgcrypt.so.20.1.5
-7fc1fade4000-7fc1fadf5000 r-xp 00000000 08:01 797151                     /usr/lib/liblz4.so.1.7.4
-7fc1fadf5000-7fc1faff4000 ---p 00011000 08:01 797151                     /usr/lib/liblz4.so.1.7.4
-7fc1faff4000-7fc1faff5000 r--p 00010000 08:01 797151                     /usr/lib/liblz4.so.1.7.4
-7fc1faff5000-7fc1faff6000 rw-p 00011000 08:01 797151                     /usr/lib/liblz4.so.1.7.4
-7fc1faff6000-7fc1fb01b000 r-xp 00000000 08:01 797155                     /usr/lib/liblzma.so.5.2.3
-7fc1fb01b000-7fc1fb21a000 ---p 00025000 08:01 797155                     /usr/lib/liblzma.so.5.2.3
-7fc1fb21a000-7fc1fb21b000 r--p 00024000 08:01 797155                     /usr/lib/liblzma.so.5.2.3
-7fc1fb21b000-7fc1fb21c000 rw-p 00025000 08:01 797155                     /usr/lib/liblzma.so.5.2.3
-7fc1fb21c000-7fc1fb230000 r-xp 00000000 08:01 789737                     /usr/lib/libresolv-2.24.so
-7fc1fb230000-7fc1fb42f000 ---p 00014000 08:01 789737                     /usr/lib/libresolv-2.24.so
-7fc1fb42f000-7fc1fb430000 r--p 00013000 08:01 789737                     /usr/lib/libresolv-2.24.so
-7fc1fb430000-7fc1fb431000 rw-p 00014000 08:01 789737                     /usr/lib/libresolv-2.24.so
-7fc1fb431000-7fc1fb433000 rw-p 00000000 00:00 0 
-7fc1fb433000-7fc1fb536000 r-xp 00000000 08:01 789735                     /usr/lib/libm-2.24.so
-7fc1fb536000-7fc1fb735000 ---p 00103000 08:01 789735                     /usr/lib/libm-2.24.so
-7fc1fb735000-7fc1fb736000 r--p 00102000 08:01 789735                     /usr/lib/libm-2.24.so
-7fc1fb736000-7fc1fb737000 rw-p 00103000 08:01 789735                     /usr/lib/libm-2.24.so
-7fc1fb737000-7fc1fb73b000 r-xp 00000000 08:01 793062                     /usr/lib/libcap.so.2.25
-7fc1fb73b000-7fc1fb93a000 ---p 00004000 08:01 793062                     /usr/lib/libcap.so.2.25
-7fc1fb93a000-7fc1fb93b000 rw-p 00003000 08:01 793062                     /usr/lib/libcap.so.2.25
-7fc1fb93b000-7fc1fbad0000 r-xp 00000000 08:01 789677                     /usr/lib/libc-2.24.so
-7fc1fbad0000-7fc1fbccf000 ---p 00195000 08:01 789677                     /usr/lib/libc-2.24.so
-7fc1fbccf000-7fc1fbcd3000 r--p 00194000 08:01 789677                     /usr/lib/libc-2.24.so
-7fc1fbcd3000-7fc1fbcd5000 rw-p 00198000 08:01 789677                     /usr/lib/libc-2.24.so
-7fc1fbcd5000-7fc1fbcd9000 rw-p 00000000 00:00 0 
-7fc1fbcd9000-7fc1fbcf1000 r-xp 00000000 08:01 789658                     /usr/lib/libpthread-2.24.so
-7fc1fbcf1000-7fc1fbef0000 ---p 00018000 08:01 789658                     /usr/lib/libpthread-2.24.so
-7fc1fbef0000-7fc1fbef1000 r--p 00017000 08:01 789658                     /usr/lib/libpthread-2.24.so
-7fc1fbef1000-7fc1fbef2000 rw-p 00018000 08:01 789658                     /usr/lib/libpthread-2.24.so
-7fc1fbef2000-7fc1fbef6000 rw-p 00000000 00:00 0 
-7fc1fbef6000-7fc1fbf40000 r-xp 00000000 08:01 797353                     /usr/lib/libmount.so.1.1.0
-7fc1fbf40000-7fc1fc140000 ---p 0004a000 08:01 797353                     /usr/lib/libmount.so.1.1.0
-7fc1fc140000-7fc1fc141000 r--p 0004a000 08:01 797353                     /usr/lib/libmount.so.1.1.0
-7fc1fc141000-7fc1fc142000 rw-p 0004b000 08:01 797353                     /usr/lib/libmount.so.1.1.0
-7fc1fc142000-7fc1fc144000 rw-p 00000000 00:00 0 
-7fc1fc144000-7fc1fc159000 r-xp 00000000 08:01 798191                     /usr/lib/libkmod.so.2.3.1
-7fc1fc159000-7fc1fc358000 ---p 00015000 08:01 798191                     /usr/lib/libkmod.so.2.3.1
-7fc1fc358000-7fc1fc359000 r--p 00014000 08:01 798191                     /usr/lib/libkmod.so.2.3.1
-7fc1fc359000-7fc1fc35a000 rw-p 00015000 08:01 798191                     /usr/lib/libkmod.so.2.3.1
-7fc1fc35a000-7fc1fc367000 r-xp 00000000 08:01 797896                     /usr/lib/libpam.so.0.84.2
-7fc1fc367000-7fc1fc566000 ---p 0000d000 08:01 797896                     /usr/lib/libpam.so.0.84.2
-7fc1fc566000-7fc1fc567000 r--p 0000c000 08:01 797896                     /usr/lib/libpam.so.0.84.2
-7fc1fc567000-7fc1fc568000 rw-p 0000d000 08:01 797896                     /usr/lib/libpam.so.0.84.2
-7fc1fc568000-7fc1fc594000 r-xp 00000000 08:01 798346                     /usr/lib/libseccomp.so.2.3.1
-7fc1fc594000-7fc1fc793000 ---p 0002c000 08:01 798346                     /usr/lib/libseccomp.so.2.3.1
-7fc1fc793000-7fc1fc7a8000 r--p 0002b000 08:01 798346                     /usr/lib/libseccomp.so.2.3.1
-7fc1fc7a8000-7fc1fc7a9000 rw-p 00040000 08:01 798346                     /usr/lib/libseccomp.so.2.3.1
-7fc1fc7a9000-7fc1fc7b0000 r-xp 00000000 08:01 789738                     /usr/lib/librt-2.24.so
-7fc1fc7b0000-7fc1fc9af000 ---p 00007000 08:01 789738                     /usr/lib/librt-2.24.so
-7fc1fc9af000-7fc1fc9b0000 r--p 00006000 08:01 789738                     /usr/lib/librt-2.24.so
-7fc1fc9b0000-7fc1fc9b1000 rw-p 00007000 08:01 789738                     /usr/lib/librt-2.24.so
-7fc1fc9b1000-7fc1fcb3d000 r-xp 00000000 08:01 799479                     /usr/lib/systemd/libsystemd-shared-232.so
-7fc1fcb3d000-7fc1fcbc7000 r--p 0018b000 08:01 799479                     /usr/lib/systemd/libsystemd-shared-232.so
-7fc1fcbc7000-7fc1fcbc8000 rw-p 00215000 08:01 799479                     /usr/lib/systemd/libsystemd-shared-232.so
-7fc1fcbc8000-7fc1fcbc9000 rw-p 00000000 00:00 0 
-7fc1fcbc9000-7fc1fcbec000 r-xp 00000000 08:01 789676                     /usr/lib/ld-2.24.so
-7fc1fcdcb000-7fc1fcdd6000 rw-p 00000000 00:00 0 
-7fc1fcde9000-7fc1fcdeb000 rw-p 00000000 00:00 0 
+...
 7fc1fcdeb000-7fc1fcdec000 r--p 00022000 08:01 789676                     /usr/lib/ld-2.24.so
 7fc1fcdec000-7fc1fcded000 rw-p 00023000 08:01 789676                     /usr/lib/ld-2.24.so
 7fc1fcded000-7fc1fcdee000 rw-p 00000000 00:00 0 
@@ -528,27 +266,27 @@ Input/output error
 ### 20. mountinfo
 文件系统的挂载信息，具体各项参数如下：
 + (1) mount ID     
-挂载的唯一标识符
+  挂载的唯一标识符
 + (2) parent ID     
-父挂载标识符
+  父挂载标识符
 + (3) major:minor         
-设备号（主：次）
+  设备号（主：次）
 + (4) root    
-挂载的文件系统的根目录
+  挂载的文件系统的根目录
 + (5) mount point    
-挂载点
+  挂载点
 + (6) mount options    
-挂载参数
+  挂载参数
 + (7) optional fields    
-不定数量的形式为tag[:value]格式的信息
+  不定数量的形式为tag[:value]格式的信息
 + (8) separator
-标记optional fields项结束
+  标记optional fields项结束
 + (9) filesystem type    
-文件系统名称，以type[.subtype]的形式记录
+  文件系统名称，以type[.subtype]的形式记录
 + (10) mount source    
-文件系统的信息
+  文件系统的信息
 + (11) super options    
-对于super block（超级块）的参数
+  对于super block（超级块）的参数
 ```
 #(example)
 #cat /proc/1/mountinfo
@@ -685,20 +423,20 @@ lrwxrwxrwx 1 root root 0 Jan  8 04:53 uts -> uts:[4026531838]
 NUMA的内存映射，记录了进程的内存区域正在被哪一个节点使用的信息。具体参数信息如下：
 + (1) 起始地址    
 + (2) 对于当前内存区域的memory policy（用于numa架构中）    
-Memory policy：In the Linux kernel, "memory policy" determines from which node the kernel will allocate memory in a NUMA system or in an emulated NUMA system.  Linux has supported platforms with Non-Uniform Memory Access architectur.
+  Memory policy：In the Linux kernel, "memory policy" determines from which node the kernel will allocate memory in a NUMA system or in an emulated NUMA system.  Linux has supported platforms with Non-Uniform Memory Access architectur.
 + (3) 不固定的信息    
-N<node>=<pages>  node使用了多少个page    
-file=<filename>  内存映射的文件名    
-heap  表示内存区域用于堆    
-stack  表示内存区域用于堆栈    
-huge  大内存区域    
-anon=<pages>  范围内的匿名page数    
-dirty=<pages>  “脏页”数    
-mapped=<pages>  已映射page数(只有在数目与anon、dirty数目不同时才会显示)    
-mapmax=<count>  最大映射数    
-swapcache=<count>  被分配给交换设备的page数    
-active=<pages>  活页数    
-writeback=<pages>  当前写入到磁盘中的page数    
+  N<node>=<pages>  node使用了多少个page    
+  file=<filename>  内存映射的文件名    
+  heap  表示内存区域用于堆    
+  stack  表示内存区域用于堆栈    
+  huge  大内存区域    
+  anon=<pages>  范围内的匿名page数    
+  dirty=<pages>  “脏页”数    
+  mapped=<pages>  已映射page数(只有在数目与anon、dirty数目不同时才会显示)    
+  mapmax=<count>  最大映射数    
+  swapcache=<count>  被分配给交换设备的page数    
+  active=<pages>  活页数    
+  writeback=<pages>  当前写入到磁盘中的page数    
 
 ```
 #(example)
@@ -1011,19 +749,19 @@ VmFlags: rd wr mr mw me ac
 ### 37. statm
 记录内存使用方面的信息，具体各项参数信息如下：
 + size (same as VmSize in /proc/[pid]/status）    
-程序内存总大小
+  程序内存总大小
 + resident (same as VmRSS in /proc/[pid]/status)    
-实际使用物理内存大小
+  实际使用物理内存大小
 + share (from shared mappings)    
-共享页面数量
+  共享页面数量
 + text (code)    
-代码段大小
+  代码段大小
 + lib (library)    
-库文件大小
+  库文件大小
 + data data + stack    
-数据段与堆栈段大小总和
+  数据段与堆栈段大小总和
 + dt (dirty pages)    
-“脏页”数量
+  “脏页”数量
 ```
 #(example)
 #cat /proc/1/statm
