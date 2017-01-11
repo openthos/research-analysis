@@ -295,29 +295,7 @@ Input/output error
 17 20 0:16 / /sys rw,nosuid,nodev,noexec,relatime shared:6 - sysfs sys rw
 18 20 0:6 / /dev rw,nosuid,relatime shared:2 - devtmpfs dev rw,size=2011756k,nr_inodes=502939,mode=755
 19 20 0:17 / /run rw,nosuid,nodev,relatime shared:11 - tmpfs run rw,mode=755
-20 0 8:1 / / rw,relatime shared:1 - ext4 /dev/sda1 rw,data=ordered
-21 17 0:18 / /sys/kernel/security rw,nosuid,nodev,noexec,relatime shared:7 - securityfs securityfs rw
-22 18 0:19 / /dev/shm rw,nosuid,nodev shared:3 - tmpfs tmpfs rw
-23 18 0:20 / /dev/pts rw,nosuid,noexec,relatime shared:4 - devpts devpts rw,gid=5,mode=620,ptmxmode=000
-24 17 0:21 / /sys/fs/cgroup ro,nosuid,nodev,noexec shared:8 - tmpfs tmpfs ro,mode=755
-25 24 0:22 / /sys/fs/cgroup/systemd rw,nosuid,nodev,noexec,relatime shared:9 - cgroup cgroup rw,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd
-26 17 0:23 / /sys/fs/pstore rw,nosuid,nodev,noexec,relatime shared:10 - pstore pstore rw
-27 24 0:24 / /sys/fs/cgroup/devices rw,nosuid,nodev,noexec,relatime shared:12 - cgroup cgroup rw,devices
-28 24 0:25 / /sys/fs/cgroup/cpu,cpuacct rw,nosuid,nodev,noexec,relatime shared:13 - cgroup cgroup rw,cpu,cpuacct
-29 24 0:26 / /sys/fs/cgroup/blkio rw,nosuid,nodev,noexec,relatime shared:14 - cgroup cgroup rw,blkio
-30 24 0:27 / /sys/fs/cgroup/freezer rw,nosuid,nodev,noexec,relatime shared:15 - cgroup cgroup rw,freezer
-31 24 0:28 / /sys/fs/cgroup/net_cls rw,nosuid,nodev,noexec,relatime shared:16 - cgroup cgroup rw,net_cls
-32 24 0:29 / /sys/fs/cgroup/pids rw,nosuid,nodev,noexec,relatime shared:17 - cgroup cgroup rw,pids
-33 24 0:30 / /sys/fs/cgroup/cpuset rw,nosuid,nodev,noexec,relatime shared:18 - cgroup cgroup rw,cpuset
-34 24 0:31 / /sys/fs/cgroup/memory rw,nosuid,nodev,noexec,relatime shared:19 - cgroup cgroup rw,memory
-35 16 0:32 / /proc/sys/fs/binfmt_misc rw,relatime shared:20 - autofs systemd-1 rw,fd=28,pgrp=1,timeout=0,minproto=5,maxproto=5,direct
-37 18 0:15 / /dev/mqueue rw,relatime shared:21 - mqueue mqueue rw
-36 18 0:33 / /dev/hugepages rw,relatime shared:22 - hugetlbfs hugetlbfs rw
-38 20 0:34 / /tmp rw,nosuid,nodev shared:23 - tmpfs tmpfs rw
-39 17 0:7 / /sys/kernel/debug rw,relatime shared:24 - debugfs debugfs rw
-40 17 0:35 / /sys/kernel/config rw,relatime shared:25 - configfs configfs rw
-68 19 0:37 / /run/vmblock-fuse rw,nosuid,nodev,relatime shared:26 - fuse.vmware-vmblock vmware-vmblock rw,user_id=0,group_id=0,default_permissions,allow_other
-70 17 0:38 / /sys/fs/fuse/connections rw,relatime shared:27 - fusectl fusectl rw
+...
 72 19 0:39 / /run/user/0 rw,nosuid,nodev,relatime shared:28 - tmpfs tmpfs rw,size=403260k,mode=700
 74 20 0:40 / /mnt/hgfs rw,nosuid,nodev,relatime shared:29 - fuse.vmhgfs-fuse vmhgfs-fuse rw,user_id=0,group_id=0,allow_other
 ```
@@ -331,29 +309,7 @@ proc /proc proc rw,nosuid,nodev,noexec,relatime 0 0
 sys /sys sysfs rw,nosuid,nodev,noexec,relatime 0 0
 dev /dev devtmpfs rw,nosuid,relatime,size=2011756k,nr_inodes=502939,mode=755 0 0
 run /run tmpfs rw,nosuid,nodev,relatime,mode=755 0 0
-/dev/sda1 / ext4 rw,relatime,data=ordered 0 0
-securityfs /sys/kernel/security securityfs rw,nosuid,nodev,noexec,relatime 0 0
-tmpfs /dev/shm tmpfs rw,nosuid,nodev 0 0
-devpts /dev/pts devpts rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000 0 0
-tmpfs /sys/fs/cgroup tmpfs ro,nosuid,nodev,noexec,mode=755 0 0
-cgroup /sys/fs/cgroup/systemd cgroup rw,nosuid,nodev,noexec,relatime,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd 0 0
-pstore /sys/fs/pstore pstore rw,nosuid,nodev,noexec,relatime 0 0
-cgroup /sys/fs/cgroup/devices cgroup rw,nosuid,nodev,noexec,relatime,devices 0 0
-cgroup /sys/fs/cgroup/cpu,cpuacct cgroup rw,nosuid,nodev,noexec,relatime,cpu,cpuacct 0 0
-cgroup /sys/fs/cgroup/blkio cgroup rw,nosuid,nodev,noexec,relatime,blkio 0 0
-cgroup /sys/fs/cgroup/freezer cgroup rw,nosuid,nodev,noexec,relatime,freezer 0 0
-cgroup /sys/fs/cgroup/net_cls cgroup rw,nosuid,nodev,noexec,relatime,net_cls 0 0
-cgroup /sys/fs/cgroup/pids cgroup rw,nosuid,nodev,noexec,relatime,pids 0 0
-cgroup /sys/fs/cgroup/cpuset cgroup rw,nosuid,nodev,noexec,relatime,cpuset 0 0
-cgroup /sys/fs/cgroup/memory cgroup rw,nosuid,nodev,noexec,relatime,memory 0 0
-systemd-1 /proc/sys/fs/binfmt_misc autofs rw,relatime,fd=28,pgrp=1,timeout=0,minproto=5,maxproto=5,direct 0 0
-mqueue /dev/mqueue mqueue rw,relatime 0 0
-hugetlbfs /dev/hugepages hugetlbfs rw,relatime 0 0
-tmpfs /tmp tmpfs rw,nosuid,nodev 0 0
-debugfs /sys/kernel/debug debugfs rw,relatime 0 0
-configfs /sys/kernel/config configfs rw,relatime 0 0
-vmware-vmblock /run/vmblock-fuse fuse.vmware-vmblock rw,nosuid,nodev,relatime,user_id=0,group_id=0,default_permissions,allow_other 0 0
-fusectl /sys/fs/fuse/connections fusectl rw,relatime 0 0
+...
 tmpfs /run/user/0 tmpfs rw,nosuid,nodev,relatime,size=403260k,mode=700 0 0
 vmhgfs-fuse /mnt/hgfs fuse.vmhgfs-fuse rw,nosuid,nodev,relatime,user_id=0,group_id=0,allow_other 0 0
 ```
@@ -372,28 +328,7 @@ vmhgfs-fuse /mnt/hgfs fuse.vmhgfs-fuse rw,nosuid,nodev,relatime,user_id=0,group_
 device proc mounted on /proc with fstype proc
 device sys mounted on /sys with fstype sysfs
 device dev mounted on /dev with fstype devtmpfs
-device run mounted on /run with fstype tmpfs
-device /dev/sda1 mounted on / with fstype ext4
-device securityfs mounted on /sys/kernel/security with fstype securityfs
-device tmpfs mounted on /dev/shm with fstype tmpfs
-device devpts mounted on /dev/pts with fstype devpts
-device tmpfs mounted on /sys/fs/cgroup with fstype tmpfs
-device cgroup mounted on /sys/fs/cgroup/systemd with fstype cgroup
-device pstore mounted on /sys/fs/pstore with fstype pstore
-device cgroup mounted on /sys/fs/cgroup/devices with fstype cgroup
-device cgroup mounted on /sys/fs/cgroup/cpu,cpuacct with fstype cgroup
-device cgroup mounted on /sys/fs/cgroup/blkio with fstype cgroup
-device cgroup mounted on /sys/fs/cgroup/freezer with fstype cgroup
-device cgroup mounted on /sys/fs/cgroup/net_cls with fstype cgroup
-device cgroup mounted on /sys/fs/cgroup/pids with fstype cgroup
-device cgroup mounted on /sys/fs/cgroup/cpuset with fstype cgroup
-device cgroup mounted on /sys/fs/cgroup/memory with fstype cgroup
-device systemd-1 mounted on /proc/sys/fs/binfmt_misc with fstype autofs
-device mqueue mounted on /dev/mqueue with fstype mqueue
-device hugetlbfs mounted on /dev/hugepages with fstype hugetlbfs
-device tmpfs mounted on /tmp with fstype tmpfs
-device debugfs mounted on /sys/kernel/debug with fstype debugfs
-device configfs mounted on /sys/kernel/config with fstype configfs
+...
 device vmware-vmblock mounted on /run/vmblock-fuse with fstype fuse.vmware-vmblock
 device fusectl mounted on /sys/fs/fuse/connections with fstype fusectl
 device tmpfs mounted on /run/user/0 with fstype tmpfs
@@ -445,108 +380,7 @@ NUMA的内存映射，记录了进程的内存区域正在被哪一个节点使�
 559235185000 default file=/usr/lib/systemd/systemd mapped=218 mapmax=3 active=142 N0=218 kernelpagesize_kB=4
 55923526e000 default file=/usr/lib/systemd/systemd anon=37 dirty=37 mapmax=2 N0=37 kernelpagesize_kB=4
 559235293000 default file=/usr/lib/systemd/systemd anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-559235a81000 default heap anon=148 dirty=148 mapmax=2 N0=148 kernelpagesize_kB=4
-7fc1f4000000 default anon=3 dirty=3 N0=3 kernelpagesize_kB=4
-7fc1f4029000 default
-7fc1f8a18000 default
-7fc1f8a19000 default anon=2 dirty=2 N0=2 kernelpagesize_kB=4
-7fc1f9219000 default
-7fc1f921a000 default anon=2 dirty=2 N0=2 kernelpagesize_kB=4
-7fc1f9a1a000 default file=/usr/lib/libattr.so.1.1.0 mapped=4 mapmax=6 N0=4 kernelpagesize_kB=4
-7fc1f9a1e000 default file=/usr/lib/libattr.so.1.1.0
-7fc1f9c1d000 default file=/usr/lib/libattr.so.1.1.0 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1f9c1e000 default file=/usr/lib/libattr.so.1.1.0 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1f9c1f000 default file=/usr/lib/libuuid.so.1.3.0 mapped=4 mapmax=22 N0=4 kernelpagesize_kB=4
-7fc1f9c23000 default file=/usr/lib/libuuid.so.1.3.0
-7fc1f9e22000 default file=/usr/lib/libuuid.so.1.3.0 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1f9e23000 default file=/usr/lib/libuuid.so.1.3.0 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1f9e24000 default file=/usr/lib/libblkid.so.1.1.0 mapped=28 mapmax=22 N0=28 kernelpagesize_kB=4
-7fc1f9e65000 default file=/usr/lib/libblkid.so.1.1.0
-7fc1fa064000 default file=/usr/lib/libblkid.so.1.1.0 anon=4 dirty=4 mapmax=2 N0=4 kernelpagesize_kB=4
-7fc1fa068000 default file=/usr/lib/libblkid.so.1.1.0 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fa069000 default
-7fc1fa06a000 default file=/usr/lib/libz.so.1.2.8 mapped=20 mapmax=28 N0=20 kernelpagesize_kB=4
-7fc1fa07f000 default file=/usr/lib/libz.so.1.2.8
-7fc1fa27e000 default file=/usr/lib/libz.so.1.2.8 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fa27f000 default file=/usr/lib/libz.so.1.2.8 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fa280000 default file=/usr/lib/libdl-2.24.so mapped=2 mapmax=34 N0=2 kernelpagesize_kB=4
-7fc1fa282000 default file=/usr/lib/libdl-2.24.so
-7fc1fa482000 default file=/usr/lib/libdl-2.24.so anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fa483000 default file=/usr/lib/libdl-2.24.so anon=1 dirty=1 N0=1 kernelpagesize_kB=4
-7fc1fa484000 default file=/usr/lib/libidn.so.11.6.16 mapped=4 mapmax=5 N0=4 kernelpagesize_kB=4
-7fc1fa4b6000 default file=/usr/lib/libidn.so.11.6.16
-7fc1fa6b6000 default file=/usr/lib/libidn.so.11.6.16 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fa6b7000 default file=/usr/lib/libidn.so.11.6.16 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fa6b8000 default file=/usr/lib/libacl.so.1.1.0 mapped=8 mapmax=6 N0=8 kernelpagesize_kB=4
-7fc1fa6c0000 default file=/usr/lib/libacl.so.1.1.0
-7fc1fa8bf000 default file=/usr/lib/libacl.so.1.1.0 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fa8c0000 default file=/usr/lib/libacl.so.1.1.0 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fa8c1000 default file=/usr/lib/libgpg-error.so.0.21.0 mapped=16 mapmax=28 N0=16 kernelpagesize_kB=4
-7fc1fa8d4000 default file=/usr/lib/libgpg-error.so.0.21.0
-7fc1faad3000 default file=/usr/lib/libgpg-error.so.0.21.0 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1faad4000 default file=/usr/lib/libgpg-error.so.0.21.0 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1faad5000 default file=/usr/lib/libgcrypt.so.20.1.5 mapped=16 mapmax=28 N0=16 kernelpagesize_kB=4
-7fc1fabdc000 default file=/usr/lib/libgcrypt.so.20.1.5
-7fc1faddb000 default file=/usr/lib/libgcrypt.so.20.1.5 anon=2 dirty=2 mapmax=2 N0=2 kernelpagesize_kB=4
-7fc1faddd000 default file=/usr/lib/libgcrypt.so.20.1.5 anon=7 dirty=7 mapmax=2 N0=7 kernelpagesize_kB=4
-7fc1fade4000 default file=/usr/lib/liblz4.so.1.7.4 mapped=16 mapmax=27 N0=16 kernelpagesize_kB=4
-7fc1fadf5000 default file=/usr/lib/liblz4.so.1.7.4
-7fc1faff4000 default file=/usr/lib/liblz4.so.1.7.4 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1faff5000 default file=/usr/lib/liblz4.so.1.7.4 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1faff6000 default file=/usr/lib/liblzma.so.5.2.3 mapped=4 mapmax=29 N0=4 kernelpagesize_kB=4
-7fc1fb01b000 default file=/usr/lib/liblzma.so.5.2.3
-7fc1fb21a000 default file=/usr/lib/liblzma.so.5.2.3 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fb21b000 default file=/usr/lib/liblzma.so.5.2.3 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fb21c000 default file=/usr/lib/libresolv-2.24.so mapped=16 mapmax=30 N0=16 kernelpagesize_kB=4
-7fc1fb230000 default file=/usr/lib/libresolv-2.24.so
-7fc1fb42f000 default file=/usr/lib/libresolv-2.24.so anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fb430000 default file=/usr/lib/libresolv-2.24.so anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fb431000 default
-7fc1fb433000 default file=/usr/lib/libm-2.24.so mapped=45 mapmax=30 N0=45 kernelpagesize_kB=4
-7fc1fb536000 default file=/usr/lib/libm-2.24.so
-7fc1fb735000 default file=/usr/lib/libm-2.24.so anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fb736000 default file=/usr/lib/libm-2.24.so anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fb737000 default file=/usr/lib/libcap.so.2.25 mapped=4 mapmax=29 N0=4 kernelpagesize_kB=4
-7fc1fb73b000 default file=/usr/lib/libcap.so.2.25
-7fc1fb93a000 default file=/usr/lib/libcap.so.2.25 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fb93b000 default file=/usr/lib/libc-2.24.so mapped=333 mapmax=45 N0=333 kernelpagesize_kB=4
-7fc1fbad0000 default file=/usr/lib/libc-2.24.so
-7fc1fbccf000 default file=/usr/lib/libc-2.24.so anon=4 dirty=4 mapmax=2 N0=4 kernelpagesize_kB=4
-7fc1fbcd3000 default file=/usr/lib/libc-2.24.so anon=2 dirty=2 N0=2 kernelpagesize_kB=4
-7fc1fbcd5000 default anon=3 dirty=3 N0=3 kernelpagesize_kB=4
-7fc1fbcd9000 default file=/usr/lib/libpthread-2.24.so mapped=23 mapmax=39 N0=23 kernelpagesize_kB=4
-7fc1fbcf1000 default file=/usr/lib/libpthread-2.24.so
-7fc1fbef0000 default file=/usr/lib/libpthread-2.24.so anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fbef1000 default file=/usr/lib/libpthread-2.24.so anon=1 dirty=1 N0=1 kernelpagesize_kB=4
-7fc1fbef2000 default anon=1 dirty=1 N0=1 kernelpagesize_kB=4
-7fc1fbef6000 default file=/usr/lib/libmount.so.1.1.0 mapped=73 mapmax=21 N0=73 kernelpagesize_kB=4
-7fc1fbf40000 default file=/usr/lib/libmount.so.1.1.0
-7fc1fc140000 default file=/usr/lib/libmount.so.1.1.0 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fc141000 default file=/usr/lib/libmount.so.1.1.0 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fc142000 default
-7fc1fc144000 default file=/usr/lib/libkmod.so.2.3.1 mapped=21 mapmax=3 N0=21 kernelpagesize_kB=4
-7fc1fc159000 default file=/usr/lib/libkmod.so.2.3.1
-7fc1fc358000 default file=/usr/lib/libkmod.so.2.3.1 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fc359000 default file=/usr/lib/libkmod.so.2.3.1 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fc35a000 default file=/usr/lib/libpam.so.0.84.2 mapped=13 mapmax=3 N0=13 kernelpagesize_kB=4
-7fc1fc367000 default file=/usr/lib/libpam.so.0.84.2
-7fc1fc566000 default file=/usr/lib/libpam.so.0.84.2 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fc567000 default file=/usr/lib/libpam.so.0.84.2 anon=1 dirty=1 N0=1 kernelpagesize_kB=4
-7fc1fc568000 default file=/usr/lib/libseccomp.so.2.3.1 mapped=44 mapmax=5 N0=44 kernelpagesize_kB=4
-7fc1fc594000 default file=/usr/lib/libseccomp.so.2.3.1
-7fc1fc793000 default file=/usr/lib/libseccomp.so.2.3.1 anon=21 dirty=21 mapmax=2 N0=21 kernelpagesize_kB=4
-7fc1fc7a8000 default file=/usr/lib/libseccomp.so.2.3.1 anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fc7a9000 default file=/usr/lib/librt-2.24.so mapped=7 mapmax=31 N0=7 kernelpagesize_kB=4
-7fc1fc7b0000 default file=/usr/lib/librt-2.24.so
-7fc1fc9af000 default file=/usr/lib/librt-2.24.so anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fc9b0000 default file=/usr/lib/librt-2.24.so anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
-7fc1fc9b1000 default file=/usr/lib/systemd/libsystemd-shared-232.so mapped=347 mapmax=5 N0=347 kernelpagesize_kB=4
-7fc1fcb3d000 default file=/usr/lib/systemd/libsystemd-shared-232.so anon=13 dirty=13 mapmax=2 N0=13 kernelpagesize_kB=4
-7fc1fcbc7000 default file=/usr/lib/systemd/libsystemd-shared-232.so anon=1 dirty=1 N0=1 kernelpagesize_kB=4
-7fc1fcbc8000 default
-7fc1fcbc9000 default file=/usr/lib/ld-2.24.so mapped=35 mapmax=44 N0=35 kernelpagesize_kB=4
-7fc1fcdcb000 default anon=10 dirty=10 mapmax=2 N0=10 kernelpagesize_kB=4
-7fc1fcde9000 default anon=2 dirty=2 N0=2 kernelpagesize_kB=4
+...
 7fc1fcdeb000 default file=/usr/lib/ld-2.24.so anon=1 dirty=1 mapmax=2 N0=1 kernelpagesize_kB=4
 7fc1fcdec000 default file=/usr/lib/ld-2.24.so anon=1 dirty=1 N0=1 kernelpagesize_kB=4
 7fc1fcded000 default anon=1 dirty=1 N0=1 kernelpagesize_kB=4
@@ -596,6 +430,73 @@ NUMA的内存映射，记录了进程的内存区域正在被哪一个节点使�
 
 ### 32. sched
 进程调度信息，大多数字段计算方法在sched.c和sched_fair.c文件中。
+
+se.avg的结构是 struct sched_avg  in include/linux/sched.h中，用于smp调度统计
+
+```
+/*
+ * The load_avg/util_avg accumulates an infinite geometric series
+ * (see __update_load_avg() in kernel/sched/fair.c).
+ *
+ * [load_avg definition]
+ *
+ *   load_avg = runnable% * scale_load_down(load)
+ *
+ * where runnable% is the time ratio that a sched_entity is runnable.
+ * For cfs_rq, it is the aggregated load_avg of all runnable and
+ * blocked sched_entities.
+ *
+ * load_avg may also take frequency scaling into account:
+ *
+ *   load_avg = runnable% * scale_load_down(load) * freq%
+ *
+ * where freq% is the CPU frequency normalized to the highest frequency.
+ *
+ * [util_avg definition]
+ *
+ *   util_avg = running% * SCHED_CAPACITY_SCALE
+ *
+ * where running% is the time ratio that a sched_entity is running on
+ * a CPU. For cfs_rq, it is the aggregated util_avg of all runnable
+ * and blocked sched_entities.
+ *
+ * util_avg may also factor frequency scaling and CPU capacity scaling:
+ *
+ *   util_avg = running% * SCHED_CAPACITY_SCALE * freq% * capacity%
+* where freq% is the same as above, and capacity% is the CPU capacity
+ * normalized to the greatest capacity (due to uarch differences, etc).
+ *
+ * N.B., the above ratios (runnable%, running%, freq%, and capacity%)
+ * themselves are in the range of [0, 1]. To do fixed point arithmetics,
+ * we therefore scale them to as large a range as necessary. This is for
+ * example reflected by util_avg's SCHED_CAPACITY_SCALE.
+ *
+ * [Overflow issue]
+ *
+ * The 64-bit load_sum can have 4353082796 (=2^64/47742/88761) entities
+ * with the highest load (=88761), always runnable on a single cfs_rq,
+ * and should not overflow as the number already hits PID_MAX_LIMIT.
+ *
+ * For all other cases (including 32-bit kernels), struct load_weight's
+ * weight will overflow first before we do, because:
+ *
+ *    Max(load_avg) <= Max(load.weight)
+ *
+ * Then it is the load_weight's responsibility to consider overflow
+ * issues.
+ */
+struct sched_avg {
+        u64 last_update_time, load_sum;
+        u32 util_sum, period_contrib;
+        unsigned long load_avg, util_avg;
+};
+
+```
+
+
+
+
+
 ```
 #(example)
 #cat /proc/1/sched
@@ -609,18 +510,20 @@ nr_switches                                  :                 1105  //主动切
 nr_voluntary_switches                        :                  883  //主动切换次数（由于prev->state为不可运行状态引起的切换）
 nr_involuntary_switches                      :                  222  //被动切换次数
 se.load.weight                               :              1048576   //该se的load
-se.avg.load_sum                              :               556434
-se.avg.util_sum                              :               402117
-se.avg.load_avg                              :                   11
-se.avg.util_avg                              :                    8
-se.avg.last_update_time                      :       10641651970868
+se.avg.load_sum                              :               556434   //smp下的ready态进程的负载累计和???
+se.avg.util_sum                              :               402117   //smp下的ready+block态进程的负载累计和???
+se.avg.load_avg                              :                   11   //smp下的ready态进程的负载均值???
+se.avg.util_avg                              :                    8  //smp下的ready+block态进程的负载均值???
+se.avg.last_update_time                      :       10641651970868  //smp下的对avg的上次更新时间
 policy                                       :                    0  //调度策略，0表示normal
 prio                                         :                  120  //优先级(nice=0)
-clock-delta                                  :                  200
-mm->numa_scan_seq                            :                    0
-numa_pages_migrated                          :                    0
-numa_preferred_nid                           :                   -1
-total_numa_faults                            :                    0
+clock-delta                                  :                  200  //cpu_clock函数的执行开销
+mm->numa_scan_seq                            :                    0  //进行numa balance扫描的频率 
+numa_pages_migrated                          :                    0  //进行了numa迁移的页个数
+numa_preferred_nid                           :                   -1  //
+total_numa_faults                            :                    0  //属于numa faults的次数。                           numa_faults is an array split into four regions:
+                        faults_memory, faults_cpu, faults_memory_buffer, faults_cpu_buffer
+                        in this precise order.
 current_node=0, numa_group_id=0
 numa_faults node=0 task_private=0 task_shared=0 group_private=0 group_shared=0
 ```
@@ -638,92 +541,64 @@ numa_faults node=0 task_private=0 task_shared=0 group_private=0 group_shared=0
 ```
 
 ### 34. smaps
-记录进程内存中所有的映射情况，类似于详细信息版本的/proc/[pid]/maps
+在Linux内核 2.6.16中引入了一个系统内存接口特性，位于/proc/$pid/目录下的smaps文件中 ，记录进程内存中所有的映射情况，类似于详细信息版本的/proc/[pid]/maps
 （该文件只有在开启了内核的CONFIG_MMU选项了才会产生）
 
 ```
 #(example)
 #cat /proc/1/smaps
-559235185000-55923526d000 r-xp 00000000 08:01 799480                     /usr/lib/systemd/systemd
-Size:                928 kB            /*映射区域的总大小*/
-Rss:                 872 kB            /*当前驻留于内存中的大小，即实际内存的占用量。不包括已经交换出去的代码*/
-Pss:                 409 kB            /*Private Rss，映射到内存的页面中仅由进程单独使用的量*/
-Shared_Clean:        860 kB            /*驻留在内存中与其他内存共享部分的“干净页面”大小，*/
-Shared_Dirty:          0 kB            /*驻留在内存中与其他内存共享部分的“赃页”大小*/
-Private_Clean:        12 kB            /*驻留在内存中私有的“干净页面”大小*/
-Private_Dirty:         0 kB            /*驻留在内存中私有的“赃页”大小*/
-Referenced:          872 kB
-Anonymous:             0 kB
-AnonHugePages:         0 kB
-ShmemPmdMapped:        0 kB
-Shared_Hugetlb:        0 kB
-Private_Hugetlb:       0 kB
-Swap:                  0 kB
-SwapPss:               0 kB
-KernelPageSize:        4 kB
-MMUPageSize:           4 kB
-Locked:                0 kB
+559235185000-55923526d000 r-xp 00000000 08:01 799480                    /usr/lib/systemd/systemd   //该虚拟内存段的开始和结束位置 r--s内存段的权限，最后一位p代表私有，s代表共享
+                           // 00000000 该虚拟内存段在对应的映射文件中的偏移量
+                           // 08:01  文件的主设备和次设备号 
+                           // 799480  被映射到虚拟内存的文件的索引节点号 
+                           // ...systemd 被映射到虚拟内存的文件名称.
+                           // 后面带(deleted)的是内存数据，可以被销毁。
+Size:                928 kB   // 映射区域的总大小, 是进程使用内存空间，并不一定实际分配了内存(VSS) 
+Rss:                 872 kB   // 当前驻留于内存中的大小，即实际内存的占用量(不需要缺页中断就可以使用的) 。不包括已经交换出去的代码
+Pss:                 409 kB   // 是平摊计算后的使用内存(有些内存会和其他进程共享，例如mmap进来的) , Private Rss，映射到内存的页面中仅由进程单独使用的量
+Shared_Clean:        860 kB  //驻留在内存中与其他内存共享部分的“干净页面”（未改写）大小
+Shared_Dirty:          0 kB  //驻留在内存中与其他内存共享部分的“赃页”（已改写）大小
+Private_Clean:        12 kB  //驻留在内存中私有的“干净页面”大小
+Private_Dirty:         0 kB  //驻留在内存中私有的“赃页”大小
+Referenced:          872 kB  //标记为访问和使用的内存大小
+Anonymous:             0 kB  //不来自于文件的内存大小
+AnonHugePages:         0 kB  //不来自于文件的大页内存大小
+ShmemPmdMapped:        0 kB  //shows the ammount of shared (shmem/tmpfs) memory backed by huge pages.   
+Shared_Hugetlb:        0 kB  //show the ammounts of memory backed by hugetlbfs page which is not counted in "RSS"
+Private_Hugetlb:       0 kB //show the ammounts of memory backed by hugetlbfs page which is not counted in "PSS"
+Swap:                  0 kB //shows how much would-be-anonymous memory is also used, but out on swap. For shmem mappings, "Swap" includes also the size of the mapped (and not replaced by copy-on-write) part of the underlying shmem object out on swap.
+SwapPss:               0 kB //shows proportional swap share of this mapping. Unlike "Swap", this does not take into account swapped out page of underlying shmem objects.
+KernelPageSize:        4 kB //内核页大小
+MMUPageSize:           4 kB //MMU页大小
+Locked:                0 kB  //indicates whether the mapping is locked in memory or not.
 VmFlags: rd ex mr mw me dw 
-55923526e000-559235293000 r--p 000e8000 08:01 799480                     /usr/lib/systemd/systemd
-Size:                148 kB
-Rss:                 148 kB
-Pss:                  74 kB
-Shared_Clean:          0 kB
-Shared_Dirty:        148 kB
-Private_Clean:         0 kB
-Private_Dirty:         0 kB
-Referenced:          148 kB
-Anonymous:           148 kB
-AnonHugePages:         0 kB
-ShmemPmdMapped:        0 kB
-Shared_Hugetlb:        0 kB
-Private_Hugetlb:       0 kB
-Swap:                  0 kB
-SwapPss:               0 kB
-KernelPageSize:        4 kB
-MMUPageSize:           4 kB
-Locked:                0 kB
-VmFlags: rd mr mw me dw ac 
-559235293000-559235294000 rw-p 0010d000 08:01 799480                     /usr/lib/systemd/systemd
-Size:                  4 kB
-Rss:                   4 kB
-Pss:                   2 kB
-Shared_Clean:          0 kB
-Shared_Dirty:          4 kB
-Private_Clean:         0 kB
-Private_Dirty:         0 kB
-Referenced:            4 kB
-Anonymous:             4 kB
-AnonHugePages:         0 kB
-ShmemPmdMapped:        0 kB
-Shared_Hugetlb:        0 kB
-Private_Hugetlb:       0 kB
-Swap:                  0 kB
-SwapPss:               0 kB
-KernelPageSize:        4 kB
-MMUPageSize:           4 kB
-Locked:                0 kB
-VmFlags: rd wr mr mw me dw ac 
-559235a81000-559235b2e000 rw-p 00000000 00:00 0                          [heap]
-Size:                692 kB
-Rss:                 592 kB
-Pss:                 510 kB
-Shared_Clean:          0 kB
-Shared_Dirty:        164 kB
-Private_Clean:         0 kB
-Private_Dirty:       428 kB
-Referenced:          592 kB
-Anonymous:           592 kB
-AnonHugePages:         0 kB
-ShmemPmdMapped:        0 kB
-Shared_Hugetlb:        0 kB
-Private_Hugetlb:       0 kB
-Swap:                  0 kB
-SwapPss:               0 kB
-KernelPageSize:        4 kB
-MMUPageSize:           4 kB
-Locked:                0 kB
-VmFlags: rd wr mr mw me ac 
+  rd - readable 
+  wr - writeable 
+  ex - executable 
+  sh - shared 
+  mr - may read 
+  mw - may write 
+  me - may execute 
+  ms - may share 
+  gd - stack segment growns down 
+  pf - pure PFN range 
+  dw - disabled write to the mapped file 
+  lo - pages are locked in memory 
+  io - memory mapped I/O area 
+  sr - sequential read advise provided 
+  rr - random read advise provided 
+  dc - do not copy area on fork 
+  de - do not expand area on remapping 
+  ac - area is accountable 
+  nr - swap space is not reserved for the area 
+  ht - area uses huge tlb pages 
+  ar - architecture specific flag 
+  dd - do not include area into core dump 
+  sd - soft-dirty flag 
+  mm - mixed map area 
+  hg - huge page advise flag 
+  nh - no-huge page advise flag 
+  mg - mergable advise flag 
 ...
 ```
 
@@ -742,8 +617,52 @@ VmFlags: rd wr mr mw me ac
 当前进程的所有状态信息。各项参数解释请参照[PROC系列之---/proc/pid/stat](http://blog.csdn.net/zjl_1026_2001/article/details/2294067) 
 ```
 #(example)
-#cat /proc/1/stat
-1 (systemd) S 0 1 1 0 -1 4194560 2837 215477 66 637 8 107 1641 3161 20 0 1 0 5 138170368 1607 18446744073709551615 94086444371968 94086445321800 140721902830496 140721902828608 140471127129555 0 671173123 4096 1260 1 0 0 17 1 0 0 113 0 0 94086445329472 94086445478188 94086453792768 140721902833623 140721902833634 140721902833634 140721902833645 0
+#cat /proc/6873/stat
+6873 (a.out) R 6723 6873 6723 34819 6873 8388608 77 0 0 0 41958 31 0 0 25 0 3 0 5882654 1409024 56 4294967295 134512640 134513720 3215579040 0 2097798 0 0 0 0 0 0 0 17 0 0 0
+
+pid=6873 进程(包括轻量级进程，即线程)号
+comm=a.out 应用程序或命令的名字
+task_state=R 任务的状态，R:runnign, S:sleeping (TASK_INTERRUPTIBLE), D:disk sleep (TASK_UNINTERRUPTIBLE), T: stopped, T:tracing stop,Z:zombie, X:dead
+ppid=6723 父进程ID
+pgid=6873 线程组号
+sid=6723 c该任务所在的会话组ID
+tty_nr=34819(pts/3) 该任务的tty终端的设备号，INT（34817/256）=主设备号，（34817-主设备号）=次设备号
+tty_pgrp=6873 终端的进程组号，当前运行在该任务所在终端的前台任务(包括shell 应用程序)的PID。
+task->flags=8388608 进程标志位，查看该任务的特性
+min_flt=77 该任务不需要从硬盘拷数据而发生的缺页（次缺页）的次数
+cmin_flt=0 累计的该任务的所有的waited-for进程曾经发生的次缺页的次数目
+maj_flt=0 该任务需要从硬盘拷数据而发生的缺页（主缺页）的次数
+cmaj_flt=0 累计的该任务的所有的waited-for进程曾经发生的主缺页的次数目
+utime=1587 该任务在用户态运行的时间，单位为jiffies
+stime=1 该任务在核心态运行的时间，单位为jiffies
+cutime=0 累计的该任务的所有的waited-for进程曾经在用户态运行的时间，单位为jiffies
+cstime=0 累计的该任务的所有的waited-for进程曾经在核心态运行的时间，单位为jiffies
+priority=25 任务的动态优先级
+nice=0 任务的静态优先级
+num_threads=3 该任务所在的线程组里线程的个数
+it_real_value=0 由于计时间隔导致的下一个 SIGALRM 发送进程的时延，以 jiffy 为单位.
+start_time=5882654 该任务启动的时间，单位为jiffies
+vsize=1409024（page） 该任务的虚拟地址空间大小
+rss=56(page) 该任务当前驻留物理地址空间的大小
+Number of pages the process has in real memory,minu 3 for administrative purpose.
+这些页可能用于代码，数据和栈。
+rlim=4294967295（bytes） 该任务能驻留物理地址空间的最大值
+start_code=134512640 该任务在虚拟地址空间的代码段的起始地址
+end_code=134513720 该任务在虚拟地址空间的代码段的结束地址
+start_stack=3215579040 该任务在虚拟地址空间的栈的结束地址
+kstkesp=0 esp(32 位堆栈指针) 的当前值, 与在进程的内核堆栈页得到的一致.
+kstkeip=2097798 指向将要执行的指令的指针, EIP(32 位指令指针)的当前值.
+pendingsig=0 待处理信号的位图，记录发送给进程的普通信号
+block_sig=0 阻塞信号的位图
+sigign=0 忽略的信号的位图
+sigcatch=082985 被俘获的信号的位图
+wchan=0 如果该进程是睡眠状态，该值给出调度的调用点
+nswap 被swapped的页数，当前没用
+cnswap 所有子进程被swapped的页数的和，当前没用
+exit_signal=17 该进程结束时，向父进程所发送的信号
+task_cpu(task)=0 运行在哪个CPU上
+task_rt_priority=0 实时进程的相对优先级别
+task_policy=0 进程的调度策略，0=非实时进程，1=FIFO实时进程；2=RR实时进程  
 ```
 
 ### 37. statm
