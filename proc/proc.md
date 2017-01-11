@@ -58,19 +58,39 @@ stat:实时追踪自系统上次启动以来的多种统计信息
 ```
 (example)
 cat /proc/stat
-cpu  2018907 8270 2713334 37434321 169720 0 4332 0 0 0   八个值分别表示以1/100（jiffies）秒为单位的统计值(依次为：user（用户太时间）、nice（nice值为负的进程所占用的CPU时间）、system（核心）、idle（除硬盘IO等待时间以外其它等待时间）、iowait、irq（硬中断时间）、softirq（软中断时间）)
+cpu  2018907 8270 2713334 37434321 169720 0 4332 0 0 0   
+
+The very first "cpu" line aggregates the numbers in all of the other "cpuN" lines.
+十个值分别表示以1/100（jiffies）秒为单位的统计值(依次为：user（用户态时间）、nice（nice值为负的进程所占用的CPU时间）、system（核心）、idle（除硬盘IO等待时间以外其它等待时间）、iowait、irq（硬中断时间）、softirq（软中断时间）steal 在guest运行模式下被其他OS偷占用的时间、guest 在guest运行模式下guest OS运行时间 、guest_nice 被niced的在guest运行模式下guest OS运行时间 
+
+user: normal processes executing in user mode
+nice: niced processes executing in user mode
+system: processes executing in kernel mode
+idle: twiddling thumbs
+iowait: waiting for I/O to complete
+irq: servicing interrupts
+softirq: servicing softirqs
+steal: (2.6.11+) Stolen time, which is the time spent in other operating systems when running in a virtualized environment
+guest: (2.6.24+) Time spent running a virtual CPU for guest operating systems under the control of the Linux kernel.
+guest_nice:(2.6.33) Time spent running a niced guest (virtual CPU for guest operating systems under the control of the Linux kernel).
+
 cpu0 515361 2314 683293 9322930 39474 0 1482 0 0 0
 cpu1 508524 1140 679219 9351987 51097 0 760 0 0 0
 cpu2 499244 2783 675439 9372749 42000 0 1973 0 0 0
 cpu3 495776 2032 675382 9386654 37147 0 116 0 0 0
-intr 772741507 22 11 0 0 0 0 0 0 1 0 0 0 2 0 0 0 0 0 59 311201 0 0 0 0 0 0 0 107111 542126 3240772 8530961 21 591 663 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0     中断的信息，第一个为自系统启动以来，发生的所有的中断的次数；然后每个数对应一个特定的中断自系统启动以来所发生的次数
+
+每个具体CPU的10个统计值
+
+
+intr 772741507 22 11 0 0 0 0 0 0 1 0 0 0 2 0 0 0 0 0 59 311201 0 0 0 0 0 0 0 107111 542126 3240772 8530961 21 591 663 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ...      
+中断的信息，第一个为自系统启动以来，发生的所有的中断的次数；然后每个数对应一个特定的中断自系统启动以来所发生的次数
+
 ctxt 4042696239   自系统启动以来CPU发生的上下文交换的次数
 btime 1483494110  从系统启动到现在为止的时间，单位为秒
-processes 19373   系统启动以来所创建的任务的个数目
+processes 19373   系统启动以来所创建的任务的个数目(total_forks)
 procs_running 1   当前运行队列的任务的数目
 procs_blocked 0   当前被阻塞的任务的数目
 softirq 48508837 5 18240586 21946 3278362 596054 0 18229 16346722 0 10006933
-
 ```
 
 ### swaps 
@@ -86,7 +106,7 @@ Filename		Type		Size	  Used 	Priority
 cmdline:在启动时传递至内核的相关参数信息,这些信息通常由lilo或grub等启动管理工具进行传递
 ```
 (example)
-cat /proc/amdline
+cat /proc/cmdline
 BOOT_IMAGE=/vmlinuz-4.2.0-42-generic root=UUID=600a1c05-f70e-475b-9cc6-0579a3756133 ro quiet splash vt.handoff=7
 ```
 ### uptime
@@ -114,7 +134,6 @@ udev       /dev devtmpfs rw,nosuid,relatime,size=4031008k,nr_inodes=1007752,mode
 devpts     /dev/pts devpts rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000 0 0
 tmpfs      /run tmpfs rw,nosuid,noexec,relatime,size=809868k,mode=755 0 0
 /dev/sda1  /ext4 rw,relatime,errors=remount-ro,data=ordered 0 0
-/dev/sda9  /usr ext4 rw,relatime,data=ordered 0 0
 securityfs /sys/kernel/security securityfs rw,nosuid,nodev,noexec,relatime 0 0
 tmpfs      /dev/shm tmpfs rw,nosuid,nodev 0 0
 tmpfs      /run/lock tmpfs rw,nosuid,nodev,noexec,relatime,size=5120k 0 0
@@ -122,30 +141,18 @@ tmpfs      /sys/fs/cgroup tmpfs rw,mode=755 0 0
 cgroup     /sys/fs/cgroup/systemd cgroup rw,nosuid,nodev,noexec,relatime,xattr,release_agent=/lib/systemd/systemd-cgroups-agent,name=systemd 0 0
 pstore     /sys/fs/pstore pstore rw,nosuid,nodev,noexec,relatime 0 0
 cgroup     /sys/fs/cgroup/hugetlb cgroup rw,nosuid,nodev,noexec,relatime,hugetlb,release_agent=/run/cgmanager/agents/cgm-release-agent.hugetlb 0 0
-cgroup     /sys/fs/cgroup/memory cgroup rw,nosuid,nodev,noexec,relatime,memory 0 0
-cgroup     /sys/fs/cgroup/perf_event cgroup rw,nosuid,nodev,noexec,relatime,perf_event,release_agent=/run/cgmanager/agents/cgm-release-agent.perf_event 0 0
-cgroup     /sys/fs/cgroup/devices cgroup rw,nosuid,nodev,noexec,relatime,devices 0 0
-cgroup     /sys/fs/cgroup/net_cls,net_prio cgroup rw,nosuid,nodev,noexec,relatime,net_cls,net_prio 0 0
-cgroup     /sys/fs/cgroup/blkio cgroup rw,nosuid,nodev,noexec,relatime,blkio 0 0
-cgroup     /sys/fs/cgroup/cpu,cpuacct cgroup rw,nosuid,nodev,noexec,relatime,cpu,cpuacct 0 0
-cgroup     /sys/fs/cgroup/freezer cgroup rw,nosuid,nodev,noexec,relatime,freezer 0 0
-cgroup     /sys/fs/cgroup/cpuset cgroup rw,nosuid,nodev,noexec,relatime,cpuset,clone_children 0 0
+...
 systemd-1  /proc/sys/fs/binfmt_misc autofs rw,relatime,fd=22,pgrp=1,timeout=0,minproto=5,maxproto=5,direct 0 0
 mqueue     /dev/mqueue mqueue rw,relatime 0 0
 hugetlbfs  /dev/hugepages hugetlbfs rw,relatime 0 0
 debugfs    /sys/kernel/debug debugfs rw,relatime 0 0
 fusectl    /sys/fs/fuse/connections fusectl rw,relatime 0 0
 /dev/sda8  /var ext4 rw,relatime,data=ordered 0 0
-/dev/sda7  /srv ext4 rw,relatime,data=ordered 0 0
-/dev/sda10 /usr/local ext4 rw,relatime,data=ordered 0 0
-/dev/sda2  /boot ext4 rw,relatime,stripe=4,data=ordered 0 0
-/dev/sda5  /opt ext4 rw,relatime,data=ordered 0 0
-/dev/sda3  /home ext4 rw,relatime,data=ordered 0 0
+...
 cgmfs      /run/cgmanager/fs tmpfs rw,relatime,size=100k,mode=755 0 0
 binfmt_misc /proc/sys/fs/binfmt_misc binfmt_misc rw,relatime 0 0
 tmpfs      /run/user/1000 tmpfs rw,nosuid,nodev,relatime,size=809868k,mode=700,uid=1000,gid=1000 0 0
 gvfsd-fuse /run/user/1000/gvfs fuse.gvfsd-fuse rw,nosuid,nodev,relatime,user_id=1000,group_id=1000 0 0
-
 ```
 ### modules
 modules:当前装入内核的所有模块名称列表，可以由lsmod命令使用，也可以直接查看；如下所示，其中第一列表示模块名，第二列表示此模块占用内存空间大小，第三列表示此模块有多少实例被装入，第四列表示此模块依赖于其它哪些模块，第五列表示此模块的装载状态（Live：已经装入；Loading：正在装入；Unloading：正在卸载），第六列表示此模块在内核内存（kernel memory）中的偏移量
@@ -243,7 +250,7 @@ Column5 成功完成合并读磁盘的总次数,为了效率可能会合并相�
 
 Column6 成功完成读扇区的总次数
 
-Column7 所有读操作所花费的毫秒数
+Column7 所有读操作所花费的毫秒数 （用__make_request()到end_that_request_last()测量）。
 
 Column8 成功完成写磁盘的总次数
 
@@ -251,50 +258,24 @@ Column9 成功完成合并写磁盘的总次数
 
 Column10 成功完成写扇区的总次数
 
-Column11 所有写操作所花费的毫秒数
+Column11 所有写操作所花费的毫秒数 （用__make_request()到end_that_request_last()测量）。
 
 Column12 正在处理的输入/输出请求数 -- -I/O的当前进度，只有这个域可以是0。当请求被交给适当的request_queue_t时增加，当请求完成时减小
 
-Column13 正在处理的输入/输出花的时间（毫秒），这个字段是Column12的一个累加值，这个域会增长只要Column12不为0。
+Column13 正在处理的输入/输出花的时间（毫秒），这个字段是Column12的一个累加值. 只要Column12不为0, 这个域会增长。
 
 Column14 正在处理的输入/输出操作花费的加权毫秒数,这可以提供I/O完成时间和可能积累的积压的简单测量。
 ```
 ll@ll-pc:~$ cat /proc/diskstats
    1       0 ram0 0 0 0 0 0 0 0 0 0 0 0
-   1       1 ram1 0 0 0 0 0 0 0 0 0 0 0
-   1       2 ram2 0 0 0 0 0 0 0 0 0 0 0
-   1       3 ram3 0 0 0 0 0 0 0 0 0 0 0
-   1       4 ram4 0 0 0 0 0 0 0 0 0 0 0
-   1       5 ram5 0 0 0 0 0 0 0 0 0 0 0
-   1       6 ram6 0 0 0 0 0 0 0 0 0 0 0
-   1       7 ram7 0 0 0 0 0 0 0 0 0 0 0
-   1       8 ram8 0 0 0 0 0 0 0 0 0 0 0
-   1       9 ram9 0 0 0 0 0 0 0 0 0 0 0
-   1      10 ram10 0 0 0 0 0 0 0 0 0 0 0
-   1      11 ram11 0 0 0 0 0 0 0 0 0 0 0
-   1      12 ram12 0 0 0 0 0 0 0 0 0 0 0
-   1      13 ram13 0 0 0 0 0 0 0 0 0 0 0
-   1      14 ram14 0 0 0 0 0 0 0 0 0 0 0
-   1      15 ram15 0 0 0 0 0 0 0 0 0 0 0
+   ...
    7       0 loop0 0 0 0 0 0 0 0 0 0 0 0
-   7       1 loop1 0 0 0 0 0 0 0 0 0 0 0
-   7       2 loop2 0 0 0 0 0 0 0 0 0 0 0
-   7       3 loop3 0 0 0 0 0 0 0 0 0 0 0
-   7       4 loop4 0 0 0 0 0 0 0 0 0 0 0
-   7       5 loop5 0 0 0 0 0 0 0 0 0 0 0
-   7       6 loop6 0 0 0 0 0 0 0 0 0 0 0
-   7       7 loop7 0 0 0 0 0 0 0 0 0 0 0
+
   11       0 sr0 0 0 0 0 0 0 0 0 0 0 0
    8       0 sda 379781 9055 19064906 2750192 3807693 3646522 308304394 94060300 0 14625908 96816640
    8       1 sda1 6655 3440 82328 32324 12895 86785 797856 186964 0 70092 219284
    8       2 sda2 5 0 10 56 0 0 0 0 0 56 56
-   8       5 sda5 433 12 4452 6760 137 54 394 2616 0 6676 9376
-   8       6 sda6 22972 376 546410 186916 798814 272048 11265048 3313040 0 1691624 3499128
-   8       7 sda7 189056 2860 5807138 1414244 29146 53243 824928 1661940 0 652664 3076076
-   8       8 sda8 110777 1877 9056456 719928 2843556 3131879 266535360 75681448 0 11551404 76408580
-   8       9 sda9 21138 275 1906288 192508 1969 2044 638048 113800 0 100716 306280
-   8      10 sda10 333 1 4488 8056 308 143 3608 16028 0 16820 24084
-   8      11 sda11 28202 214 1654336 188428 103122 100326 28239152 12786744 0 968572 12975072
+   ...
 ```
 ### cpuinfo
 
@@ -316,15 +297,11 @@ core id		: 0　　　　每个核心的id
 cpu cores	: 4　　　　位于相同物理封装的处理器中的内核数量
 apicid		: 0　　　　用来区分不同逻辑核的编号，系统中每个逻辑核的此编号必然不同，此编号不一定连续
 initial apicid	: 0
-fpu		: yes　　　　　是否具有浮点运算单元（Floating Point Unit）
-fpu_exception	: yes　　　　是否支持浮点计算异常
+fpu		: yes　　　　　 是否具有浮点运算单元（Floating Point Unit）
+fpu_exception	: yes　是否支持浮点计算异常
 cpuid level	: 15　　　　执行cpuid指令前，eax寄存器中的值，根据不同的值cpuid指令会返回不同的内容
 wp		: yes　　　　表明当前CPU是否在内核态支持对用户空间的写保护（Write Protection）
-flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm 
-pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu 
-pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt 
-tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm arat epb pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase 
-tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc　　　　当前CPU支持的功能
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm arat epb pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc　 当前CPU支持的功能
 bugs		:
 bogomips	: 5587.00　　　　在系统内核启动时粗略测算的CPU速度（Million Instructions Per Second）
 clflush size	: 64　　　　每次刷新缓存的大小单位
@@ -377,34 +354,26 @@ Column1:每个锁定占据一行，且具有一个惟一的编号；
 Column2:表示当前锁定使用的锁定类别，POSIX表示目前较新类型的文件锁，由lockf系统调用产生，FLOCK是传统的UNIX文件锁，由flock系统调用产生；
 
 Column3:通常有两种类型，ADVISORY表示不允许其他用户锁定此文件，但允许读取，MANDATORY表示此文件锁定期间不允许其他用户任何形式的访问；
+
+Column4: reveals whether the lock is allowing the holder `READ` or `WRITE` access to the file. 
+
+Column5: shows the ID of the process holding the lock.
+
+Column6: shows the ID of the file being locked, format of `*MAJOR-DEVICE*:*MINOR-DEVICE*:*INODE-NUMBER*`
+
+Column7-8: shows the start and end of the file's locked region.
+
 ```
 ll@ll-pc:~$ cat /proc/locks
 1: POSIX  ADVISORY  WRITE 13735 08:08:5123677 0 EOF
-2: POSIX  ADVISORY  WRITE 12774 08:06:786519 0 EOF
-3: POSIX  ADVISORY  WRITE 12774 08:08:5121388 0 EOF
+...
 4: POSIX  ADVISORY  READ  6750 08:08:5120480 128 128
 5: POSIX  ADVISORY  READ  6750 08:08:5112051 1073741826 1073742335
 6: POSIX  ADVISORY  WRITE 4749 00:29:43 1 3
 7: POSIX  ADVISORY  WRITE 1461 08:06:786449 0 EOF
 8: POSIX  ADVISORY  READ  1249 08:08:5111973 128 128
 9: POSIX  ADVISORY  READ  1249 08:08:5111971 1073741826 1073742335
-10: OFDLCK ADVISORY  WRITE 1687 08:08:5111977 0 0
-11: FLOCK  ADVISORY  WRITE 671 00:16:7 0 EOF
-12: POSIX  ADVISORY  WRITE 12774 08:06:786529 0 EOF
-13: POSIX  ADVISORY  WRITE 12774 08:06:786500 0 EOF
-14: POSIX  ADVISORY  READ  1687 08:08:5111973 128 128
-15: POSIX  ADVISORY  READ  1687 08:08:5111971 1073741826 1073742335
-16: POSIX  ADVISORY  READ  6750 08:08:5120472 128 128
-17: POSIX  ADVISORY  READ  6750 08:08:5112046 1073741826 1073742335
-18: POSIX  ADVISORY  READ  6750 08:08:5120461 128 128
-19: POSIX  ADVISORY  READ  6750 08:08:5112035 1073741826 1073742335
-20: POSIX  ADVISORY  WRITE 6750 08:08:5112018 0 EOF
-21: POSIX  ADVISORY  READ  5141 08:08:5111973 128 128
-22: POSIX  ADVISORY  READ  5141 08:08:5111971 1073741826 1073742335
-23: POSIX  ADVISORY  READ  1674 08:08:5111973 128 128
-24: POSIX  ADVISORY  READ  1674 08:08:5111971 1073741826 1073742335
-25: POSIX  ADVISORY  READ  1680 08:08:5111973 128 128
-26: POSIX  ADVISORY  READ  1680 08:08:5111971 1073741826 1073742335
+...
 27: FLOCK  ADVISORY  WRITE 679 00:13:774 0 EOF
 ```
 ### slabinfo
@@ -414,25 +383,28 @@ slabinfo:slab缓存信息
 
 name:slab对象名称；
 
-active_objs:活跃的对象个数；
+active_objs: currently active objects 活跃的对象个数；
 
-num_objs:总的对象个数；
+num_objs: total number of available objects 总的对象个数；
 
-objsize:每个对象的大小，以字节为单位；
+objsize:  size of each object 每个对象的大小，以字节为单位；
 
-objperslab:每个slab包含的ext4_inode_cache对象数目；
+objperslab:每个slab包含的对象数目；
 
-pageperslab：tunables:一个slab占几个page内存页
+pageperslab：一个slab占几个page内存页
 
-limit：每个 CPU 可以缓存的对象的最大数量；
+limit(tunables)：每个 CPU 可以缓存的对象的最大数量；
 
-batchcount：当缓存为空时转换到每个 CPU 缓存中全局缓存对象的最大数量；
+batchcount(tunables)：当缓存为空时转换到每个 CPU 缓存中全局缓存对象的最大数量；
 
-sharedfactor：说明了对称多处理器（Symmetric MultiProcessing，SMP）系统的共享行为；
+sharedfactor(tunables)：说明了对称多处理器（Symmetric MultiProcessing，SMP）系统的共享行为；
 
-active_slabs：活跃的slab数目；
+active_slabs(slabdata)：活跃的slab数目；
 
-num_slabs：总的slab数目；
+num_slabs(slabdata)：总的slab数目；
+
+sharedavail(slabdata)：共享的可用的slab数量；
+
 ```
 root@ll-pc:/home/ll# cat /proc/slabinfo
 slabinfo - version: 2.1
@@ -441,104 +413,17 @@ ext4_groupinfo_1k     60     60    136   30    1 : tunables    0    0    0 : sla
 kvm_async_pf           0      0    136   30    1 : tunables    0    0    0 : slabdata      0      0      0
 kvm_vcpu               0      0  16832    1    8 : tunables    0    0    0 : slabdata      0      0      0
 kvm_mmu_page_header      0      0    168   24    1 : tunables    0    0    0 : slabdata      0      0      0
-ext4_groupinfo_4k   3724   3724    144   28    1 : tunables    0    0    0 : slabdata    133    133      0
-UDPLITEv6              0      0   1088   30    8 : tunables    0    0    0 : slabdata      0      0      0
-UDPv6                120    120   1088   30    8 : tunables    0    0    0 : slabdata      4      4      0
-tw_sock_TCPv6        116    116    280   29    2 : tunables    0    0    0 : slabdata      4      4      0
-TCPv6                 56     56   2240   14    8 : tunables    0    0    0 : slabdata      4      4      0
-kcopyd_job             0      0   3312    9    8 : tunables    0    0    0 : slabdata      0      0      0
-dm_uevent              0      0   2632   12    8 : tunables    0    0    0 : slabdata      0      0      0
-dm_rq_target_io        0      0    112   36    1 : tunables    0    0    0 : slabdata      0      0      0
-cfq_queue              0      0    232   17    1 : tunables    0    0    0 : slabdata      0      0      0
-mqueue_inode_cache     18     18    896   18    4 : tunables    0    0    0 : slabdata      1      1      0
+...
 fuse_request          40     40    400   20    2 : tunables    0    0    0 : slabdata      2      2      0
 fuse_inode            21     21    768   21    4 : tunables    0    0    0 : slabdata      1      1      0
-ecryptfs_key_record_cache      0      0    576   28    4 : tunables    0    0    0 : slabdata      0      0      0
-ecryptfs_inode_cache      0      0   1024   16    4 : tunables    0    0    0 : slabdata      0      0      0
-ecryptfs_auth_tok_list_item      0      0    832   19    4 : tunables    0    0    0 : slabdata      0      0      0
-fat_inode_cache      460    460    704   23    4 : tunables    0    0    0 : slabdata     20     20      0
-fat_cache           1020   1020     40  102    1 : tunables    0    0    0 : slabdata     10     10      0
-hugetlbfs_inode_cache     56     56    584   28    4 : tunables    0    0    0 : slabdata      2      2      0
-jbd2_journal_handle    340    340     48   85    1 : tunables    0    0    0 : slabdata      4      4      0
-jbd2_journal_head   1972   1972    120   34    1 : tunables    0    0    0 : slabdata     58     58      0
-jbd2_revoke_table_s    768    768     16  256    1 : tunables    0    0    0 : slabdata      3      3      0
-jbd2_revoke_record_s   1664   1664     32  128    1 : tunables    0    0    0 : slabdata     13     13      0
-ext4_inode_cache  111698 112189   1032   31    8 : tunables    0    0    0 : slabdata   3619   3619      0
-ext4_free_data      1856   1856     64   64    1 : tunables    0    0    0 : slabdata     29     29      0
-ext4_allocation_context    128    128    128   32    1 : tunables    0    0    0 : slabdata      4      4      0
-ext4_io_end         2352   2352     72   56    1 : tunables    0    0    0 : slabdata     42     42      0
-ext4_extent_status  63191  63852     40  102    1 : tunables    0    0    0 : slabdata    626    626      0
-dquot                256    256    256   16    1 : tunables    0    0    0 : slabdata     16     16      0
-dio                    0      0    640   25    4 : tunables    0    0    0 : slabdata      0      0      0
-pid_namespace          0      0   2224   14    8 : tunables    0    0    0 : slabdata      0      0      0
-posix_timers_cache      0      0    240   17    1 : tunables    0    0    0 : slabdata      0      0      0
-ip4-frags              0      0    216   18    1 : tunables    0    0    0 : slabdata      0      0      0
-UDP-Lite               0      0    960   17    4 : tunables    0    0    0 : slabdata      0      0      0
-xfrm_dst_cache         0      0    448   18    2 : tunables    0    0    0 : slabdata      0      0      0
-RAW                   72     72    896   18    4 : tunables    0    0    0 : slabdata      4      4      0
-UDP                  170    170    960   17    4 : tunables    0    0    0 : slabdata     10     10      0
-tw_sock_TCP          261    261    280   29    2 : tunables    0    0    0 : slabdata      9      9      0
-request_sock_TCP     104    104    312   26    2 : tunables    0    0    0 : slabdata      4      4      0
-TCP                  133    208   2048   16    8 : tunables    0    0    0 : slabdata     13     13      0
-blkdev_queue          70     70   2200   14    8 : tunables    0    0    0 : slabdata      5      5      0
-blkdev_requests      496    638    368   22    2 : tunables    0    0    0 : slabdata     29     29      0
-blkdev_ioc           936    936    104   39    1 : tunables    0    0    0 : slabdata     24     24      0
-user_namespace       104    104    304   26    2 : tunables    0    0    0 : slabdata      4      4      0
-dmaengine-unmap-256     15     15   2112   15    8 : tunables    0    0    0 : slabdata      1      1      0
-dmaengine-unmap-128    120    120   1088   30    8 : tunables    0    0    0 : slabdata      4      4      0
-sock_inode_cache    1168   1300    640   25    4 : tunables    0    0    0 : slabdata     52     52      0
-file_lock_cache      152    152    208   19    1 : tunables    0    0    0 : slabdata      8      8      0
-file_lock_ctx        949    949     56   73    1 : tunables    0    0    0 : slabdata     13     13      0
-net_namespace         28     28   4608    7    8 : tunables    0    0    0 : slabdata      4      4      0
-shmem_inode_cache   2748   3312    656   24    4 : tunables    0    0    0 : slabdata    138    138      0
-taskstats            144    144    328   24    2 : tunables    0    0    0 : slabdata      6      6      0
-proc_inode_cache    7336   7618    624   26    4 : tunables    0    0    0 : slabdata    293    293      0
-sigqueue             100    100    160   25    1 : tunables    0    0    0 : slabdata      4      4      0
-bdev_cache            95     95    832   19    4 : tunables    0    0    0 : slabdata      5      5      0
-kernfs_node_cache  41639  42058    120   34    1 : tunables    0    0    0 : slabdata   1237   1237      0
-mnt_cache            569    609    384   21    2 : tunables    0    0    0 : slabdata     29     29      0
-inode_cache         8868   9436    568   28    4 : tunables    0    0    0 : slabdata    337    337      0
-dentry            235956 235956    192   21    1 : tunables    0    0    0 : slabdata  11236  11236      0
-iint_cache             0      0     72   56    1 : tunables    0    0    0 : slabdata      0      0      0
-buffer_head       469120 506727    104   39    1 : tunables    0    0    0 : slabdata  12993  12993      0
-mm_struct           1065   1139    960   17    4 : tunables    0    0    0 : slabdata     67     67      0
-files_cache          322    322    704   23    4 : tunables    0    0    0 : slabdata     14     14      0
-signal_cache         522    532   1152   28    8 : tunables    0    0    0 : slabdata     19     19      0
-sighand_cache        327    375   2112   15    8 : tunables    0    0    0 : slabdata     25     25      0
-task_struct          600    639   3520    9    8 : tunables    0    0    0 : slabdata     71     71      0
-Acpi-ParseExt      15344  15344     72   56    1 : tunables    0    0    0 : slabdata    274    274      0
-Acpi-State           204    204     80   51    1 : tunables    0    0    0 : slabdata      4      4      0
-Acpi-Namespace      8670   8670     40  102    1 : tunables    0    0    0 : slabdata     85     85      0
-anon_vma           13071  14382     80   51    1 : tunables    0    0    0 : slabdata    282    282      0
-numa_policy          170    170     24  170    1 : tunables    0    0    0 : slabdata      1      1      0
-radix_tree_node    35785  37324    584   28    4 : tunables    0    0    0 : slabdata   1333   1333      0
-trace_event_file    1242   1242     88   46    1 : tunables    0    0    0 : slabdata     27     27      0
-ftrace_event_field  43645  43775     48   85    1 : tunables    0    0    0 : slabdata    515    515      0
-idr_layer_cache      537    540   2096   15    8 : tunables    0    0    0 : slabdata     36     36      0
+...
 dma-kmalloc-8192       0      0   8192    4    8 : tunables    0    0    0 : slabdata      0      0      0
 dma-kmalloc-4096       0      0   4096    8    8 : tunables    0    0    0 : slabdata      0      0      0
 dma-kmalloc-2048       0      0   2048   16    8 : tunables    0    0    0 : slabdata      0      0      0
-dma-kmalloc-1024       0      0   1024   16    4 : tunables    0    0    0 : slabdata      0      0      0
-dma-kmalloc-512       16     16    512   16    2 : tunables    0    0    0 : slabdata      1      1      0
-dma-kmalloc-256        0      0    256   16    1 : tunables    0    0    0 : slabdata      0      0      0
-dma-kmalloc-128        0      0    128   32    1 : tunables    0    0    0 : slabdata      0      0      0
-dma-kmalloc-64         0      0     64   64    1 : tunables    0    0    0 : slabdata      0      0      0
-dma-kmalloc-32         0      0     32  128    1 : tunables    0    0    0 : slabdata      0      0      0
-dma-kmalloc-16         0      0     16  256    1 : tunables    0    0    0 : slabdata      0      0      0
-dma-kmalloc-8          0      0      8  512    1 : tunables    0    0    0 : slabdata      0      0      0
-dma-kmalloc-192        0      0    192   21    1 : tunables    0    0    0 : slabdata      0      0      0
+...
 dma-kmalloc-96         0      0     96   42    1 : tunables    0    0    0 : slabdata      0      0      0
 kmalloc-8192         160    168   8192    4    8 : tunables    0    0    0 : slabdata     42     42      0
-kmalloc-4096         283    328   4096    8    8 : tunables    0    0    0 : slabdata     41     41      0
-kmalloc-2048        1285   1312   2048   16    8 : tunables    0    0    0 : slabdata     82     82      0
-kmalloc-1024        2741   3152   1024   16    4 : tunables    0    0    0 : slabdata    197    197      0
-kmalloc-512         1620   1664    512   16    2 : tunables    0    0    0 : slabdata    104    104      0
-kmalloc-256        13150  15648    256   16    1 : tunables    0    0    0 : slabdata    978    978      0
-kmalloc-192        42376  49140    192   21    1 : tunables    0    0    0 : slabdata   2340   2340      0
-kmalloc-128         8048  11648    128   32    1 : tunables    0    0    0 : slabdata    364    364      0
-kmalloc-96          4145   4494     96   42    1 : tunables    0    0    0 : slabdata    107    107      0
-kmalloc-64        147884 148992     64   64    1 : tunables    0    0    0 : slabdata   2328   2328      0
-kmalloc-32         17655  24064     32  128    1 : tunables    0    0    0 : slabdata    188    188      0
+...
 kmalloc-16          8192   8192     16  256    1 : tunables    0    0    0 : slabdata     32     32      0
 kmalloc-8           7680   7680      8  512    1 : tunables    0    0    0 : slabdata     15     15      0
 kmem_cache_node      320    320     64   64    1 : tunables    0    0    0 : slabdata      5      5      0
@@ -548,127 +433,136 @@ kmem_cache           144    144    256   16    1 : tunables    0    0    0 : sla
 vmstat:虚拟内存的统计信息
 ```
 ll@ll-pc:~$ cat /proc/vmstat
-nr_free_pages 758873
-nr_alloc_batch 2111
-nr_inactive_anon 122602
-nr_active_anon 317429
-nr_inactive_file 255048
-nr_active_file 465424
-nr_unevictable 8
-nr_mlock 8
-nr_anon_pages 418771
-nr_mapped 116198       映射到文件的页数
-nr_file_pages 742674
-nr_dirty 45             脏页数
-nr_writeback 0          回写页数
-nr_slab_reclaimable 62287
-nr_slab_unreclaimable 13769
-nr_page_table_pages 10729    分配到页表的页数
-nr_kernel_stack 565
-nr_unstable 0            不稳定页数
-nr_bounce 0
-nr_vmscan_write 99770
-nr_vmscan_immediate_reclaim 1822
-nr_writeback_temp 0
-nr_isolated_anon 0
-nr_isolated_file 0
-nr_shmem 17239
-nr_dirtied 46018008
-nr_written 36541457
-nr_pages_scanned 0
-numa_hit 6580129889
-numa_miss 0
-numa_foreign 0
-numa_interleave 21466
-numa_local 6580129889
-numa_other 0
-workingset_refault 860623
-workingset_activate 170829
-workingset_nodereclaim 0
-nr_anon_transparent_hugepages 452
-nr_free_cma 0
-nr_dirty_threshold 288917
-nr_dirty_background_threshold 144458
-pgpgin 10909442          从启动到现在读入的内存页数
-pgpgout 156048718        从启动到现在换出的内存页数
-pswpin 9959              从启动到现在读入的交换分区页数
-pswpout 99732            从启动到现在换出的交换分区页数
-pgalloc_dma 2            从启动到现在DMA存储区分配的页数
-pgalloc_dma32 2058878682
-pgalloc_normal 4839797005   从启动到现在普通存储区分配的页数
-pgalloc_movable 0
-pgfree 6952846439        从启动到现在释放的页数
-pgactivate 22881709      从启动到现在激活的页数
-pgdeactivate 4047307     从启动到现在去激活的页数
-pgfault 5037086029       从启动到现在二级页面错误数
-pgmajfault 45336         从启动到现在一级页面错误数
-pgrefill_dma 0           从启动到现在DMA存储区再填充的页面数
-pgrefill_dma32 1175394
-pgrefill_normal 2365597  从启动到现在普通存储区再填充的页面数
-pgrefill_movable 0
-pgsteal_kswapd_dma 0
-pgsteal_kswapd_dma32 1026794
-pgsteal_kswapd_normal 2225851   
-pgsteal_kswapd_movable 0
-pgsteal_direct_dma 0
-pgsteal_direct_dma32 703834
-pgsteal_direct_normal 2102082
-pgsteal_direct_movable 0
-pgscan_kswapd_dma 0             从启动到现在kswapd后台进程扫描的DMA存储区页面数
-pgscan_kswapd_dma32 1084856
-pgscan_kswapd_normal 2319341    从启动到现在kswapd后台进程扫描的普通存储区页面数
-pgscan_kswapd_movable 0
-pgscan_direct_dma 0             从启动到现在DMA存储区被直接回收的页面数
-pgscan_direct_dma32 766894
-pgscan_direct_normal 2245562     从启动到现在普通存储区被直接回收的页面数
-pgscan_direct_movable 0
-pgscan_direct_throttle 0
-zone_reclaim_failed 0
-pginodesteal 991442       从启动到现在通过释放i节点回收的页面数
-slabs_scanned 3341778     从启动到现在被扫描的切片数
-kswapd_inodesteal 258271      从启动到现在由kswapd通过释放i节点回收的页面数
-kswapd_low_wmark_hit_quickly 225
-kswapd_high_wmark_hit_quickly 361
-pageoutrun 917     从启动到现在通过kswapd调用来回收的页面数
-allocstall 32657   从启动到现在请求直接回收的页面数
-pgrotated 99986    从启动到现在轮换的页面数
-drop_pagecache 0
-drop_slab 0
-numa_pte_updates 0
-numa_huge_pte_updates 0
-numa_hint_faults 0
-numa_hint_faults_local 0
-numa_pages_migrated 0
-pgmigrate_success 50263574
-pgmigrate_fail 2851
-compact_migrate_scanned 77311606
-compact_free_scanned 1549639477
-compact_isolated 105711345
-compact_stall 205520
-compact_fail 26260
-compact_success 179260
-htlb_buddy_alloc_success 0
-htlb_buddy_alloc_fail 0
-unevictable_pgs_culled 1
-unevictable_pgs_scanned 0
-unevictable_pgs_rescued 810
-unevictable_pgs_mlocked 818
-unevictable_pgs_munlocked 810
-unevictable_pgs_cleared 0
-unevictable_pgs_stranded 0
-thp_fault_alloc 359080
-thp_fault_fallback 8833
-thp_collapse_alloc 252296
-thp_collapse_alloc_failed 17021
-thp_split 252170
-thp_zero_page_alloc 11
-thp_zero_page_alloc_failed 0
-balloon_inflate 0
-balloon_deflate 0
-balloon_migrate 0
+nr_free_pages 758873    (2.6.31+) num of free pages
+nr_alloc_batch 2111      (3.12+)
+nr_inactive_anon 122602  (2.6.28+)
+nr_active_anon 317429  (2.6.28+)
+nr_inactive_file 255048 (2.6.28+)
+nr_active_file 465424 (2.6.28+)
+nr_unevictable 8 (2.6.28+)
+nr_mlock 8  (2.6.28+)
+nr_anon_pages 418771 (2.6.18+)
+nr_mapped 116198     (2.6.0+)  映射到文件的页数
+nr_file_pages 742674   (2.6.18+)
+nr_dirty 45        (2.6.0+)     脏页数
+nr_writeback 0     (2.6.0+)     回写页数
+nr_slab_reclaimable 62287   (2.6.19+)
+nr_slab_unreclaimable 13769 (2.6.19+)
+nr_page_table_pages 10729    (2.6.0+) 分配到页表的页数
+nr_kernel_stack 565     (2.6.32+)  Amount of memory allocated to kernel stacks.
+nr_unstable 0           (2.6.0+) 不稳定页数
+nr_bounce 0               (2.6.12+)
+nr_vmscan_write 99770    (2.6.19+)
+nr_vmscan_immediate_reclaim 1822   (3.2+)
+nr_writeback_temp 0    (2.6.26+)
+nr_isolated_anon 0      (2.6.32+)
+nr_isolated_file 0      (2.6.32+)
+nr_shmem 17239          (2.6.32+)  Pages used by shmem and tmpfs  
+nr_dirtied 46018008    (2.6.37+) 
+nr_written 36541457     (2.6.37+)
+nr_pages_scanned 0       (3.17+)
+numa_hit 6580129889     (2.6.18+)
+numa_miss 0              (2.6.18+)
+numa_foreign 0          (2.6.18+)
+numa_interleave 21466   (2.6.18+)
+numa_local 6580129889   (2.6.18+)
+numa_other 0            (2.6.18+)
+workingset_refault 860623  (3.15+)
+workingset_activate 170829 (3.15+)
+workingset_nodereclaim 0   (3.15+)
+nr_anon_transparent_hugepages 452 (2.6.38+)
+nr_free_cma 0              (3.7+)  Number of free CMA (Contiguous Memory Allocator) pages.
+nr_dirty_threshold 288917  (2.6.37+)
+nr_dirty_background_threshold 144458  (2.6.37+)
+pgpgin 10909442       (2.6.0+)    从启动到现在读入的内存页数
+pgpgout 156048718     (2.6.0+)    从启动到现在换出的内存页数
+pswpin 9959           (2.6.0+)    从启动到现在读入的交换分区页数
+pswpout 99732         (2.6.0+)    从启动到现在换出的交换分区页数
+pgalloc_dma 2         (2.6.5+)    从启动到现在DMA存储区分配的页数
+pgalloc_dma32 2058878682 (2.6.16+) 
+pgalloc_normal 4839797005  (2.6.5+)  从启动到现在普通存储区分配的页数
+pgalloc_movable 0   (2.6.5+) 
+pgfree 6952846439   (2.6.0+)      从启动到现在释放的页数
+pgactivate 22881709  (2.6.0+)     从启动到现在激活的页数
+pgdeactivate 4047307  (2.6.0+) 	  从启动到现在去激活的页数
+pgfault 5037086029   (2.6.0+)     从启动到现在二级页面错误数
+pgmajfault 45336    (2.6.0+)      从启动到现在一级页面错误数
+pgrefill_dma 0      (2.6.5+)      从启动到现在DMA存储区再填充的页面数
+pgrefill_dma32 1175394  (2.6.16+) 
+pgrefill_normal 2365597  (2.6.5+) 从启动到现在普通存储区再填充的页面数
+pgrefill_movable 0    (2.6.32+) 
+pgsteal_kswapd_dma 0   (3.4+) 
+pgsteal_kswapd_dma32 1026794  (3.4+) 
+pgsteal_kswapd_normal 2225851  (3.4+) 
+pgsteal_kswapd_movable 0    (3.4+) 
+pgsteal_direct_dma 0     (3.4+) 
+pgsteal_direct_dma32 703834    (3.4+) 
+pgsteal_direct_normal 2102082   (3.4+) 
+pgsteal_direct_high             (3.4+)
+pgsteal_direct_movable 0        (2.6.23+)
+pgscan_kswapd_dma 0           (2.6.5+)  从启动到现在kswapd后台进程扫描的DMA存储区页面数
+pgscan_kswapd_dma32 1084856  (2.6.16+)
+pgscan_kswapd_normal 2319341 (2.6.5+)    从启动到现在kswapd后台进程扫描的普通存储区页面数
+pgscan_kswapd_high 
+pgscan_kswapd_movable 0        (2.6.23+)
+pgscan_direct_dma 0         (2.6.16+)     从启动到现在DMA存储区被直接回收的页面数
+pgscan_direct_dma32 766894   (2.6.16+)
+pgscan_direct_normal 2245562   (2.6.16+)   从启动到现在普通存储区被直接回收的页面数
+pgscan_direct_movable 0    (2.6.23+)
+pgscan_direct_throttle 0     (3.6+)
+zone_reclaim_failed 0        (2.6.31+)
+pginodesteal 991442      (2.6.0+)  从启动到现在通过释放i节点回收的页面数
+slabs_scanned 3341778    (2.6.5+) 从启动到现在被扫描的切片数
+kswapd_inodesteal 258271  (2.6.0+)    从启动到现在由kswapd通过释放i节点回收的页面数
+kswapd_low_wmark_hit_quickly 225 (2.6.33+)
+kswapd_high_wmark_hit_quickly 361 (2.6.33+)
+pageoutrun 917   (2.6.0+)  从启动到现在通过kswapd调用来回收的页面数
+allocstall 32657  (2.6.0+)  从启动到现在请求直接回收的页面数
+pgrotated 99986   (2.6.0+) 从启动到现在轮换的页面数
+drop_pagecache 0   (3.15+)
+drop_slab 0        (3.15+)
+numa_pte_updates 0  (3.8+)
+numa_huge_pte_updates 0   (3.18+)
+numa_hint_faults 0    (3.8+)
+numa_hint_faults_local 0 (3.8+)
+numa_pages_migrated 0   (3.8+)
+pgmigrate_success 50263574  (3.8+)
+pgmigrate_fail 2851         (3.8+)
+compact_migrate_scanned 77311606  (3.8+)
+compact_free_scanned 1549639477   (3.8+)
+compact_isolated 105711345        (3.8+)
+compact_stall 205520         (2.6.35+) 
+compact_fail 26260           (2.6.35+) 
+compact_success 179260        (2.6.35+) 
+htlb_buddy_alloc_success 0   (2.6.26+) 
+htlb_buddy_alloc_fail 0    (2.6.26+) 
+unevictable_pgs_culled 1   (2.6.28+) 
+unevictable_pgs_scanned 0  (2.6.28+) 
+unevictable_pgs_rescued 810  (2.6.28+) 
+unevictable_pgs_mlocked 818   (2.6.28+) 
+unevictable_pgs_munlocked 810   (2.6.28+) 
+unevictable_pgs_cleared 0     (2.6.28+) 
+unevictable_pgs_stranded 0    (2.6.28+) 
+thp_fault_alloc 359080     (2.6.39+)
+thp_fault_fallback 8833    (2.6.39+)
+thp_collapse_alloc 252296   (2.6.39+)
+thp_collapse_alloc_failed 17021  (2.6.39+)
+thp_split 252170             (2.6.39+)
+thp_zero_page_alloc 11        (3.8+)
+thp_zero_page_alloc_failed 0   (3.8+)
+balloon_inflate 0         (3.18+)
+balloon_deflate 0         (3.18+)
+balloon_migrate 0         (3.18+)
+nr_tlb_remote_flush (3.12+)
+nr_tlb_remote_flush_received (3.12+)
+nr_tlb_local_flush_all (3.12+)
+nr_tlb_local_flush_one (3.12+)
+vmacache_find_calls (3.16+)
+vmacache_find_hits (3.16+)
+vmacache_full_flushes (3.19+)
 ```
 ### zoneinfo
-zoneinfo:
+zoneinfo:  (2.6.13+)
 ```
 ll@ll-pc:~$ cat /proc/zoneinfo
 Node 0, zone      DMA
