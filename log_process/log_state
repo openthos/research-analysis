@@ -1,0 +1,12 @@
+['ktimersoftd/7-67', '[007]', 'd...2..', '48473.207838:', 'sched_switch:', 'prev_comm=ktimersoftd/7', 'prev_pid=67', 'prev_prio=98', 'prev_state=S', '==>', 'next_comm=rcuc/7', 'next_pid=66', 'next_prio=120\n']
+['rcuc/7-66', '[007]', 'd...2..', '48473.207843:', 'sched_stat_runtime:', 'comm=rcuc/7', 'pid=66', 'runtime=8155', '[ns]', 'vruntime=238377003404516', '[ns]\n']
+['rcuc/7-66', '[007]', 'd...2..', '48473.207845:', 'sched_stat_wait:', 'comm=ksoftirqd/7', 'pid=68', 'delay=22257', '[ns]\n']
+['<idle>-0', '[007]', 'd..h2..', '48473.211782:', 'sched_waking:', 'comm=rcuc/7', 'pid=66', 'prio=120', 'target_cpu=007\n']
+['<idle>-0', '[007]', 'd..h3..', '48473.211785:', 'sched_stat_sleep:', 'comm=rcuc/7', 'pid=66', 'delay=3940810', '[ns]\n']
+['<idle>-0', '[007]', 'dN.h3..', '48473.211787:', 'sched_wakeup:', 'comm=rcuc/7', 'pid=66', 'prio=120', 'target_cpu=007\n']
+['ibus-engine-sim-1588', '[007]', 'd...211', '48473.269092:', 'sched_wake_idle_without_ipi:', 'cpu=4\n']
+['ksoftirqd/7-68', '[007]', 'd...2..', '48473.767856:', 'sched_migrate_task:', 'comm=gdbus', 'pid=1590', 'prio=120', 'orig_cpu=4', 'dest_cpu=7\n']
+['JS', 'Helper-2313', '[006]', 'd...211', '48474.447246:', 'sched_stat_blocked:', 'comm=JS', 'Helper', 'pid=2307', 'delay=203556', '[ns]\n']
+['irq/27-i915-263', '[005]', 'd...212', '48475.071839:', 'sched_stat_iowait:', 'comm=kworker/6:0', 'pid=9995', 'delay=914411', '[ns]\n']
+['irq/27-i915-263', '[005]', 'd...312', '48476.036468:', 'sched_pi_setprio:', 'comm=kworker/0:1', 'pid=10029', 'oldprio=120', 'newprio=49\n']
+{'sched_wakeup:', 'sched_migrate_task:', 'sched_switch:', 'sched_waking:', 'sched_pi_setprio:', 'sched_stat_sleep:', 'sched_stat_iowait:', 'sched_stat_runtime:', 'sched_stat_wait:', 'sched_wake_idle_without_ipi:', 'sched_stat_blocked:'}
