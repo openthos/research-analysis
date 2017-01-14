@@ -1,7 +1,7 @@
 # 给定log文件
-file_object = open("ping_sched.txt")
-# 查看进程名
-process_id = "ping-10105"
+file_object = open('trace.txt')
+# 查看进程名,最好输入的文件即为该进程的全部ftrace（|grep process）
+process_id = "irq/27-i915-263"
 # 查看时间段
 timestamp_start = 0
 timestamp_end = 50000
@@ -22,7 +22,10 @@ for ftace_log in file_object.readlines():
         if len(atom)!=0:
             info_list.append(atom)
     # find target process id and get time cost
-    timestamp = float(info_list[3].replace(':',''))
+    # print(info_list)
+    # timestamp has bug（有一行在timestamp处打印的是“buffer”），在grep 下无问题
+    # timestamp = float(info_list[3].replace(':',''))
+    timestamp = 1
     if info_list[0] == process_id and timestamp >= timestamp_start and timestamp <= timestamp_end:
         if 'sched_stat' in info_list[4]:
             time_cost = float(info_list[7].split('=')[1])
