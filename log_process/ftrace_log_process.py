@@ -1,44 +1,58 @@
 # 给定log文件
-file_object = open('trace.txt')
-# 查看进程名,最好输入的文件即为该进程的全部ftrace（|grep process）
-process_id = "irq/27-i915-263"
+file_object = open('ping_sched.txt')
+# 查看进程名
+process_id = 'ping-10105'
 # 查看时间段
 timestamp_start = 0
 timestamp_end = 50000
 # 统计耗时
-# statistics = {'sched_stat_runtime': 0, 'sched_stat_sleep': 0, 'sched_stat_wait': 0,
-#               'sched_stat_blocked':0,'sched_stat_iowait':0}
 stat_cost = {}
+# 初始化时间线上的状态与耗时统计
+stat_timeline = []
+cost_timeline = []
 # 百分比
-# percentage = {'sched_stat_runtime': 0, 'sched_stat_sleep': 0, 'sched_stat_wait': 0}
 stat_percent ={}
+# 原始数据
+raw_log = []
 
+# 逐行读取
 for ftace_log in file_object.readlines():
-    # print(ftace_log,end="")
-    column =ftace_log.split(" ")
-    # remove blank component, get pure log data
+    column = ftace_log.split(' ')
+    # 过滤无效信息
     info_list = []
     for atom in column:
-        if len(atom)!=0:
+        if len(atom) != 0:
             info_list.append(atom)
-    # find target process id and get time cost
-    # print(info_list)
-    # timestamp has bug（有一行在timestamp处打印的是“buffer”），在grep 下无问题
-    # timestamp = float(info_list[3].replace(':',''))
-    timestamp = 1
-    if info_list[0] == process_id and timestamp >= timestamp_start and timestamp <= timestamp_end:
-        if 'sched_stat' in info_list[4]:
-            time_cost = float(info_list[7].split('=')[1])
-            if info_list[4] in stat_cost:
-                stat_cost[info_list[4]] += time_cost
+    # 获取本行时间戳
+    timestamp = float(info_list[3].replace(':', ''))
+    # 本行进程名
+    cur_id = info_list[0]
+    if cur_id == process_id and timestamp >= timestamp_start and timestamp <= timestamp_end:
+        # 本行调度状态
+        cur_stat = info_list[4]
+        if 'sched_stat_' in cur_stat:
+            raw_log.append(ftace_log)
+            delay_or_runtime = info_list[7]
+            time_cost = float(delay_or_runtime.split('=')[1])
+            stat_timeline.append(cur_stat)
+            cost_timeline.append(time_cost)
+            # 汇总。dict(map)中没有就添加上，有就累加
+            if cur_stat in stat_cost:
+                stat_cost[cur_stat] += time_cost
             else:
-                stat_cost[info_list[4]] = time_cost
-# get percentage of each schedule state
+                stat_cost[cur_stat] = time_cost
+# 输出时间线调度状态信息
+for index in range(len(cost_timeline)):
+    print(stat_timeline[index],cost_timeline[index])
+# 获取各状态耗时占比
 time_sum = 0
 for key in stat_cost:
     time_sum += stat_cost[key]
 for key in stat_cost:
     stat_percent[key] = stat_cost[key] / time_sum
-# output
+# 汇总数据输出
 print(stat_cost)
-print( stat_percent)
+print(stat_percent)
+# 原始数据输出
+for i in raw_log:
+    print(i)
