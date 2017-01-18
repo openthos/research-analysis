@@ -1,14 +1,11 @@
-调用原始ftrace日志处理，按每行处理时报错：数据类型不符合
-
-原始数据如下
-
+调用原始ftrace日志处理，按每行处理时报错：数据类型不符合。原始数据如下：
+```
            acpid-758   [005] d...2.. 48476.067062: sched_stat_runtime: comm=acpid pid=758 runtime=33228 [ns] vruntime=15106085 [ns]
-           acpid-758   [005] d...2.. 48476.067064: sched_switch: prev_comm=acpid prev_pid=758 prev_prio=120 prev_state=S ==> next_comm=swapper/5 next_pid=0 next_prio=120
-##### CPU 0 buffer started ####
+           acpid-758   [005] d...2.. 48476.067064: sched_switch: prev_comm=acpid prev_pid=758 prev_prio=120 prev_state=S ==> next_comm=swapper/5 next_pid=0 next_prio=120
+#### CPU 0 buffer started ####
             Xorg-971   [000] d...211 48476.067129: sched_stat_sleep: comm=firefox pid=2288 delay=233981978 [ns]
             Xorg-971   [000] d...211 48476.067129: sched_wakeup: comm=firefox pid=2288 prio=120 target_cpu=004
             Xorg-971   [000] d...111 48476.067132: sched_waking: comm=update-notifier pid=2172 prio=120 target_cpu=007
             Xorg-971   [000] d...211 48476.067133: sched_stat_sleep: comm=update-notifier pid=2172 delay=320768497 [ns]
-          
-          
-          由图可知，ftrace对于CPU migration 会明显标识，而自己写的处理程序未注意，因而报错。
+```
+由图可知，ftrace对于CPU migration会明显标识，而自己写的处理程序未注意，因而报错。
