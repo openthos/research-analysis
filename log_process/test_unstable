@@ -1,0 +1,79 @@
+import re
+# 给定log文件
+file_object = open('test_case')
+# 查看进程名
+process_id = 'ping-10105'
+# 查看时间段
+timestamp_start = 0
+timestamp_end = 50000
+# 统计耗时
+stat_cost = {}
+# 初始化时间线上的状态与耗时统计
+stat_timeline = []
+cost_timeline = []
+# 百分比
+stat_percent ={}
+# 原始数据
+raw_log = []
+line = "Cats are smarter than dogs"
+
+matchObj = re.match( r'(.*) are (.*?) .*', line, re.M|re.I)
+
+# if matchObj:
+#    print ("matchObj.group() : ", matchObj.group())
+#    print ("matchObj.group(1) : ", matchObj.group(1))
+#    print ("matchObj.group(2) : ", matchObj.group(2))
+# 逐行读取
+for raw_data in file_object.readlines():
+    # print(raw_data)
+    # 去除首尾空行
+    data = str.strip(raw_data)
+    # print(data)
+    # print(data)
+    # \S+\s*\S*-\d+
+    task_and_pid = re.search('^\S+\s*\S+-\d+',data).group()
+    timestamp = re.search('\d+\.\d{6}',data).group()
+    sched_state = re.search('sched_\S+',data).group()
+
+    # print(task_and_pid.group(),timestamp.group(),sched_state.group())
+    if sched_state.startswith('sched_stat'):
+        if  sched_state:
+            delay = re.search('^delay=',data)
+
+
+        print(task_and_pid,timestamp,sched_state)
+
+# if task_and_pid is None:
+    #     print('no')
+    # else:
+    #     print(task_and_pid.group())
+    #     if 'DOM' in str(task_and_pid):
+    #         break
+# 输出时间线调度状态信息
+for index in range(len(cost_timeline)):
+    print(stat_timeline[index],cost_timeline[index])
+# 获取各状态耗时占比
+time_sum = 0
+for key in stat_cost:
+    time_sum += stat_cost[key]
+for key in stat_cost:
+    stat_percent[key] = stat_cost[key] / time_sum
+# 汇总数据输出
+# print(stat_cost)
+# print(stat_percent)
+
+
+# 拿出数据再统计
+# test = {}
+# for key in set(stat_timeline):
+#     test[key] = 0;
+#     for index in range(len(stat_timeline)):
+#         if stat_timeline[index] == key:
+#             test[key] += cost_timeline[index]
+# print('test')
+# print(test)
+
+
+# 原始数据输出
+# for i in raw_log:
+#     print(i)
