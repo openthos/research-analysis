@@ -1,58 +1,95 @@
+import re
+import plot
 # 给定log文件
-file_object = open('ping_sched.txt')
+file_object = open('test_case')
 # 查看进程名
 process_id = 'ping-10105'
 # 查看时间段
 timestamp_start = 0
 timestamp_end = 50000
-# 统计耗时
-stat_cost = {}
 # 初始化时间线上的状态与耗时统计
 stat_timeline = []
 cost_timeline = []
-# 百分比
-stat_percent ={}
+# 汇总数据
+res = {}
+per ={}
 # 原始数据
 raw_log = []
+line = "Cats are smarter than dogs"
 
-# 逐行读取
-for ftace_log in file_object.readlines():
-    column = ftace_log.split(' ')
-    # 过滤无效信息
-    info_list = []
-    for atom in column:
-        if len(atom) != 0:
-            info_list.append(atom)
-    # 获取本行时间戳
-    timestamp = float(info_list[3].replace(':', ''))
-    # 本行进程名
-    cur_id = info_list[0]
-    if cur_id == process_id and timestamp >= timestamp_start and timestamp <= timestamp_end:
-        # 本行调度状态
-        cur_stat = info_list[4]
-        if 'sched_stat_' in cur_stat:
-            raw_log.append(ftace_log)
-            delay_or_runtime = info_list[7]
-            time_cost = float(delay_or_runtime.split('=')[1])
-            stat_timeline.append(cur_stat)
-            cost_timeline.append(time_cost)
-            # 汇总。dict(map)中没有就添加上，有就累加
-            if cur_stat in stat_cost:
-                stat_cost[cur_stat] += time_cost
-            else:
-                stat_cost[cur_stat] = time_cost
-# 输出时间线调度状态信息
-for index in range(len(cost_timeline)):
-    print(stat_timeline[index],cost_timeline[index])
-# 获取各状态耗时占比
-time_sum = 0
-for key in stat_cost:
-    time_sum += stat_cost[key]
-for key in stat_cost:
-    stat_percent[key] = stat_cost[key] / time_sum
-# 汇总数据输出
-print(stat_cost)
-print(stat_percent)
-# 原始数据输出
-for i in raw_log:
-    print(i)
+for raw_data in file_object.readlines():
+    # print(raw_data)
+    # 去除首尾空行
+    data = str.strip(raw_data)
+    # print(data)
+    # print(data)
+    # \S+\s*\S*-\d+
+    task_and_pid = re.search('^\S+\s*\S+-\d+',data).group()
+    timestamp = re.search('\d+\.\d{6}',data).group()
+    sched = re.search('sched_\S+',data).group()
+    # 是状态信息
+    sched_stat = re.search('sched_stat_\S+', data)
+    if sched_stat is not None:
+        # print(sched_stat.group())
+        # 加入状态信息到状态时间线
+        stat_timeline.append(sched_stat.group())
+        runtime_or_delay = 0
+        if 'runtime' in sched_stat.group():
+            runtime_or_delay = re.search('runtime=\d+',data).group()
+        else:
+            runtime_or_delay = re.search('delay=\d+',data).group()
+        # print(runtime_or_delay)
+        sched_stat_cost = runtime_or_delay.split('=')[1]
+        # print(sched_stat_cost)
+        cost_timeline.append(float(sched_stat_cost))
+
+
+# for i in range(len(stat_timeline)):
+#     print(stat_timeline[i],cost_timeline[i])
+
+print(stat_timeline)
+print(cost_timeline)
+# print(len(stat_timeline))
+
+# comb_stat =[]
+# comb_cost =[]
+# 
+# start_stat = ''
+# start_index = 0
+# for i in range(len(stat_timeline)):
+#     if i == 0:
+#         start_stat = stat_timeline[0]
+#         comb_stat.append (start_stat)
+#         comb_cost.append (cost_timeline[0])
+#     else:
+#         print(comb_stat)
+#         print(comb_cost)
+#         if stat_timeline[i] == start_stat:
+#             comb_cost[start_index] +=  cost_timeline[i]
+#         else:
+#             start_index = i;
+#             start_stat = stat_timeline[i]
+#             comb_stat.append(start_stat)
+#             comb_cost.append(cost_timeline[i])
+# print(comb_stat)
+# print(comb_cost)
+# print(len(comb_stat),comb_stat==comb_cost)
+
+
+# 拿出数据再统计
+for key in set(stat_timeline):
+    res[key] = 0;
+    for index in range(len(stat_timeline)):
+        if stat_timeline[index] == key:
+            res[key] += cost_timeline[index]
+# print(res)
+
+sum = 0
+for i in res.keys():
+    sum += res[i]
+for key in res:
+    per[key] = (res[key]) / sum
+# print(per)
+
+# plot.plot(stat_timeline,cost_timeline)
+
