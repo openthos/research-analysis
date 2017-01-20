@@ -24,7 +24,8 @@ for raw_data in file_object.readlines():
     # print(data)
     # print(data)
     # \S+\s*\S*-\d+
-    task_and_pid = re.search('^\S+\s*\S+-\d+',data).group()
+    # \S+\s*\S+-\d+
+    task_and_pid = re.search('[\S ]+-\d+',data).group()
     timestamp = re.search('\d+\.\d{6}',data).group()
     sched = re.search('sched_\S+',data).group()
     # 是状态信息
@@ -33,13 +34,15 @@ for raw_data in file_object.readlines():
         # print(sched_stat.group())
         # 加入状态信息到状态时间线
         stat_timeline.append(sched_stat.group())
+
         runtime_or_delay = 0
         if 'runtime' in sched_stat.group():
-            runtime_or_delay = re.search('runtime=\d+',data).group()
+        #     runtime_or_delay = re.search('runtime=\d+',data).group()
+            runtime_or_delay = re.search('runtime=(\d+)',data).group(1)
         else:
-            runtime_or_delay = re.search('delay=\d+',data).group()
+            runtime_or_delay = re.search('delay=(\d+)', data).group(1)
         # print(runtime_or_delay)
-        sched_stat_cost = runtime_or_delay.split('=')[1]
+        sched_stat_cost = runtime_or_delay
         # print(sched_stat_cost)
         cost_timeline.append(float(sched_stat_cost))
 
@@ -53,7 +56,7 @@ print(cost_timeline)
 
 # comb_stat =[]
 # comb_cost =[]
-# 
+#
 # start_stat = ''
 # start_index = 0
 # for i in range(len(stat_timeline)):
@@ -82,14 +85,14 @@ for key in set(stat_timeline):
     for index in range(len(stat_timeline)):
         if stat_timeline[index] == key:
             res[key] += cost_timeline[index]
-# print(res)
-
+print(res)
+#
 sum = 0
 for i in res.keys():
     sum += res[i]
 for key in res:
     per[key] = (res[key]) / sum
-# print(per)
+print(per)
 
 # plot.plot(stat_timeline,cost_timeline)
 
