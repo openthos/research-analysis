@@ -50,33 +50,26 @@ for raw_data in file_object.readlines():
 # for i in range(len(stat_timeline)):
 #     print(stat_timeline[i],cost_timeline[i])
 
-print(stat_timeline)
-print(cost_timeline)
+# print(stat_timeline)
+# print(cost_timeline)
 # print(len(stat_timeline))
 
-# comb_stat =[]
-# comb_cost =[]
-#
-# start_stat = ''
-# start_index = 0
-# for i in range(len(stat_timeline)):
-#     if i == 0:
-#         start_stat = stat_timeline[0]
-#         comb_stat.append (start_stat)
-#         comb_cost.append (cost_timeline[0])
-#     else:
-#         print(comb_stat)
-#         print(comb_cost)
-#         if stat_timeline[i] == start_stat:
-#             comb_cost[start_index] +=  cost_timeline[i]
-#         else:
-#             start_index = i;
-#             start_stat = stat_timeline[i]
-#             comb_stat.append(start_stat)
-#             comb_cost.append(cost_timeline[i])
-# print(comb_stat)
-# print(comb_cost)
-# print(len(comb_stat),comb_stat==comb_cost)
+comb_stat =[]
+comb_cost =[]
+
+for i in range(len(stat_timeline)):
+    if i == 0:
+        start_stat = stat_timeline[0]
+        comb_stat.append (start_stat)
+        comb_cost.append (cost_timeline[0])
+    else:
+        # 与之前状态相同
+        if stat_timeline[i] == stat_timeline[i-1]:
+            comb_cost[len(comb_cost)-1] +=  cost_timeline[i]
+        # 与之前状态不同
+        else:
+            comb_stat.append(start_stat)
+            comb_cost.append(cost_timeline[i])
 
 
 # 拿出数据再统计
@@ -86,7 +79,6 @@ for key in set(stat_timeline):
         if stat_timeline[index] == key:
             res[key] += cost_timeline[index]
 print(res)
-#
 sum = 0
 for i in res.keys():
     sum += res[i]
@@ -94,5 +86,5 @@ for key in res:
     per[key] = (res[key]) / sum
 print(per)
 
-# plot.plot(stat_timeline,cost_timeline)
+plot.plot(stat_timeline,cost_timeline)
 
