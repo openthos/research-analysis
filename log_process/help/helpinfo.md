@@ -25,7 +25,7 @@ int main(){
 ```
 * 编译C程序
 ```
-gcc longrun_bug.c -o sleep_bug
+gcc sleep_bug.c -o sleep_bug
 ```
 ##4.打开ftrace中events/sched事件追踪器
 ```
