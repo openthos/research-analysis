@@ -1,155 +1,229 @@
-### 目标
+## 目标
 - 复现论文的工作
  + 一个apk的Demo
  + 手动添加Log
  + 手动生成Decour库
  
-### 工作进展
-
+## 工作进展
 - 一个Demo，实现简单的异步调用UI更新
 - 手动在回调的地方添加Log
+### Handler Message机制的实现
 - apk源码如下：
 ```
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnClickListener{
 
-    private TextView tv;
-    private Button button;
-    private Thread newThread;
-
-
-    Handler handler = null;
-    public ActionBarDrawerToggle.Delegate updateUI;
-
-    void updateUI(){
-        Log.v("LogUpcallStart","21");
-
-        this.handler = new Handler()
-    {
-        public void handleMessage(android.os.Message msg) {
-            if(msg.what==0x123)
-            {
-                tv.setText("更新后的TextView");
+    public static final int UPDATE_TEXT=1;
+    private TextView text;
+    private Button changeText;
+    private Handler handler=new Handler(){
+        public void handleMessage(Message msg){
+            Log.d("LOG", "upcall start (21)"+Thread.currentThread().getId());
+            switch(msg.what){
+                case UPDATE_TEXT:
+                    text.setText("Nice to meet you");
+                    break;
+                default:
+                    break;
             }
-        };
+            Log.d("LOG", "upcall end (21)"+Thread.currentThread().getId());
+        }
     };
-
-        Log.v("LogUpcallEnd","21");
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        text=(TextView)findViewById(R.id.text);
+        changeText=(Button)findViewById(R.id.change_text);
+        changeText.setOnClickListener(this);
     }
+
+    @Override
+    public void onClick(View v) {
+        // TODO Auto-generated method stub
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                Message message=new Message();
+                message.what=UPDATE_TEXT;
+                Log.d("LOG", "call start(13)"+Thread.currentThread().getId());
+                Detour dt=DetourFactory.getDetour(handler,13);
+                dt.message=message;
+                dt.cb();
+                Log.d("LOG","call end(13)"+Thread.currentThread().getId());
+            }
+
+        }).start();
+    }
+}
+```
+- 手动生成Decour库，可以对回调函数进行绕行，源码如下：
+```
+public class Detour {
+
+    private Handler handler;
+    private int matchId;
+    Message message=new Message();
+    public Detour(Handler handler,int matchId){
+        this.handler=handler;
+        this.matchId=matchId;
+    }
+     public  void cb(){
+         Log.d("LOG", "callback start ("+matchId+")"+Thread.currentThread().getId());
+        handler.sendMessage(message);
+    }
+}
+
+
+public class DetourFactory {
+    public static Detour getDetour(Handler handler,int callId){
+        int matchId=new Random().nextInt(10)+1;
+        Log.d("LOG", "async start ("+callId+","+matchId+")"+Thread.currentThread().getId());
+        return new Detour(handler,matchId);
+    }
+
+}
+```
+- 打印结果的Log如下：
+```
+02-24 10:59:29.221 23537-29364/com.example.root.sendmessagetest D/LOG: call start(13)179
+02-24 10:59:29.307 23537-23546/com.example.root.sendmessagetest W/art: Suspending all threads took: 23.244ms
+02-24 10:59:29.319 23537-29364/com.example.root.sendmessagetest D/LOG: async start (13,6)179
+02-24 10:59:29.326 23537-29364/com.example.root.sendmessagetest D/LOG: callback start (6)179
+02-24 10:59:29.326 23537-29364/com.example.root.sendmessagetest D/LOG: call end(13)179
+02-24 10:59:29.660 23537-23537/com.example.root.sendmessagetest D/LOG: upcall start (21)1
+02-24 10:59:29.663 23537-23537/com.example.root.sendmessagetest D/LOG: upcall end (21)1
+```
+### Thread和Runnable机制的实现
+- apk源码如下：
+```
+public  class MainActivity extends Activity implements OnClickListener{
+
+    private TextView textView;
+    private Button button;
+    private Handler myHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        tv = (TextView) findViewById(R.id.text);
-        button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            public ActionBarDrawerToggle.Delegate upcall;
-
-            @Override
-            public void onClick(View view) {
-                Log.v("LogUpcallStart","5");
-                //upcall();
-
-                Log.v("LogCallStart","7");
-                Detour dt = DetourFactory.GetDetour(upcall, 7);
-                dt.Cb1();
-
-
-
-
-                Log.v("LogCallEnd","7");
-                Log.v("LogUpcallEnd","5");
-            }
-        });
-
+        textView=(TextView)findViewById(R.id.text_view);
+        button=(Button)findViewById(R.id.button);
+        button.setOnClickListener(this);
     }
 
-   void upcall(){
-       Log.v("LogUpcallStart","19");
-       newThread = new Thread() {
-           @Override
-           public void run() {
-               //延迟两秒更新
-               try {
-                   Thread.sleep(1000);
-               } catch (InterruptedException e) {
-                   // TODO Auto-generated catch block
-                   e.printStackTrace();
-               }
-               handler.sendEmptyMessage(0x123);
-           }
-       };
-       newThread.start();
+    @Override
+    public void onClick(View v) {
+        Log.d("LOG", "call start (7)"+Thread.currentThread().getId());
+        // thraed机制额绕行实现 
+        ThreadDetour dt=ThreadDetourFactory.getThreadDetour(new MyThread(),7);
+        dt.Thdt();
+        Log.d("LOG", "call end (7)"+Thread.currentThread().getId());
+    }
 
-       Log.v("LogUpcallStart", "13");
-       Detour dt = DetourFactory.GetDetour(updateUI, 13);
-       dt.Cb2();
-       Log.v("LogUpcallEnd", "13");
-      // updateUI();
+    public class MyThread extends Thread{
+        public void run(){
+            Log.d("LOG", "upcall start (19)"+Thread.currentThread().getId());
+            try {
 
-       Log.v("LogUpcallEnd","19");
-   }
+                sleep(10*1000);
+
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            Runnable runnable=new Runnable(){
+
+                @Override
+                public void run() {
+                    Log.d("LOG", "callup start(21);"+Thread.currentThread().getId());
+                    // TODO Auto-generated method stub
+                    textView.setText("after update");
+                    Log.d("LOG", "callup end(21);"+Thread.currentThread().getId());
+                }
+
+            };
+            Log.d("LOG", "call start(13);"+Thread.currentThread().getId());
+            //Runnable机制的实现
+            RunnableDetour dt=RunnableDetourFactory.getDetour(runnable,13);
+            Log.d("LOG", "call end(13);"+Thread.currentThread().getId());
+            Log.d("LOG", "upcall end (19)"+Thread.currentThread().getId());
+        }
+    }
 }
 ```
 - 手动生成Decour库，可以对回调函数进行绕行，源码如下：
 ```
-public class DetourFactory {
+public class ThreadDetour {
+    private Thread thread1;
+    private Thread thread;
+    private int matchId;
+    public ThreadDetour(Thread t, int matchId) {
+        // TODO Auto-generated constructor stub
+        this.thread=t;
+        this.matchId=matchId;
+    }
+    void Thdt(){
+        Log.d("LOG", "callback start ("+matchId+")"+Thread.currentThread().getId());
+        thread.start();
+    }
+}
 
-    public static Detour GetDetour(ActionBarDrawerToggle.Delegate d, int callId) {
-        Random rand = new Random();
-        int matchId =rand.nextInt(100);
-
-        String match = String.valueOf(matchId);
-        String  call= String.valueOf(callId);
-
-        Log.v(call,match);
-
-        return new Detour(d,matchId);
+public class ThreadDetourFactory {
+    public static ThreadDetour getThreadDetour(Thread t,int callId) {
+        // TODO Auto-generated method stub
+        int matchId=new Random().nextInt(10)+1;
+        Log.d("LOG", "async start ("+callId+","+matchId+")"+Thread.currentThread().getId());
+        return new ThreadDetour(t,matchId);
     }
 }
 
 
-
-public class Detour {
+public class RunnableDetour {
     int matchId;
-    ActionBarDrawerToggle.Delegate originalCb;
-    public Detour(ActionBarDrawerToggle.Delegate d, int matchId) {
-        this.originalCb = d;
-        this.matchId = matchId;
-    }
+    Runnable r;
+    Runnable r1 = new Runnable(){
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            Log.d("LOG", "callback start,"+"("+matchId+");"+Thread.currentThread().getId());
+            r.run();
+        }
+    };
 
-    public void Cb1() {
-        String match = String.valueOf(matchId);
-        Log.v("LOgcallbackStart",match);
-        new MainActivity().upcall();
-    }
-
-    public void Cb2() {
-        String match = String.valueOf(matchId);
-        Log.v("LOgcallbackStart",match);
-        new MainActivity().updateUI();
+    public RunnableDetour(Runnable r,int matchId){
+        this.r=r;
+        this.matchId=matchId;
     }
 }
+
+
+public class RunnableDetourFactory {
+    public static RunnableDetour getDetour(Runnable r,int callId){
+        //生成１到１０随机数
+        int matchId=new Random().nextInt(10)+1;
+        Log.d("LOG", "AsyncStart,"+"("+callId+","+matchId+");"+Thread.currentThread().getId());
+        return new RunnableDetour(r,matchId);
+    }
+}
+
 ```
+
 - 打印结果的Log如下：
 ```
-02-15 07:02:19.831 3050-3050/com.example.root.papertext V/LogUpcallStart: 5
-02-15 07:02:19.832 3050-3050/com.example.root.papertext V/LogCallStart: 7
-02-15 07:02:19.971 3050-3050/com.example.root.papertext V/7: 7
-02-15 07:02:19.997 3050-3057/com.example.root.papertext W/art: Suspending all threads took: 17.904ms
-02-15 07:02:20.002 3050-3050/com.example.root.papertext V/LOgcallbackStart: 7
-02-15 07:02:20.004 3050-3050/com.example.root.papertext V/LogUpcallStart: 19
-02-15 07:02:20.037 3050-3050/com.example.root.papertext V/LogUpcallStart: 13
-02-15 07:02:20.038 3050-3050/com.example.root.papertext V/13: 80
-02-15 07:02:20.038 3050-3050/com.example.root.papertext V/LOgcallbackStart: 80
-02-15 07:02:20.038 3050-3050/com.example.root.papertext V/LogUpcallStart: 21
-02-15 07:02:20.053 3050-3050/com.example.root.papertext V/LogUpcallEnd: 21
-02-15 07:02:20.053 3050-3050/com.example.root.papertext V/LogUpcallEnd: 13
-02-15 07:02:20.053 3050-3050/com.example.root.papertext V/LogUpcallEnd: 19
-02-15 07:02:20.053 3050-3050/com.example.root.papertext V/LogCallEnd: 7
-02-15 07:02:20.053 3050-3050/com.example.root.papertext V/LogUpcallEnd: 5
+02-24 11:04:43.332 31300-31300/com.example.root.threadtest D/LOG: call start (7)1
+02-24 11:04:43.751 31300-31300/com.example.root.threadtest D/LOG: async start (7,7)1
+02-24 11:04:43.755 31300-31300/com.example.root.threadtest D/LOG: callback start (7)1
+02-24 11:04:43.756 31300-31300/com.example.root.threadtest D/LOG: call end (7)1
+02-24 11:04:43.776 31300-2752/com.example.root.threadtest D/LOG: upcall start (19)185
+02-24 11:04:53.825 31300-2752/com.example.root.threadtest D/LOG: call start(13);185
+02-24 11:04:53.889 31300-2752/com.example.root.threadtest D/LOG: AsyncStart,(13,8);185
+02-24 11:04:53.908 31300-2752/com.example.root.threadtest D/LOG: call end(13);185
+02-24 11:04:53.909 31300-2752/com.example.root.threadtest D/LOG: upcall end (19)185
+02-24 11:04:53.951 31300-31300/com.example.root.threadtest D/LOG: callback start,(8);1
+02-24 11:04:53.951 31300-31300/com.example.root.threadtest D/LOG: callup start(21);1
+02-24 11:04:53.963 31300-31300/com.example.root.threadtest D/LOG: callup end(21);1
 ```
-
-### 存在的问题
-- Log打印的结果并不是异步调用应有的结果
-- Android程序编码规则不像论文中那么好找到回调的点，并绕行
+## 存在的问题
+- Android异步编程还有一个AsyncTask，Android对它的封装几乎完美，暂时未找到进行绕行的方法
+- Runnable机制进行绕行的时候需要新建立一个对象，会比较浪费资源并且影响性能
