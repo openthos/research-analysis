@@ -7,7 +7,8 @@
 ## 工作进展
 - 一个Demo，实现简单的异步调用UI更新
 - 手动在回调的地方添加Log
-### Handler Message机制的实现
+
+### Handler.sendMessage机制的实现
 - apk源码如下：
 ```
 public class MainActivity extends Activity implements OnClickListener{
@@ -94,7 +95,7 @@ public class DetourFactory {
 02-24 10:59:29.660 23537-23537/com.example.root.sendmessagetest D/LOG: upcall start (21)1
 02-24 10:59:29.663 23537-23537/com.example.root.sendmessagetest D/LOG: upcall end (21)1
 ```
-### Thread和Runnable机制的实现
+### Thread和Handle.post机制的实现
 - apk源码如下：
 ```
 public  class MainActivity extends Activity implements OnClickListener{
