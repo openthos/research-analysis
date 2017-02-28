@@ -39,3 +39,28 @@
  - --pct-majornav ｛+百分比｝：调整“主要”导航事件的百分比（中间按键、回退按键、菜单按键）
  - --pct-appswitch ｛+百分比｝：调整启动Activity的百分比
  - --pct-anyevent ｛+百分比｝：调整其它类型事件的百分比
+ 
+ ## 脚本执行Monkey
+  - befoTest.shell
+ ```
+ #!/bin/bash
+set -x
+./Test.shell 2>&1 | tee ./test_log.txt
+ ```
+  - Test.shell
+  ```
+  #!/bin/bash
+set -x
+adb shell monkey [options]
+#adb shell monkey -v 1000
+for j in $(seq 1 2)
+do
+	dir=$(adb  shell  ls  /data/data)
+	for i in $dir
+	do
+	     echo $i
+	     adb shell monkey --throttle 500  --ignore-crashes --ignore-timeouts --monitor-native-crashes -v 500 -p  $i
+	     sleep 1
+	done   
+done
+  ```
