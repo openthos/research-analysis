@@ -173,3 +173,4 @@ gnuplot> set xlabel 'latency(us)'
 gnuplot> set title 'latency distribution'
 gnuplot> plot 'latency.dat'
 ```
+![latency.png](https://github.com/openthos/research-analysis/blob/master/developers/%E9%9F%A6%E5%BA%B7/realtime/latency.png "")
