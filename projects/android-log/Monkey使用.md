@@ -45,19 +45,22 @@
  ```
  #!/bin/bash
 set -x
+#把测试的log保存到txt文件中
 ./Test.shell 2>&1 | tee ./test_log.txt
  ```
   - Test.shell
   ```
   #!/bin/bash
 set -x
-adb shell monkey [options]
+#adb shell monkey [options]
 #adb shell monkey -v 1000
+# 循环执行2次
 for j in $(seq 1 2)
 do
 	dir=$(adb  shell  ls  /data/data)
 	for i in $dir
 	do
+	     #对	data/data下的所有包进行测试 
 	     echo $i
 	     adb shell monkey --throttle 500  --ignore-crashes --ignore-timeouts --monitor-native-crashes -v 500 -p  $i
 	     sleep 1
