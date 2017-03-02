@@ -41,4 +41,6 @@ vim trace
 2.如果全部函数都追踪不可行，我们选择一些函数去追踪，那我们该选择那些函数呢？如果选择的不够好，会不会造成每次信息类似？  
 3.想分析linux为什么有时候会产生较大的延时，采用这种思路正确吗？
 ##实验数据
-恩，这里提供了一些trace的数据，大致就一分钟不到的数据（至于里面执行了多少次测试，可以通过统计SyS_nanosleep次数大致的预估）。
+恩，这里提供了一些trace的数据，大致就一分钟不到的数据（至于里面执行了多少次测试，可以通过统计SyS_nanosleep次数大致的预估）。  
+[cyclictest_trace.log
+](https://github.com/openthos/research-analysis/blob/master/developers/%E9%9F%A6%E5%BA%B7/realtime/cyclictest_trace.log)
