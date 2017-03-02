@@ -1,4 +1,5 @@
 #The Worst-Case Execution Time Problem（摘录）
+##只读了survey中前面的一部分内容，觉得WCET分析是比较麻烦的（会涉及到代码静态分析，暂时会放弃WCET这部分内容）
 ##介绍
 The determination of upper bounds on execution times, commonly called Worst-Case Execution
 Times (WCETs), is a necessary step in the development and validation process for hard real-time systems. This problem is hard if the underlying processor architecture has components such as
