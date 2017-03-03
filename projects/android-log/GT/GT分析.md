@@ -203,7 +203,6 @@
     ```
   
   ### 参考资料
-  
     - [GT源码下载](https://github.com/TencentOpen/GT)
     - [GT流畅度测试](https://testerhome.com/topics/4770 )
     - [那些年我们用过的显示性能指标](https://segmentfault.com/a/1190000005089412)
