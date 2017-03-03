@@ -140,3 +140,16 @@ Choreographer 的工作机制：
 
 ![SM2](https://github.com/openthos/research-analysis/blob/master/projects/android-log/GT/images/DATA2.png)
 
+**参考文献：**
+
+[当我们讨论流畅度的时候，我们究竟在说什么？](http://blog.csdn.net/xiaosongluo/article/details/51212296)
+
+[如何量化Android应用的“卡”？---流畅度原理&定义篇](http://mp.weixin.qq.com/s?__biz=MzA3NTYzODYzMg==&mid=208258190&idx=2&sn=22af4f01a6090599da3dca4c44f0f396&scene=2&from=timeline&isappinstalled=0#rd)
+
+[如何准确评测Android应用的流畅度？ ](http://mp.weixin.qq.com/s?__biz=MzA3NTYzODYzMg==&mid=209682379&idx=1&sn=d43adbdc22235450e9de0ae7fbd46ff0&scene=2&from=timeline&isappinstalled=0#rd)
+
+[GT开篇文——从快速评估Android应用的流畅度说起 ](http://mp.weixin.qq.com/s?__biz=MzA5ODI1NzczNg==&mid=207394534&idx=1&sn=71f93ebf0feb55880ddb641918049344&scene=5#rd)
+
+[优化安卓应用内存的神秘方法以及背后的原理，一般人我不告诉他 ](http://mp.weixin.qq.com/s?__biz=MzA3NTYzODYzMg==&mid=212495002&idx=1&sn=711b7c4ea863e77972f6b1be943a4133&scene=5&srcid=MJXfT5YQ6EbPada4covs#rd)
+
+[GT流畅度测试-Choreographer](www.350351.com/plus/view.php?aid=460704)
