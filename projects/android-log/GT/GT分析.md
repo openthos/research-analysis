@@ -9,6 +9,50 @@
  
  - SMActivity：流畅度测试初始的Activity
  
+  - 初始化SM
+  
+  ```
+   //检测按钮的触发事件
+   View.OnClickListener button_check_status = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+	    // Choreographer 接收到 VSYNC 信号时，Choreographer 会调用 doFrame 函数依次对上述借口进行回调，从而进行渲染
+	    //skippedFrames 则记录了 jitterNanos 这段时间 doFrame 错过了多少个 VSYNC 信号，即跳过了多少帧
+       //debug.choreographer.skipwarning 来设定SKIPPED_FRAME_WARNING_LIMIT 的数值为1；默认值为30（即当跳帧达到30时才会打印Log，不能满足要求）
+          
+	  String cmd = "getprop debug.choreographer.skipwarning";
+            ProcessBuilder execBuilder = new ProcessBuilder("sh", "-c", cmd);
+            execBuilder.redirectErrorStream(true);
+            try {
+                TextView textview = (TextView) findViewById(R.id.textviewInformation);
+                Process p = execBuilder.start();
+                InputStream is = p.getInputStream();
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
+                Boolean flag = false;
+                String line;
+                while ((line = br.readLine()) != null) {
+		    //判断是否==1
+                    if (line.compareTo("1") == 0) {
+                        flag = true;
+                        break;
+                    }
+                }
+
+                if (flag) {
+                    textview.setText("OK");
+                } else {
+                    textview.setText("NOT OK");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+  ```
+  - 开始测试
+ 
  ```
 	//开始测试按钮的事件
 	View.OnClickListener onStartClick = new View.OnClickListener() {
@@ -78,9 +122,11 @@
                 if (pID != pid){
                     continue;
                 }
-                line = line.substring(50, line.length() - 71);
+		//从Log中截取跳帧的数据
+                line = line.substring(50, line.length() - 71);
                 Integer value = Integer.parseInt(line.trim());
-                SMServiceHelper.getInstance().dataQueue.offer(value);//把解析出的数值添加到一个阻塞列表里。
+		//把解析出的数值添加到一个阻塞列表里
+                SMServiceHelper.getInstance().dataQueue.offer(value);
             }
         } catch (IOException e) {
             Log.e(TAG, e.toString() + "unexpected exception");
@@ -99,7 +145,7 @@
 			while (!pause)
 			{
 				try {
-					//take():取走BlockingQueue里排在首位的对象,若BlockingQueue为空,阻断进入等待状态直到Blocking有新的对象被加入为止
+			//take():取走BlockingQueue里排在首位的对象,若BlockingQueue为空,阻断进入等待状态直到Blocking有新的对象被加入为止
 					int value = SMServiceHelper.getInstance().dataQueue.take();
 					//使用AtomicInteger这个类进行跳帧求和
 					count.addAndGet(value);
@@ -153,4 +199,11 @@
                 e.printStackTrace();
             }
         }
-    ```
+    ```
+  
+  ### 参考资料
+    - [GT源码地址：](https://github.com/TencentOpen/GT)https://github.com/TencentOpen/GT
+    - [GT流畅度测试](https://testerhome.com/topics/4770 )
+    - [那些年我们用过的显示性能指标](https://segmentfault.com/a/1190000005089412)
+    - [BlockingQueue介绍及使用](http://www.cnblogs.com/liangstudyhome/p/4531852.html)
+    - [Java 原子操作类详解](http://blog.csdn.net/sunxianghuang/article/details/52277370)
