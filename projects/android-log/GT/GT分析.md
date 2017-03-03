@@ -203,8 +203,9 @@
     ```
   
   ### 参考资料
-    - [GT源码下载](https://github.com/TencentOpen/GT) 
-    - [GT流畅度测试](https://testerhome.com/topics/4770)
-    - [那些年我们用过的显示性能指标](https://segmentfault.com/a/1190000005089412)
-    - [BlockingQueue介绍及使用](http://www.cnblogs.com/liangstudyhome/p/4531852.html)
-    - [Java 原子操作类详解](http://blog.csdn.net/sunxianghuang/article/details/52277370)
+   
+    - GT源码下载：https://github.com/TencentOpen/GT
+    - GT流畅度测试：https://testerhome.com/topics/4770
+    - 那些年我们用过的显示性能指标：https://segmentfault.com/a/1190000005089412
+    - BlockingQueue介绍及使用：http://www.cnblogs.com/liangstudyhome/p/4531852.html
+    - Java 原子操作类详解：http://blog.csdn.net/sunxianghuang/article/details/52277370
