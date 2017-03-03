@@ -11,7 +11,7 @@
  
   - 初始化SM
   
-  ```
+ ```
    //检测按钮的触发事件
    View.OnClickListener button_check_status = new View.OnClickListener() {
 
@@ -50,8 +50,9 @@
             }
         }
     };
-  ```
-  - 开始测试
+    
+ ```
+ - 开始测试
  
  ```
 	//开始测试按钮的事件
@@ -202,7 +203,8 @@
     ```
   
   ### 参考资料
-    - [GT源码地址：](https://github.com/TencentOpen/GT)https://github.com/TencentOpen/GT
+  
+    - [GT源码下载](https://github.com/TencentOpen/GT)
     - [GT流畅度测试](https://testerhome.com/topics/4770 )
     - [那些年我们用过的显示性能指标](https://segmentfault.com/a/1190000005089412)
     - [BlockingQueue介绍及使用](http://www.cnblogs.com/liangstudyhome/p/4531852.html)
