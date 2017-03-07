@@ -15,10 +15,10 @@ every firday
 - finish your weekly-report before deadline.
 - please contact me to reserve a time slice
 
-** every wednesday or thusday normally **
+every wednesday or thusday normally 
 
 ## group weekly-discuss time
 - I will arrangement in monday normally.
 - some student will give a talk about details of some tech-paper or his/her current work
 
-** firday normally **
+firday normally 
