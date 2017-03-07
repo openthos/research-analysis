@@ -1,5 +1,5 @@
 # research-analysis
-## DIR intro:
+## directory intro:
 
 - projects: research projects of students
 - developers: some other info of students
