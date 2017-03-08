@@ -12,7 +12,7 @@ chmod a+x *.sh
 chmod a+x *.py
 ```
 ##3.在traceLog目录下创建bugEmu目录
-* 将模拟bug的代码存放在该目录下,例如将如下代码保存到sleep_bug.c，放在traceLog/bugEmu下
+将模拟bug的代码存放在该目录下,例如将如下代码保存到sleep_bug.c，放在traceLog/bugEmu下
 ```
 #include<stdio.h>
 #include<unistd.h>
