@@ -1,6 +1,119 @@
 # 2017.03.03~2017.03.08
 
+## 1 本周目标：
+搞懂ActivityManagerService服务运行的详细过程，然后研究一个调用方案，实现在Linux中启动该Service，并且能够与Android中的ActivityManagerService服务相交互。
 
+## 2 研究过程：
+
+现在的短期思路是：
+
+搞清楚Service启动时，应用需要通过Intent发送哪些数据给系统，系统才能找到Service并启动。
+
+题外话：想到一种更简易的修改方式，借鉴插件化开发的思想，使用代理Activity等形式，达到间接与Linux上的程序交互。
+
+参考：http://gityuan.com/2016/03/06/start-service/
+
+启动初始化重点在ActivityThread.java 里的 15. AT.handleCreateService 这里面loadClass，然后创建了context和application，调用service.onCreate() 
+
+现在研究，发送一个启动Service的Intent需要哪些数据，并把这些数据通过Binder发送给ActivityManagerService。
+
+分析这过程中包含的进程和对象。
+
+|整个过程参与的进程|作用|
+| ------------- |------------- |
+|Process A进程                |    发送Intent的进程
+|system_server进程            |   ActivityManagerService服务所在进程
+|Zygote进程                   |      创建新进程的进程
+
+比如Process A进程 里的Activity对象执行startService()方法，Activity继承了ContextWrapper类，在ContextWrapper类中，有一个成员变量mBase，它是一个ContextImpl实例。ContextWrapper类的startService函数最终过调用ContextImpl类的startService函数来实现。
+
+即 Process A进程 执行startService()方法
+
+Activity extends ContextWrapper
+
+执行 startService() -> ContextImpl里的startService()
+
+在ContextImpl类的startService类，最终又调用了ActivityManagerNative里的ActivityManagerProxy类的startService来实现启动服务的操作。
+
+abstract class ActivityManagerNative extends Binder implements IActivityManager
+
+ActivityManagerProxy 是 ActivityManagerNative 的内部类
+
+class ActivityManagerProxy implements IActivityManager
+``` java
+public ComponentName startService(IApplicationThread caller, Intent service,
+        String resolvedType, String callingPackage, int userId) throws RemoteException
+{
+    Parcel data = Parcel.obtain();
+    Parcel reply = Parcel.obtain();
+    data.writeInterfaceToken(IActivityManager.descriptor);
+    data.writeStrongBinder(caller != null ? caller.asBinder() : null);
+    service.writeToParcel(data, 0);
+    data.writeString(resolvedType);
+    data.writeString(callingPackage);
+    data.writeInt(userId);
+    mRemote.transact(START_SERVICE_TRANSACTION, data, reply, 0);
+    reply.readException();
+    ComponentName res = ComponentName.readFromParcel(reply);
+    data.recycle();
+    reply.recycle();
+    return res;
+}
+```
+
+可以看到data存储了以下内容
+
+|变量|内容作用|
+| ------------- |------------- |
+|IActivityManager.descriptor    | String descriptor = "android.app.IActivityManager";
+|IApplicationThread caller| 辅助？
+|Intent service                 | 里面指定了要启动的服务的名称
+|String resolvedType           | 表示service这个Intent的MIME类型，它是在解析Intent时用到的
+|String callingPackage| 调用者的包名
+|int userId   | 调用者的用户ID
+
+action 标识为 `START_SERVICE_TRANSACTION`
+
+ActivityManagerProxy类的startService函数把这三个参数写入到data本地变量去，接着通过mRemote.transact函数进入到Binder驱动程序，然后Binder驱动程序唤醒正在等待Client请求的ActivityManagerService进程，最后进入到ActivityManagerService的startService函数中。
+
+然后进入之前看到的20步的 ActivityManagerService的startService函数的处理流程
+
+在 startServiceLocked 里 通过 retrieveServiceLocked 解析intent里需要的Service
+
+retrieveServiceLocked : 通过intent 和PackageManagerService 获得ServiceRecord
+
+参考 http://3dobe.com/archives/30/
+
+ServiceRecord，我们可以称之服务记录，也可以叫服务描述符，每一个运行中的服务都会在 AMS 的 HashMap<ComponentName, ServiceRecord> mServices 字段中存储一份自己的 ServiceRecord，该类记录了一个 Service 的状态信息。
+
+查找源有二：AMS 中的 mServices（正在运行中的服务）和 PMS 中的 mServices（已经安装服务的解析类）
+
+对于Linux上的程序启动Android上的Service这种情况，我们暂时不考虑Service的注册问题。我们可以模拟Android上的程序将IActivityManager.descriptor、caller等五个信息通过Binder发送给AMS。并通过将userID设置为0之类的手段，暂时屏蔽掉AMS的调用者权限检测，应该能够成功实现调用。
+
+但是对于在Linux上运行Service这种情况，首先需要在PMS里注册Service。在Android里注册后，启动Service时，ActivityManagerService会调用Zogote进程创建新进程。
+
+但是，Linux中的程序应该是自主运行的，运行的进程不受Android上的ActivityManagerService控制。
+
+应该如何修改ActivityManagerService机制？
+
+
+## 3 本周结果：
+
+通过 ActivityManagerService 服务发送启动Service的Intent、并启动Service的部分已经看完。
+
+对于情景： **Linux上的程序启动Android上的Service** 已经比较清楚。
+
+这种情景，我们暂时不需要考虑Service的注册问题。
+
+我们可以模拟Android上的程序将IActivityManager.descriptor、caller等五个信息通过Binder发送给AMS。并通过将userID设置为0之类的手段，暂时屏蔽掉AMS的调用者权限检测，应该能够成功实现调用。
+
+对于情景：**Android上的APP调用Linux上运行Service** 不太清楚。
+
+这种情况，首先需要在 PackageManagerService 里注册该 Service 。在Android里注册后，启动Service时，ActivityManagerService会调用Zogote进程创建新进程。但是，Linux中的程序应该是自主运行的，运行的进程不受Android上的ActivityManagerService控制。
+
+如果是这样，如何修改ActivityManagerService的机制，来实现Linux上的Service自主启动，不使用Zogote进程，并连接上ActivityManagerService。
+
+## 4 下载计划：
 
 # 2017.02.25~2017.03.02
 
