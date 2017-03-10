@@ -1,4 +1,4 @@
-#[Coz:Finding Code that Counts with Causal Profiling-notes](https://github.com/openthos/research-analysis/blob/master/developers/%E9%9F%A6%E5%BA%B7/performance/paper/COZ%20Finding%20Code%20that%20Counts%20with%20Causal%20Pro%EF%AC%81ling.pdf)
+#Coz:Finding Code that Counts with Causal Profiling-notes
 ##概要
 这篇文章是sosp 2015 best paper，其最大的亮点在于提出了virtual speed的技术。过去我们做performance bug的检测定位主要有以下几个方法：关键路径，规则匹配，热点分析这几方面，这些方法的本质是寻找耗时比较大的代码段或者说耗时比较大的模式，这是一种正向的思维模式。目前来说，通过这些自动化的手段检测到的performance bug 占比不到10%，大量的performance bug都是通过阅读源码发现的。与上述手段不同的是这篇文章另辟蹊径，从一个全新的思路考虑问题。
 
@@ -25,3 +25,6 @@ virtual speed这篇文章的最大贡献在于它能衡量一段代码优化到�
 那么相比与关键路径这类分析手段的它的优势在于哪里呢？我想主要在于关键路径的构造上，可能不同的应用有其不同的框架，构造关键路径的插桩点不尽相同，这给关键路径的构造带来了挑战。此外，关键路径也不能量化优化效果。
 
 我现在还没又搞清virtual speed是怎么做到的，一些细节点无法去思考。
+
+#论文连接
+[Coz:Finding Code that Counts with Causal Profiling-notes](https://github.com/openthos/research-analysis/blob/master/developers/%E9%9F%A6%E5%BA%B7/performance/paper/COZ%20Finding%20Code%20that%20Counts%20with%20Causal%20Pro%EF%AC%81ling.pdf)
