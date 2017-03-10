@@ -50,6 +50,7 @@
 			BufferedReader reader = null;
 			try {
 				ProcessBuilder execBuilder = null;
+				//筛选用户进程				
 				execBuilder = new ProcessBuilder("sh", "-c", "ps |grep u0_a");
 				execBuilder.redirectErrorStream(true);
 				Process exec = null;
