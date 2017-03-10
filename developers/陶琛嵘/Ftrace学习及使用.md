@@ -17,16 +17,16 @@ ftrace由function trace而来，一开始功能单一，但是由于它的部分
 其利用了gcc中的Mcount机制，解释如下：
 >通过在编译和链接你的程序的时候（使用 -pg 编译和链接选项），gcc 在你应用程序的每个函数中都加入了一个名为mcount ( or "_mcount" , or "__mcount" , 依赖于编译器或操作系统)的函数，也就是说你的应用程序里的每一个函数都会调用mcount, 而mcount 会在内存中保存一张函数调用图，并通过函数调用堆栈的形式查找子函数和父函数的地址。这张调用图也保存了所有与函数相关的调用时间，调用次数等等的所有信息。
 
-简单理解，这就是一种代码插装技术，在gcc中使用，在编译出的汇编代码中插入了具体的调用mcount的语句。
+简单理解，这就是一种代码插装技术，在gcc中使用，在编译出的汇编代码中插入了具体的调用mcount的语句。  
 tracer的实现正是利用了gcc的这项技术，平时的gcc编译时，mcount都是使用的libc中定义好的mcount，但是在编译内核代码的时候是不会链接到libc的，因此tracer选择自己实现具体的mcount函数，就可以在几乎所有的函数的开头处调用自己的mcount函数，从而实现追踪的目的。
 
-现在的Linux发行版中的内核实际上编译时都带有了-pg选项，即都将具体的tracer编译了进去，从而在使用时不需要重新编译，平时在使用时tracer都设置为nop，在汇编代码中不产生任何结果，从而使用时不会因为mcount造成太多的资源消耗。而在使用时，会动态地将mcount替换为希望使用的追踪器实现的probe函数，达到追踪的功能。
+现在的Linux发行版中的内核基本上编译时都带有了-pg选项，即都将具体的tracer编译了进去，从而在使用时不需要重新编译，平时tracer都设置为nop，在汇编代码中执行不产生任何结果，从而使用时不会因为mcount造成太多的资源消耗。而在使用时，会动态地将mcount替换为希望使用的追踪器实现的probe函数，达到追踪的功能。
 
 ## 2. event tracing
-event tracing是基于tracepoint机制实现的，tracepoint比ftrace更早，而event tracing其实就是利用了tracepoint机制获取probe点以及注册probe函数，即A、B部分，之后通过ftrace中的C、D部分来进行log信息的记录以及用户的读取。
+event tracing是基于tracepoint机制实现的，tracepoint比ftrace更早，而event tracing其实就是利用了tracepoint机制获取probe点以及注册probe函数，即A、B部分，之后通过ftrace中的C、D部分来进行log信息的记录以及用户的读取。   
 tracepoint相比于gcc的mcount，在一开始定义函数的时候就需要将具体probe点放在函数中，即编写代码时就需要考虑是否要进行追踪，这里的probe点就是一个调用函数，其具体的逻辑会去检测是否注册了相对应的probe函数，注册了才会去调用进行信息的追踪以及写入到ringbuffer中。
 
-可以自己定义自己想要的event tracing的事件追踪，即自己完成probe点以及probe函数的部分，需要在想要追踪的函数中加入probe点（tracepoint），另外自己实现probe函数（其中需要包括写入ringbuffer中的数据的格式等等）。内核中为了方便操作，也为了已有的event tracing中不要存在太多相似功能的代码，对于probe函数的注册、注销等代码采用了宏的方式，让宏自动展开成具有相似性的代码，这个宏就是```TRACE_EVENT```，在各个编译时要包含的头文件中会将对宏进行新的转化完成相应功能，从而方便自动展开。
+可以自己定义自己想要的event tracing的事件追踪，即自己完成probe点以及probe函数的部分，需要在想要追踪的函数中加入probe点（tracepoint），另外自己实现probe函数（其中需要包括写入ringbuffer中的数据的格式等等）。内核中为了方便操作，也为了已有的event tracing中不要存在太多相似功能的代码，对于probe函数的注册、注销等代码采用了宏的方式，让宏自动展开成具有相似性的代码，这个宏就是```TRACE_EVENT```，在各个编译时要包含的头文件中会将对宏进行新的转化完成相应功能，从而方便自动展开。  
 例如，位于include/tracepoint中的转化为：
 ```c
 #define TRACE_EVENT(name, proto, args, struct, assign, print)  DECLARE_TRACE(name, PARAMS(proto), PARAMS(args))
@@ -44,25 +44,17 @@ tracepoint相比于gcc的mcount，在一开始定义函数的时候就需要将�
 ### 编译阶段
 **PS：实际上只要将debugfs挂载即可，不需要重新编译内核**
 
-下载内核 4.4.52版本，解压，拷贝到/usr/src中，改名为linux-headers-4.4.52
-make menuconfig 出错，没有curses.h头文件，需要装ncurses-dev
-sudo apt-get install ncurses-dev
-进行make menuconfig
-
-选项太多且不知道如何选择，因此查询发行版的内核编译文件，位于/boot/config-具体内核版本
-将其拷贝到新的内核目录下，重命名为.config
+下载内核 4.4.52版本，解压，拷贝到/usr/src中，改名为linux-headers-4.4.52  
+make menuconfig 出错，没有curses.h头文件，需要装ncurses-dev  
+```sudo apt-get install ncurses-dev```  
+配置选项，首先使用```make localmodconfig```  
+```make menuconfig``` ，在load中将刚刚make localmodconfig生成的.config载入并查看是否需要添加支持，然后保存退出  
 修改kernel/trace/Makefile，将```KBUILD_CFLAGS = $($(CC_FLAGS_FTRACE),,$(ORIG_CFLAGS)中的$CC_FLAGS_FTRACE```去掉，实际上就是保留ORIG_CFLAGS中的-pg选项，用于激活ftrace的支持
 
-编译时间太久，且文件太大，有问题
-
-重新配置选项，首先使用make localmodconfig
-之后打开make menuconfig ，在load中将刚刚make localmodconfig生成的.config载入并查看是否需要添加支持，然后保存退出
-修改kernel/trace/Makefile，将```KBUILD_CFLAGS = $($(CC_FLAGS_FTRACE),,$(ORIG_CFLAGS)```中的$CC_FLAGS_FTRACE去掉
-
-make -j4开始编译
+```make -j4```开始编译
 编译完成，大小为4G
 
-挂载debugfs文件系统，目录位于/sys/kernel/debug中
+挂载debugfs文件系统，目录位于/sys/kernel/debug中  
 当编译激活了ftrace，会在其中生成tracing目录，进入其中，里面是控制ftrace的一些选项
 
 
