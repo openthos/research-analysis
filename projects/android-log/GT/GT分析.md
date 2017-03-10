@@ -4,7 +4,122 @@
  - SM：腾讯提出的流畅度概念。腾讯认为FPS不能准确的量化流畅度。
  例如：在1s内，前332ms刷新了20次，完成任务，剩余668ms闲着一次都不刷新（所谓闲着是指屏幕无动画，静止不动），算出来帧率是20。所以腾讯提出来
  流畅度的概念（SM）：60-跳帧的次数。即统计1s内出现的跳帧的次数，然后用标准的60减去得到SM的值可以更好的量化流畅度
+### SM测试前进程信息筛选与显示代码分析
 
+ - ProcessUtils：进程筛选
+  - zygote或者zygote64的判断
+ 
+ ```
+ public List<ProcessInfo> getAllRunningAppProcessInfo() {
+			List<ProcessInfo> appProcessList = new ArrayList<ProcessInfo>();
+			
+			// 先取Android进程的父进程zygote的进程号，64位app对应的是zygote64
+			int zygotePid = -1;
+			int zygotePid64 = -1;
+
+			BufferedReader readerZ = null;
+			try {
+				ProcessBuilder execBuilderZ = null;
+				execBuilderZ = new ProcessBuilder("sh", "-c", "ps |grep zygote");
+				execBuilderZ.redirectErrorStream(true);
+				Process execZ = execBuilderZ.start();
+				InputStream isZ = execZ.getInputStream();
+				readerZ = new BufferedReader(
+						new InputStreamReader(isZ));
+
+				String lineZ = "";
+				while ((lineZ = readerZ.readLine()) != null) {
+					String[] arrayZ = lineZ.trim().split("\\s+");
+					if (arrayZ.length >= 9) {
+						if (arrayZ[8].equals("zygote"))
+						{
+							zygotePid = Integer.parseInt(arrayZ[1]);
+						}
+						else if (arrayZ[8].equals("zygote64"))
+						{
+							zygotePid64 = Integer.parseInt(arrayZ[1]);
+						}
+					}
+				}
+			}
+ ```
+  - 正式取可用的Android进程
+  
+  ```
+  // 正式取可用的Android进程，放入列表中
+			BufferedReader reader = null;
+			try {
+				ProcessBuilder execBuilder = null;
+				execBuilder = new ProcessBuilder("sh", "-c", "ps |grep u0_a");
+				execBuilder.redirectErrorStream(true);
+				Process exec = null;
+				exec = execBuilder.start();
+				InputStream is = exec.getInputStream();
+				reader = new BufferedReader(
+						new InputStreamReader(is));
+
+				String line = "";
+				while ((line = reader.readLine()) != null) {
+					String[] array = line.trim().split("\\s+");
+					if (array.length >= 9) {
+						int uid = Integer.parseInt(array[0].substring(4)) + 10000;
+						int pid = Integer.parseInt(array[1]);
+						int ppid = Integer.parseInt(array[2]);
+						// 过滤掉系统子进程，只留下父进程是zygote的进程
+						if (ppid == zygotePid || ppid == zygotePid64)
+						{
+							ProcessInfo pi = new ProcessInfo(pid, array[8], ppid, uid);
+							//将过滤的信息放入列表中
+							appProcessList.add(pi);
+							procInfoCache.put(array[8], pi);
+						}
+						
+					}
+
+
+  ```
+  
+   - 从列表中读取pid
+    
+    ```
+    
+		//从列表中读出pid
+		public int getProcessPID(String pName) {
+			int pId = -1;
+			List<ProcessInfo> appProcessInfos = getAllRunningAppProcessInfo();
+			for (ProcessInfo info : appProcessInfos) {
+				if (info.name.equals(pName)) {
+					pId = info.pid;
+					break;
+				}
+			}
+			return pId;
+		}
+    ```
+   - 抽取出的方法，在SMActivity或者别的类种调用
+    
+    ```
+     //在SMActivity中会调用此方法
+public static int getProcessPID(String pName) {
+		return processUtil.getProcessPID(pName);
+	}
+
+    ```
+    
+   - SMActivity调用进程的信息显示，并在SMActivity中对此进行下一步操作
+    
+    ```
+    // SMActivity调用进程信息
+AdapterView.OnItemClickListener listview_listener = new AdapterView.OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
+			selectedItem = (String) adapter.getItemAtPosition(position);
+			pid = ProcessUtils.getProcessPID(selectedItem);
+		}
+	};
+    ```
+    
 ### GT中SM实现的代码分析
  
  - SMActivity：流畅度测试初始的Activity
