@@ -1,57 +1,36 @@
 本周工作进展和下周计划
 
-2017.02.27~2017.03.03
+2017.03.06~2017.03.10
 
-- 本周工作计划点1: Read the paper related to SVA.
+- 本周工作计划点1: Read the paper Virtual Ghost.
 
-- 完成情况：Extreamly interesting about Virtual Ghost.
+- 完成情况：This paper describe about what we should do to keep an application secure from OS. 
 
-- 本周工作计划点2: Read the three paper on OSDI about SGX
+- 本周工作计划点2: Read the paper about SGX and the manual.
 
-- 完成情况： Not good as I planed.
-
-Virtual Ghost can described briefly as following:
-Motivation: Protect application from malicious OS.
-Approach: Leverage SVA and SVA-OS system.
-1. spilt an ghost memory.monitor all access to this area.
-2. using SVA-OS protect MMU and something like interrupt state.
-3. Using Compiler Tech to keep Control Flow Integrity.
-4. Using encryption to keep I/O and other communication secure.
-
-Problem of this approach:
-1. Performance: Because only access to the ghost memory and I/O will cause large overhead, Virtual Ghost gain a lot improvement compared with previous system. However, it's still not enough for product system.
-2. All the application should match the Virtual Ghost request to leverage this system which means the application request rewrite.
-3. No Virtualization support. This is a critical problem.  
-4. To enable encryption key chain, TPM is requested which is not as they claimed that no hardware support needed for Virtual Ghost.
-
-SGX analysis:
-Background:
-With SGX, the CPU can split some memory as enclaves. All the access to enclaves will be checked by hardware. Before able to access the enclave, the process should entry the enclave by Instruction EENTER and vise versa with EEXIT.
-1. Haven:
-Approach:
-Reuse the Drawbridge. Secure the whole LibOS with enclave.. Like describe in Drawbridge, the LibOS include the applications, Virtual memory and file system. To support Haven, the threads and scheduling is also included in LibOS to.
-2. SCONE:
-To secure Cloud, do not need to keep the kernel safe. The kernel might be comprised by some vulnerability but the other application do not be infected.
+- 完成情况： Starting
 
 
-Problem of SGX:
-1. Overhead: Basically, the overhead of SGX is just like virtual ghost in some extends.
-2. Size: Only 64MB or 128MB enclaves supported for whole system. If the enclaves fulls, swaps the enclaves needs encryption which cost CPU cycles.
-3. No privilege instruction allowed in enclave, which cause a lot of overhead if the system needs to do so. But the C library has to be included in the enclave to keep application secure.
 
 - 下周计划：
-	1. Rethink all the approach about SGX, where I can improve and what's missing.
+	1. Continue the reading.
+	2. Think about the problem of SGX, and it's mechanism.
 
 
 - 其他事宜：
-	2. Should complete the questions from the suggestion below.
-
+	
 
 ```
 chy: 第一周
 SVA的相关论文有哪些？这个领域是啥？是否有相关综述？
 希望看到一个文档，列出了相关的论文名称，列表，可以放到
 https://github.com/openthos/research-analysis/tree/master/developers/%E6%B2%88%E6%B8%B8%E4%BA%BA
+```
+For the related papers: Check out the paperlist.md under the developers/Youren/.
+This is a fields across Kernel and Compiler, using the compiler tech to keep Kernel memory safe.
+
+```
+How to find a survey for SVA, it's not a huge fields I think. But for some tech it used like Control Flow Integrity, I can find some summary.Control-Flow Integrity Principles, Implementations, and Applications
 ```
 
 ```

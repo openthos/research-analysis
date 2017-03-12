@@ -42,16 +42,22 @@ So we can do following thing:
 4. To enable encryption key chain, TPM is requested which is not as they claimed that no hardware support needed for Virtual Ghost.   
 
 ## Test Result
-   
+   Test Guide for SVA:
+   1. Install Freebsd 9.3 on virtual machine.   
+   2. clone the source code of SVA to Freebsd.   
+   3. Follow the instructions on github to compile and install the kernel.   
+   4. Reboot, type 3 to enter prompt mode at bootloader, then type boot svaKernel -s to enter the kernel.   
+  
+  Then, the kernel encounter segmentation fault on boot. Abort now for the test...   
 ## Misc
-In this paper, there are two important related works:  
+In this paper, there are two important related works:    
 1. SVA system.   
 2. Control Flow Integrity.   
 
-The most valuable and intriguing thing of this paper is it analysis all the way to attack an application from the kernel and also show how to defeat them.   
+The most valuable and intriguing thing of this paper is it analysis all the way to attack an application from the kernel and also show how to defeat them.     
 
-## Survey paper list:
-Privious work about protect App from Malious OS:   
-1. Use hardware page protection through a trusted hypervisor to achieve control over the operating system capabilities.    
-2. SVA related paper.
+## Survey paper list: 
+Privious work about protect App from Malious OS:    
+1. Use hardware page protection through a trusted hypervisor to achieve control over the operating system capabilities.     
+2. SVA related paper.  
 3. 
