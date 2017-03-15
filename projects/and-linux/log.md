@@ -1,3 +1,194 @@
+# 2017.03.08~2017.03.15
+
+## 1 本周目标：
+
+1. 了解其他两种思路：
+
+有人在Linux上运行Android程序，陈莉君老师给过的Shashlik项目资料
+
+Google在Chrome上运行Android程序，它的做法
+
+2. 对于我已有的调研工作：在Linux上调用Android Service，可以尝试一下，做实验。
+
+## 2 研究过程：
+ 
+### 了解其他两种思路
+
+思路二：
+
+陈老师给过的资料 Shashlik项目
+
+https://www.maketecheasier.com/run-android-apps-linux/
+
+这里面介绍了，这个项目运行Android程序的原理是利用Android SDK里的Android模拟器。
+
+但是它号称没有用虚拟机？
+
+在我看来，它只是做了一下包装，能够自动安装APK，创建桌面快捷方式。
+
+思路三：
+
+用Chrome/Chrome OS运行Android应用，叫： Android Runtime for Chrome（ARC）
+
+以前有个 ARC Welder 插件可以直接在Chrome市场里下载，但是现在搜不到了。
+
+参考：http://www.iplaysoft.com/arc-welder.html
+
+发现直接输入 https://chrome.google.com/webstore/detail/arc-welder/emfinbmielocnlhgmfkkmkngdoccbadn 可以安装
+
+安装 ARC Welder 好之后不能用，加载不上apk。在chrome://plugins开启Native Client支持也不行。
+
+参考：http://eyehere.net/2015/use-arc-welder/ 但是以前是可以自动下载runtime的。
+
+安装ARChon插件： https://github.com/vladikoff/chromeos-apk
+
+安装好之后还是不行，加载apk一直转圈。
+
+可能我用Chrome版本太新了，是 55.0.2883.87 m (64-bit)，因为以前用过，没问题的。
+
+使用其他方法运行，慢复杂的，参考百度经验：http://jingyan.baidu.com/article/f79b7cb379d82c9145023e61.html
+
+安装nodejs 
+
+转换apk
+
+加载出错，提示：There is no "message" element for key extName.
+
+参考：http://www.playubuntu.cn/article/223.html
+
+将转换后的应用添加到开发者插件
+
+今日头条 运行失败。。。
+
+网易云音乐 失败。。。
+
+还是按照百度经验来试试，安装 twerk 插件
+
+用twerk转换
+
+还是运行失败
+
+可能是 ARChon 太老了，在市场上下载新的Beta版
+
+使用新版的 ARChon 还是运行不了。暂时不再尝试了，以前也试过，有些了解。
+
+分析一下 ARChon 插件的原理
+
+找不到相关的分析资料，名称上的意思是Android运行环境。应该是搭建了一套安卓程序解释器，并且自己实现了Android的API，从而运行Android程序。
+
+这个项目的核心功能在 ARChon 插件的_platform_specific\nacl_x86_64目录，都是编译成so文件，闭源。
+
+比如：dalvikvm.so     libsqlite_jni.so     libwebviewchromium.so
+
+这里面还有一个精简的系统镜像readonly_fs_image.img
+
+应该就是自己实现了接口，实现了二进制兼容。
+
+这种方式工作量太大，每个接口都要适配，但是这种native实现，性能很好。
+
+### 实验研究
+
+
+
+#### 1 在Linux中运行Service
+
+尝试在Linux运行之前编写的Service：
+
+自己写个类，加载Service，在这个Service里面发送一个Intent。
+
+报错：Error: Could not find or load main class
+
+类是在的，加载出错。
+
+这个和Intent没关系，加载Service就是出错。
+
+发现是android.jar的问题，只要加载这个android.jar就有问题。哪怕代码里没有与之相关的东西。
+
+发现android.jar包里有java的类在里面。可能造成与rt.jar冲突。
+
+java参数 http://www.cnblogs.com/ilife/archive/2012/08/01/2618617.html
+
+-Xbootclasspath:android.jar
+
+出错
+
+用javac -Xbootclasspath:android.jar TestS.java 重新编译
+
+还是相同错误。
+
+大概明白了，这是因为依赖的class不是一个编译器编译出来的，我用的android.jar是Google提供的。
+
+如果使用C/C++ 编写Service，像 https://github.com/hungys/binder-for-linux 项目一样，是不是更靠近底层
+
+但是这里的Service不是APP的Service，这里的是系统服务（Android Native Service）。如果是
+
+无法使用C/C++发送Intent，必须在JAVA层发送
+http://stackoverflow.com/questions/9990830/sending-intents-from-an-android-ndk-application
+
+Android NDK 里有个ndk-bundle\sysroot\usr\include\android\native_activity.h
+
+说明NDK里可以连接ActivityManager服务，但是NDK里没有任何有关Intent的头文件，说明不能在C/C++上直接发送Intent
+很可能所有的操作还是通过JAVA层的Binder连接的。
+
+#### 2 在Linux上调用Android Service
+
+想搞清楚在JAVA层发送Intent最终的数据读写代码在哪。
+
+探究APP中JAVA层的最终Binder发送是否依赖非JAVA层的本地库，还是直接能够调用read、write进行操作。
+
+换个思路，由于这个Intent发送过程肯定不涉及IPC，所以一定是在这个进程内部完成的，但是可能不是在JAVA层
+
+在startService过程中，APP端最终追踪到
+
+mRemote.transact(START_SERVICE_TRANSACTION, data, reply, 0);
+
+mRemote 是 interface IBinder
+
+直接追查不了了
+
+参考：http://www.cnblogs.com/bastard/archive/2012/05/25/2517522.html
+
+在类 android.os.Binder
+
+```
+public final boolean transact(int code, Parcel data, Parcel reply,
+  int flags) throws RemoteException {
+...
+boolean r = onTransact(code, data, reply, flags);
+...
+}
+```
+
+看这个onTransact没用，这里会被子类覆盖。
+
+在startService()中的transact()最终是到ActivityManagerService里的startService()里
+
+但是博客里面分析，说ActivityManagerService是在一个独立的进程里。
+AMS是作为管理Android系统组件的核心服务，他在SystemServer执行run()方法的时候被创建，并运行在独立的进程中。具体来说就是SystemServer管理着Android中所有的系统服务，这些系统服务的生命周期回调都由SystemServer去调度负责。
+
+所以这个startService是怎么跳过去的。。。。
+
+回到 ActivityManagerNative 里的 mRemote.transact
+
+public ActivityManagerProxy(IBinder remote)
+{
+  mRemote = remote;
+}
+这个remote到底是从哪来的，这个remote不可能是ActivityManagerService
+因为不是在一个进程，是它的一个代理，但是这个代理在哪赋值的
+
+最终的Intent发送操作肯定是由这个 remote 对象完成。
+
+## 3 本周结果
+
+1. 对于其他两种思路，Shashlik项目其实就是用了Android SDK里的虚拟机，Chrome下的 ARC 编写了一套API接口实现。
+
+2. 实验方面，虽然知道了Intent的数据构成，但是在JAVA层最终如何发送到Binder设备文件还不清楚。现在想找到在JAVA层发送Intent最终的操作对象 mRemote 代码在哪，希望能够找到它，然后用它的代码在Linux上发送Intent数据。
+
+## 4 下周计划
+
+查找到JAVA层用于读写Binder对象的mRemote的代码。
+
 # 2017.03.03~2017.03.08
 
 ## 1 本周目标：
