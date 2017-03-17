@@ -141,6 +141,7 @@ Choreographer 的工作机制：
 ![SM2](https://github.com/openthos/research-analysis/blob/master/projects/android-log/GT/images/DATA2.png)
 
 **参考文献：**
+
 [GT源码下载](https://github.com/TencentOpen/GT)
 
 [GT流畅度测试](https://testerhome.com/topics/4770)
