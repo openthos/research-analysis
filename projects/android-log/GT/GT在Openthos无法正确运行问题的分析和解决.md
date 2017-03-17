@@ -270,7 +270,7 @@ uo_a12 2281  1879 1451243 47256  0000000  d892b35a S com.github.openthos.printer
 
 通过检查结果输出，发现Openthos会输出三行无用信息，所以确定报错原因是这些无用信息导致array[0]获取的值类型错误，最终导致程序不能正常执行，进程信息无法显示。
 
-### 3.解决方法—
+### 3.解决方法
 
 结合Openthos的log输出特点，对输出信息进行筛选，从正确结果输出部分开始分析，修改代码如下：
 ```
@@ -325,6 +325,18 @@ return appProcessList;
 
 SM测试模块以SM作为指标，通过统计跳帧的数量来衡量流畅度，其满分为60，对于所有的Android应用，跳帧现象是普遍的并且变化的，所以SM的测试结果应该在0到60间浮动。
 但是通过在Openthos上实验，所有的测试结果都为60，即不存在跳帧现象，这个测试结果是不正确的。
-
 ### 2.问题分析
+ 
+#### 2.1 从SM的测量统计原理进行分析
 
+GT的SM测试模块对SM的测量计算方法已经调研清楚（[文档第5部分](https://github.com/openthos/research-analysis/blob/master/projects/android-log/GT/SM%E8%B0%83%E7%A0%94%E6%8A%A5%E5%91%8A.md)），SM值通过计算统计Choreographer输出log的跳帧数据获得，但是通过实验发现没有Choreographer关于跳帧的log输出，而Choreographer的工作机制也已经调研清楚（[文档第3部分](https://github.com/openthos/research-analysis/blob/master/projects/android-log/GT/SM%E8%B0%83%E7%A0%94%E6%8A%A5%E5%91%8A.md)），可能的原因是log输出的条件不够，即debug.choreographer.skipwarning的值不为1。
+
+#### 2.2 针对debug.choreographer.skipwarning的值进行实验
+
+1.运行SM测试测试后，直接输入getprop debug.choreographer.skipwarning命令，显示结果为1，也就是说明GT完成debug.choreographer.skipwarning了的设置，log不是因为不满度条件没有输出
+
+2.重启计算机（不进行SM测试），输入getprop debug.choreographer.skipwarning命令，显示结果为空，也就是系统本身没有对debug.choreographer.skipwarning进行赋值，也就是frameworks\base\core\java\android\view\Choreographer.java文件根本没有执行到，所以log没有正确输出，而这个文件没有执行到，有可能和我之前在startmenu代码中打log却没有输出的情况一样，是由于源码环境破坏导致的，重新同步以下代码应该就可以解决
+
+**薛海龙的意见：** Openthos没有root彻底，导致debug.choreographer.skipwarning没有被GT设置，他通过直接更改frameworks\base\core\java\android\view\Choreographer.java中debug.choreographer.skipwarning的初始化值为1，实现了log的打印
+
+**我的分析：** 第一个实验种输入getprop debug.choreographer.skipwarning命令，显示结果为1，可以说明GT完成debug.choreographer.skipwarning了的设置，因为系统种不可能有两个debug.choreographer.skipwarning变量，GT也不可能自己创建一个debug.choreographer.skipwarning变量，而且这个实验用了新的代码环境，不能确定是因为新的代码环境的影响还是没有root彻底的影响，下周可以把薛海龙实验的Openthos代码种的frameworks\base\core\java\android\view\Choreographer.java中debug.choreographer.skipwarning恢复成正常情况30，如果能正常打印log，则说明是代码环境的问题，并不是因为root不彻底，在根据具体情况确定解决方法
