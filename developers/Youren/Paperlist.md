@@ -11,6 +11,8 @@ Iago Attacks: Why the System Call API is a Bad Untrusted RPC Interface.
 ### In kernel
  * Shielding Applications from an Untrusted Cloud with Haven.
  * SCONE: Secure Linux containers with Intel SGX.
+ * Deconstructing Xen
+ * Panoply: Low-TCB Linux applications with SGX enclaves
 
 ### Cloud related SGX paper:
  * VC3: Trustworthy Data Analytics in the Cloud using SGX

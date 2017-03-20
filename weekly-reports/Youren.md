@@ -2,36 +2,21 @@
 
 2017.03.06~2017.03.10
 
-- 本周工作计划点1: Read the paper Virtual Ghost.
+- 本周工作计划点1: Finish the paper on OSDI using SGX.
 
-- 完成情况：This paper describe about what we should do to keep an application secure from OS. 
+- 完成情况：Finished.
 
-- 本周工作计划点2: Read the paper about SGX and the manual.
-
-- 完成情况： Starting
 
 
 
 - 下周计划：
-	1. Continue the reading.
+	1. Reading the Intel SGX explained
 	2. Think about the problem of SGX, and it's mechanism.
 
 
 - 其他事宜：
-	
 
-```
-chy: 第一周
-SVA的相关论文有哪些？这个领域是啥？是否有相关综述？
-希望看到一个文档，列出了相关的论文名称，列表，可以放到
-https://github.com/openthos/research-analysis/tree/master/developers/%E6%B2%88%E6%B8%B8%E4%BA%BA
-```
-For the related papers: Check out the paperlist.md under the developers/Youren/.
-This is a fields across Kernel and Compiler, using the compiler tech to keep Kernel memory safe.
-
-```
-How to find a survey for SVA, it's not a huge fields I think. But for some tech it used like Control Flow Integrity, I can find some summary.Control-Flow Integrity Principles, Implementations, and Applications
-```
+Updated paper list.
 
 ```
 chy: 第二周
