@@ -1,3 +1,9 @@
+# 2017.03.16~2017.03.23
+
+发现Android里面自带一个am命令可以启动Activity、Service等，研究它的实现：
+
+![Alt text](https://cdn.rawgit.com/openthos/research-analysis/master/projects/and-linux/image/am.svg)
+
 # 2017.03.08~2017.03.15
 
 ## 1 本周目标：
