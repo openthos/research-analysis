@@ -5,7 +5,7 @@ A book about multiprocessor implemented on SPARC and Solaris
 	- chap. 7, 8 (About OS)
 	- chap. 10 (About future)
 - Advanced Concepts in Operating Systems
-	-Part VI Multiprocessor Operating Systems
+	- Part VI Multiprocessor Operating Systems
 - The Art of Multiprocessor Programming(**Main Textbook**)
 
 # Papers
