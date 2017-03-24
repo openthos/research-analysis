@@ -1,5 +1,69 @@
 # 2017.03.16~2017.03.23
 
+## 1 本周工作：
+
+研究Android中通过Intent发送启动一个Service的发送方的全过程。
+
+在本周五的例会上，听取了师兄的建议，对我的课题思路进行了修改。
+
+## Android中通过Intent发送启动一个Service的发送方的过程
+
+通过前几周的研究，一个APP通过Intent发送一个启动Service的请求的过程已经基本清楚。
+
+主要是通过ActivityManagerService的代理类ActivityManagerProxy，把Intent数据通过Binder发送给ActivityManagerService。
+
+Binder的发送过程是通过JNI在C++层完成的。
+
+![Alt text](https://cdn.rawgit.com/openthos/research-analysis/master/projects/and-linux/image/plan_1_android-app1_start_adnroid-app2_call.svg)
+
+作为Intent发送方，如果从第一次IPC算起，其实需要三次Binder通信过程。
+
+第一次通过 binder 驱动获取 ServiceManager 服务的代理。这个服务是Binder层的管理服务，用来获取Framework层的各种服务。
+
+第二次从ServiceManager获取 ActivityManagerService 服务代理。
+
+第三次向 ActivityManagerService 服务发出请求启动 APP2 的 指定 Service。
+
+![Alt text](https://cdn.rawgit.com/openthos/research-analysis/master/projects/and-linux/image/plan_1_android-app1_start_adnroid-app2_ipc.svg)
+
+## 2 我之前设想的思路
+
+我之前设想通过修改ActivityManagerService等服务能够使得 Android 能够接受来自 Linux 的请求。
+
+这种方式可能需要修改有关权限有关的很多地方，包括Binder权限检测、Framework层的服务等。
+
+![Alt text](https://cdn.rawgit.com/openthos/research-analysis/master/projects/and-linux/image/plan_1_before_linux-start-android-service.svg)
+
+## 3 听取师兄建议后，修改后的思路
+
+在例会上，师兄指出我这种设想侵入性太强，不仅需要在Linux程序上做适配而且，修改了Binder、Framework层。应该找一种方法减少对原有的机制的更改，比如加入一种中间层。
+
+我听取师兄的建议，设想了新的思路。
+
+如下图所示，通过加入 Linux 与Android 中进程间通信方式的转换模块 ，使得在Linux和Android“共有的操作”（还有待研究）上，甚至不用修改Linux上的程序。
+
+然后在Binder驱动中，加入Binder中间层，使得需要通过Bidner通信的程序先走Binder中间层，如果中间层判断该请求为Android内部（与Linux无关）的通信，则传递给原有的binder驱动进行处理。否则拦截进行自定义处理。
+
+![Alt text](https://cdn.rawgit.com/openthos/research-analysis/master/projects/and-linux/image/plan_1_after_linux_start_android_service.svg)
+
+若目标是启动Linux中的Service，则不走Android原有的Binder，直接由中间层操作。
+
+![Alt text](https://cdn.rawgit.com/openthos/research-analysis/master/projects/and-linux/image/plan_1_after_android_start_linux_service.svg)
+
+若目标是Android中的Service，则传递给原有的Bidner，正常处理。
+
+![Alt text](https://cdn.rawgit.com/openthos/research-analysis/master/projects/and-linux/image/plan_1_after_linux_start_android_service.svg)
+
+### 有待研究的问题
+
+1. Linux 与 Android 共有的操作有哪些，以至于不用修改Linux的程序就能适配与Android程序的通信。比如：打开浏览器？
+
+2. 设计一种中间层拦截判断通信请求的目的地，Android程序还是Linux程序。
+
+3. 等。
+
+## 4 am 命令启动Service的过程研究
+
 发现Android里面自带一个am命令可以启动Activity、Service等，研究它的实现：
 
 ![Alt text](https://cdn.rawgit.com/openthos/research-analysis/master/projects/and-linux/image/am.svg)
