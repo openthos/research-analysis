@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- 由 Microsoft Visio, SVG Export 生成 设想_1 - APP1 启动APP2中的一个Service需要在APP1 里发生的进程间通信过程.svg Page-1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="8.26772in" height="11.6929in"
+		viewBox="0 0 595.276 841.89" xml:space="preserve" color-interpolation-filters="sRGB" class="st18">
+	<v:documentProperties v:langID="2052" v:metric="true" v:viewMarkup="false">
+		<v:userDefs>
+			<v:ud v:nameU="msvNoAutoConnect" v:val="VT0(1):26"/>
+		</v:userDefs>
+	</v:documentProperties>
+
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:none;stroke:#000000;stroke-dasharray:3.6,2.16;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st2 {fill:#000000;font-family:Consolas;font-size:0.666664em}
+		.st3 {font-family:等线;font-size:1em}
+		.st4 {font-size:1em}
+		.st5 {fill:#dbeef3;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st6 {fill:#000000;font-family:等线;font-size:0.833336em}
+		.st7 {fill:#eeeaf2;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st8 {marker-end:url(#mrkr2-26);stroke:#000000;stroke-dasharray:5.25,3.75;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st9 {fill:#000000;fill-opacity:1;stroke:#000000;stroke-opacity:1;stroke-width:0.22935779816514}
+		.st10 {fill:#ffffff;stroke:none;stroke-linecap:butt}
+		.st11 {fill:#000000;font-family:等线;font-size:0.666664em}
+		.st12 {font-family:Consolas;font-size:1em}
+		.st13 {fill:#ffffff;stroke:none;stroke-linecap:butt;stroke-width:7.2}
+		.st14 {marker-end:url(#mrkr2-26);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st15 {fill:none;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st16 {marker-end:url(#mrkr2-92);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:0.5;stroke-width:0.75}
+		.st17 {fill:#000000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.22935779816514}
+		.st18 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<defs id="Markers">
+		<g id="lend2">
+			<path d="M 1 1 L 0 0 L 1 -1 L 1 1 " style="stroke:none"/>
+		</g>
+		<marker id="mrkr2-26" class="st9" v:arrowType="2" v:arrowSize="2" v:setback="4.36" refX="-4.36" orient="auto"
+				markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend2" transform="scale(-4.36,-4.36) "/>
+		</marker>
+		<marker id="mrkr2-92" class="st17" v:arrowType="2" v:arrowSize="2" v:setback="4.36" refX="-4.36" orient="auto"
+				markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend2" transform="scale(-4.36,-4.36) "/>
+		</marker>
+	</defs>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>页-1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<v:layer v:name="连接线" v:index="0"/>
+		<g id="shape38-1" v:mID="38" v:groupContext="shape" transform="translate(33.5906,-549.921)">
+			<title>矩形.38</title>
+			<desc>APP1 启动 APP2 中的一个 Service 需要在 APP1 里发生的进程间通信过程</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="221.528" cy="712.913" width="443.06" height="257.953"/>
+			<path d="M0 841.89 L443.06 841.89 L443.06 583.94 L0 583.94 L0 841.89 Z" class="st1"/>
+			<text x="8.4" y="595.39" class="st2" v:langID="2052"><v:paragraph/><v:tabList/>APP1 <tspan class="st3">启动</tspan><tspan
+						class="st4" v:langID="1033"> </tspan>APP2<tspan class="st4" v:langID="1033"> </tspan><tspan class="st3">中的一个</tspan><tspan
+						class="st4" v:langID="1033"> </tspan>Service<tspan class="st4" v:langID="1033"> </tspan><tspan class="st3">需要在</tspan> APP1 <tspan
+						class="st3">里发生的进程间通信过程</tspan></text>		</g>
+		<g id="shape15-12" v:mID="15" v:groupContext="shape" transform="translate(309.969,-718.441)">
+			<title>矩形.15</title>
+			<desc>System Server</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="78.3071" cy="808.299" width="156.62" height="67.1811"/>
+			<rect x="0" y="774.709" width="156.614" height="67.1811" class="st5"/>
+			<text x="48.2" y="787.71" class="st6" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>System Server</text>		</g>
+		<g id="shape17-15" v:mID="17" v:groupContext="shape" transform="translate(321.01,-750.472)">
+			<title>矩形.17</title>
+			<desc>ActivityManagerService</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="67.1742" cy="833.102" width="134.35" height="17.5748"/>
+			<rect x="0" y="824.315" width="134.348" height="17.5748" class="st7"/>
+			<text x="17.31" y="836.1" class="st6" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>ActivityManagerService</text>		</g>
+		<g id="shape20-18" v:mID="20" v:groupContext="shape" transform="translate(321.01,-725.528)">
+			<title>矩形.20</title>
+			<desc>…</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="67.1742" cy="833.102" width="134.35" height="17.5748"/>
+			<rect x="0" y="824.315" width="134.348" height="17.5748" class="st7"/>
+			<text x="63.68" y="836.1" class="st6" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>…</text>		</g>
+		<g id="shape23-21" v:mID="23" v:groupContext="shape" v:layerMember="0" transform="translate(168.236,-751.252)">
+			<title>动态连接线.23</title>
+			<desc>3. 发出请求启动 APP2 的 指定 Service</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="73.0411" cy="826.016" width="141.44" height="17.6036"/>
+			<path d="M0 834.8 L149.5 834.8" class="st8"/>
+			<rect v:rectContext="textBkgnd" x="7.42192" y="821.216" width="131.239" height="9.59985" class="st10"/>
+			<text x="7.42" y="828.42" class="st11" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>3. 发出请求启动 APP2 的 指定 Service</text>		</g>
+		<g id="shape24-29" v:mID="24" v:groupContext="shape" transform="translate(40.6772,-734.457)">
+			<title>矩形.24</title>
+			<desc>APP 1</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="63.7795" cy="818.008" width="127.56" height="47.7638"/>
+			<rect x="0" y="794.126" width="127.559" height="47.7638" class="st5"/>
+			<text x="51.08" y="807.13" class="st6" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>APP 1</text>		</g>
+		<g id="shape25-32" v:mID="25" v:groupContext="shape" transform="translate(46.063,-745.228)">
+			<title>矩形.25</title>
+			<desc>启动 APP2 的一个 Service</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="57.5433" cy="833.102" width="115.09" height="17.5748"/>
+			<rect x="0" y="824.315" width="115.087" height="17.5748" class="st7"/>
+			<text x="6.75" y="835.59" class="st11" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>启动<tspan class="st12"
+						v:langID="1033"> </tspan><tspan class="st12">APP</tspan><tspan class="st12">2</tspan><tspan class="st12"
+						v:langID="1033"> </tspan>的一个<tspan class="st12" v:langID="1033"> </tspan><tspan class="st12">Service</tspan> </text>		</g>
+		<g id="shape27-41" v:mID="27" v:groupContext="shape" transform="translate(309.969,-685.701)">
+			<title>矩形.27</title>
+			<desc>Service Manager</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="78.3071" cy="833.102" width="156.62" height="17.5748"/>
+			<rect x="0" y="824.315" width="156.614" height="17.5748" class="st5"/>
+			<text x="42.6" y="837.32" class="st6" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>Service<tspan
+						class="st4" v:langID="2052"> </tspan>Manager</text>		</g>
+		<g id="shape28-45" v:mID="28" v:groupContext="shape" v:layerMember="0" transform="translate(94.1697,-734.457)">
+			<title>动态连接线.28</title>
+			<desc>2.从 ServiceManager 获取 ActivityManagerService 服务</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="102.413" cy="871.937" width="199.65" height="17.6036"/>
+			<path d="M0 841.89 L0 881.86 L43.4 881.86 A2.3622 2.3622 0 0 1 48.12 881.86 L121.43 881.86 A2.3622 2.3622 0 1 1 126.16
+						 881.86 L212.53 881.86" class="st8"/>
+			<rect v:rectContext="textBkgnd" x="7.6883" y="867.137" width="189.45" height="9.59985" class="st13"/>
+			<text x="7.69" y="874.34" class="st11" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>2.从<tspan class="st4"
+						v:langID="1033"> </tspan>ServiceManager<tspan class="st4" v:langID="1033"> </tspan>获取 <tspan class="st4"
+						v:langID="1033">ActivityManagerService</tspan> 服务</text>		</g>
+		<g id="shape30-55" v:mID="30" v:groupContext="shape" transform="translate(40.6772,-609.449)">
+			<title>矩形.30</title>
+			<desc>内核</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="212.953" cy="821.551" width="425.91" height="40.6772"/>
+			<rect x="0" y="801.213" width="425.906" height="40.6772" class="st5"/>
+			<text x="202.95" y="814.21" class="st6" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>内核</text>		</g>
+		<g id="shape31-58" v:mID="31" v:groupContext="shape" transform="translate(47.7638,-614.835)">
+			<title>矩形.31</title>
+			<desc>/dev/binder</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="57.5433" cy="833.102" width="115.09" height="17.5748"/>
+			<rect x="0" y="824.315" width="115.087" height="17.5748" class="st7"/>
+			<text x="33.35" y="835.5" class="st2" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>/dev/binder</text>		</g>
+		<g id="shape32-61" v:mID="32" v:groupContext="shape" v:layerMember="0" transform="translate(65.4803,-734.457)">
+			<title>动态连接线.32</title>
+			<desc>1.向/dev/binder 获取 ServiceManager 服务</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="88.5827" cy="910.205" width="158.35" height="17.6036"/>
+			<path d="M7.09 841.89 L7.09 940.08" class="st14"/>
+			<rect v:rectContext="textBkgnd" x="14.5086" y="905.405" width="148.148" height="9.59985" class="st13"/>
+			<text x="14.51" y="912.6" class="st11" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>1.向<tspan class="st4"
+						v:langID="1033">/</tspan><tspan class="st4" v:langID="1033">dev</tspan><tspan class="st4" v:langID="1033">/</tspan><tspan
+						class="st4" v:langID="1033">b</tspan>inder 获取 ServiceManager 服务</text>		</g>
+		<g id="shape33-72" v:mID="33" v:groupContext="shape" transform="translate(196.087,-614.835)">
+			<title>矩形.33</title>
+			<desc>…</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="57.5433" cy="833.102" width="115.09" height="17.5748"/>
+			<rect x="0" y="824.315" width="115.087" height="17.5748" class="st7"/>
+			<text x="54.05" y="836.1" class="st6" v:langID="1033"><v:paragraph v:horizAlign="1"/><v:tabList/>…</text>		</g>
+		<g id="shape36-75" v:mID="36" v:groupContext="shape" v:layerMember="0" transform="translate(246.402,-578.268)">
+			<title>动态连接线.36</title>
+			<desc>虚线表示该过程是通过Binder连接实线为实际执行过程</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="-106.299" cy="834.803" width="208.27" height="17.6036"/>
+			<path d="M0 834.8 L42.91 834.8" class="st8"/>
+			<rect v:rectContext="textBkgnd" x="-205.336" y="830.003" width="198.073" height="9.59985" class="st13"/>
+			<text x="-205.34" y="837.2" class="st11" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>虚线表示该过程是通过Binder连接，实线为实际执行过程</text>		</g>
+		<g id="shape40-82" v:mID="40" v:groupContext="shape" transform="translate(245.807,-559.843)">
+			<title>矩形.40</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<rect x="0" y="826.362" width="43.114" height="15.5275" class="st5"/>
+		</g>
+		<g id="shape43-84" v:mID="43" v:groupContext="shape" transform="translate(36.6721,-558.055)">
+			<title>工作表.43</title>
+			<desc>一个蓝色方框表示一个进程</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="53.6114" cy="833.016" width="107.23" height="17.7481"/>
+			<rect x="0" y="824.142" width="107.223" height="17.7481" class="st15"/>
+			<text x="5.61" y="835.42" class="st11" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>一个蓝色方框表示一个进程</text>		</g>
+		<g id="shape69-87" v:mID="69" v:groupContext="shape" v:layerMember="0" transform="translate(87.0831,-736.157)">
+			<title>动态连接线.69</title>
+			<path d="M7.09 841.89 L7.09 942.37" class="st16"/>
+		</g>
+		<g id="shape70-93" v:mID="70" v:groupContext="shape" v:layerMember="0" transform="translate(118.843,-632.409)">
+			<title>动态连接线.70</title>
+			<path d="M0 841.89 L188.02 780.82" class="st16"/>
+		</g>
+		<g id="shape71-98" v:mID="71" v:groupContext="shape" v:layerMember="0" transform="translate(175.535,-758.339)">
+			<title>动态连接线.71</title>
+			<path d="M0 841.89 L-68.64 964.96" class="st16"/>
+		</g>
+		<g id="shape72-103" v:mID="72" v:groupContext="shape" v:layerMember="0" transform="translate(111.756,-632.409)">
+			<title>动态连接线.72</title>
+			<path d="M0 841.89 L201.84 723.92" class="st16"/>
+		</g>
+	</g>
+</svg>
