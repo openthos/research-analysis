@@ -14,7 +14,7 @@
 
 Binder的发送过程是通过JNI在C++层完成的。
 
-![Alt text](https://cdn.rawgit.com/openthos/research-analysis/master/projects/and-linux/image/plan_1_android-app1_start_adnroid-app2_call.svg)
+![Alt text](https://cdn.rawgit.com/openthos/research-analysis/cd448b296b59edd1d70f48d93b14b74c7282e234/projects/and-linux/image/plan_1_android-app1_start_adnroid-app2_call.svg)
 
 作为Intent发送方，如果从第一次IPC算起，其实需要三次Binder通信过程。
 
@@ -24,7 +24,7 @@ Binder的发送过程是通过JNI在C++层完成的。
 
 第三次向 ActivityManagerService 服务发出请求启动 APP2 的 指定 Service。
 
-![Alt text](https://cdn.rawgit.com/openthos/research-analysis/master/projects/and-linux/image/plan_1_android-app1_start_adnroid-app2_ipc.svg)
+![Alt text](https://cdn.rawgit.com/openthos/research-analysis/cd448b296b59edd1d70f48d93b14b74c7282e234/projects/and-linux/image/plan_1_android-app1_start_adnroid-app2_ipc.svg)
 
 ## 2 我之前设想的思路
 
