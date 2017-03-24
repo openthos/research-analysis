@@ -52,7 +52,7 @@ Binder的发送过程是通过JNI在C++层完成的。
 
 若目标是Android中的Service，则传递给原有的Bidner，正常处理。
 
-![Alt text](https://cdn.rawgit.com/openthos/research-analysis/master/projects/and-linux/image/plan_1_after_linux_start_android_service.svg)
+![Alt text](https://cdn.rawgit.com/openthos/research-analysis/master/projects/and-linux/image/plan_1_after_android_start_android_service.svg)
 
 ### 有待研究的问题
 
