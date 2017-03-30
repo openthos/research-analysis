@@ -18,6 +18,7 @@ Iago Attacks: Why the System Call API is a Bad Untrusted RPC Interface.
  * VC3: Trustworthy Data Analytics in the Cloud using SGX
  * Observing and Preventing Leakage in MapReduce
  * SecureKeeper: Confidential ZooKeeper using Intel SGX
+ * Ariadne: A Minimal Approach to State Continuity
 
 ### MISC:
  * AsyncShock: Exploiting synchronisation bugs in intel SGX enclaves

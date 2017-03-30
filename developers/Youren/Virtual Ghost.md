@@ -20,7 +20,7 @@ In SVA system, all the instruction can be checked before they execution.
   b. load a malicious program file when the apps launching.   
   c. The OS could transfer the control to an malicious signal handler.   
   d. The OS could link in a malicious version of dynamically loaded library.   
-4. Interrupted Program State Attacks   
+4. Interrupt Program State Attacks   
   a. The OS might read the Program State to get some sensitive information.   
   b. It can modifiy the State to redirect the apps.   
 5. Attacks through System Services.   
