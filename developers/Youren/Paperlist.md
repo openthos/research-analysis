@@ -7,12 +7,14 @@
 
 ## Keep application from OS
 Iago Attacks: Why the System Call API is a Bad Untrusted RPC Interface.
+
 ## SGX:
 ### In kernel
  * Shielding Applications from an Untrusted Cloud with Haven.
  * SCONE: Secure Linux containers with Intel SGX.
- * Deconstructing Xen
+ * Isolating Operating System Components with Intel SGX
  * Panoply: Low-TCB Linux applications with SGX enclaves
+ * Ariadne: A Minimal Approach to State Continuity
 
 ### Cloud related SGX paper:
  * VC3: Trustworthy Data Analytics in the Cloud using SGX
@@ -23,3 +25,7 @@ Iago Attacks: Why the System Call API is a Bad Untrusted RPC Interface.
 ### MISC:
  * AsyncShock: Exploiting synchronisation bugs in intel SGX enclaves
  * Sanctum: Minimal Hardware Extensions for Strong Software Isolation
+
+### Ref
+ * Are Virtual Machine Monitors Microkernels Done Right?
+ * Deconstructing Xen (Something can be implement and compared with SGX)
