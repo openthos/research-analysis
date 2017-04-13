@@ -42,7 +42,20 @@ EndFor
 return (offset + size_last_x); (* compute_xsave_size(XFRM), see “ECREATE—Create an SECS page in the Enclave
 Page Cache”*)
 ```
+table 在validate_secs中的使用：
+```c
+for (i = 2; i < 64; i++) {
+	tmp = isgx_ssaframesize_tbl[i];
+	if (((1 << i) & secs->xfrm) && (tmp > needed_ssaframesize))
+		needed_ssaframesize = tmp;
+}
 
+if (!secs->ssaframesize || !needed_ssaframesize ||
+		needed_ssaframesize > secs->ssaframesize)
+	return -EINVAL;
+
+```
+因此这段代码写的无法解释，感觉是没写好。
 
 之后：
 通过CPUID 判断一下最大支持的enclave size。
