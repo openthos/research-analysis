@@ -1,5 +1,19 @@
 本周工作进展和下周计划
 
+2017.04.13~2017.04.20
+
+- 本周工作计划点1: Reading the Intel SGX explained.
+
+- 完成情况： finished.
+
+- 本周工作计划点2: Reading and use the Intel SGX SDK
+
+- 完成情况： Finished.
+
+
+- 下周计划：
+	1. Know serverless and it's tech, and think about what's the benefit with sgx, what's the challenge it might encounter.
+
 2017.04.03~2017.04.13
 
 - 本周工作计划点1: Reading the Intel SGX explained.

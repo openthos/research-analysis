@@ -1,5 +1,5 @@
-isgx_init
-isgx_init_platform:
+## isgx_init
+### sgx_init_platform:
 1. 判断是否支持sgx
 2. 如果CPU 有XSAVE 功能，则配置SAVE-Feature Request Mask (XFRM)的bits。并根据xfrm的配置确定ssaframesize的大小。
 ```c
@@ -19,14 +19,9 @@ if (boot_cpu_has(X86_FEATURE_OSXSAVE)) {
 而后，通过CPUid读取eax ：extended state feature 的bytes 长度； ebx：这个component save area offset 是多少
 
 An enclave thread’s execution context consists of the general-purpose registers (GPRs) and the result of the XSAVE instruction (§ 2.6). Therefore, the size of the execution context depends on the requested-feature bitmap (RFBM) used by to XSAVE. All the code in an enclave uses the same RFBM, which is declared in the XFRM enclave attribute (§ 5.2.2). The number of EPC pages reserved for each SSA, specified in SSAFRAMESIZE, must 7 be large enough to fit the XSAVE output for the feature bitmap specified by XFRM.
-																												-- intel sgx explained
+		-- intel sgx explained
 
-
-
-If the processor does support XSAVE, the length of the XSAVE area depends on SECS.ATTRIBUTES.XFRM. The
-length would be equal to what CPUID.(EAX=0DH, ECX= 0):EBX would return if XCR0 were set to XFRM. The
-following pseudo code illustrates how software can calculate this length using XFRM as the input parameter without
-modifying XCR0:
+If the processor does support XSAVE, the length of the XSAVE area depends on SECS.ATTRIBUTES.XFRM. The length would be equal to what CPUID.(EAX=0DH, ECX= 0):EBX would return if XCR0 were set to XFRM. The following pseudo code illustrates how software can calculate this length using XFRM as the input parameter without modifying XCR0:
 ```
 offset = 576;
 size_last_x = 0;
