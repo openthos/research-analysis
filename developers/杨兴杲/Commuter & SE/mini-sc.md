@@ -1,3 +1,7 @@
+代码来自xi wang的[github](https://github.com/xiw/mini-mc)  
+同时阅读[他的博客](kqueue.org/blog/2015005/26/mini-mc)对于理解应该会有帮助  
+This implementation comes from the paper [Dart: Directed automated random testing](https://wkr.io/public/ref/godefroid2005dart.pdf) directly
+
 # Codes
 
 ## python
@@ -46,4 +50,4 @@ Dart随机选取初始值，运行程序至结束。之后计算最后一个约�
 		= p * -q
 ```
 得到新的``solver``作为约束之后（Symbolic），计算满足该约束的值（Concrete），与得到的新约束一同带入程序进行计算（事实上新的约束在下一次运算中作为一个约束）。**不过事实上最有意思的部分，也就是通过约束获得具体值的过程（我猜是线性规划），交给z3来完成了，具体的实现没有去了解。**  
-如此，证明这样确实走入了另一个分支，而且不断向上或向下，遍历完所有的分支。同时产生了每种遍历方式的参数值。
+如此，证明这样确实走入了另一个分支，而且通过深度优先遍历不断向上或向下，遍历完所有的分支。同时产生了每种遍历方式的参数值。

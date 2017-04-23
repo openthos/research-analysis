@@ -6,4 +6,5 @@
 
 # Concolic testers
 - [DART:Directed automated random testing](https://wkr.io/public/ref/godefroid2005dart.pdf)
+``这篇文章是xiw的mini-mc的原理，对于concolic的实现给出了比较具体的定义和实现过程。不过其中的testgen和commuter的很不一样，读一下里面的定义和伪代码对于理解concolic还是很有用的。``
 - [CUTE: A concolic unit testing engine for C](http://delivery.acm.org/10.1145/1090000/1081750/p263-sen.pdf?ip=101.5.242.74&id=1081750&acc=ACTIVE%20SERVICE&key=BF85BBA5741FDC6E%2E587F3204F5B62A59%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&CFID=926132909&CFTOKEN=12819413&__acm__=1492677212_ca86dca9561b2f0556bf397a6258e28c)
