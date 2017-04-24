@@ -29,17 +29,35 @@ AppInsight论文主要针对applications层APP的二进制代码进行动态插�
   * 
 * **新线程的run函数** 
 * **Handler对象的sandMessage函数** 
+  * frameworks/base/core/java/android/os/Handler.java 511行
+  * Handler对象有多种发送异步消息的方法，通过对这些方法进行分析，总结如下：
+    * post(Runnable r)、postDelayed(Runnable r, long delayMillis)、sendEmptyMessageDelayed(int what, long delayMillis)sendMessage(Message msg)会依次调用sendMessageDelayed(getPostMessage(r), 0)sendMessageAtTime(msg, SystemClock.uptimeMillis() + delayMillis)，最终调用enqueueMessage(queue, msg, uptimeMillis)方法实现异步消息的发送
+    * postAtTime(Runnable r, long uptimeMillis)、postAtTime(Runnable r, Object token, long uptimeMillis)、sendEmptyMessageAtTime(int what, long uptimeMillis)会调用sendMessageAtTime(getPostMessage(r), uptimeMillis)最终调用enqueueMessage(queue, msg, uptimeMillis)方法实现异步消息的发送
+    * postAtFrontOfQueue(Runnable r)会调用sendMessageAtFrontOfQueue(getPostMessage(r))最终调用enqueueMessage(queue, msg, 0)方法实现异步消息的发送
+  * 不论Handler对象使用哪种发送异步消息的方法，最终都会调用enqueueMessage(queue, msg, 0)（632行）方法实现异步消息的发送，所以在这个函数里进行插桩
+   * enqueueMessage(queue, msg, 0)中通过queue.enqueueMessage(msg, uptimeMillis)将异步消息放入创建Handler对象的线程队列中，最后通过Looper循环取出消息进行处理
+  * 根据对Message、Handler、Looper机制的学习，得到msg.target保存的是创建Handler对象的线程，即异步消息最终进行处理的线程，根据Message、Handler、Looper的关系，可以通过msg.target.mLooper.mThread.getName()获取到异步消息最终进行处理的线程名（**线程id没有想到有效的方法获取**）
 * **Handler对象的handleMessage函数** 
 ### 4.log应该输出什么内容？
 * **开启新线程的onClick函数** 
-  * 在li.mOnClickListener.onClick(this)的前后分别打log，分别输入线程的id和name
+  * 在li.mOnClickListener.onClick(this)的前后分别打log，分别输出线程的id和name，实现获取主线程处理click事件的执行时间
   
   ```
   Log.e("LEILOG","onClick()start-"+android.os.Process.myTid()+"-"+Thread.currentThread().getName());
   li.mOnClickListener.onClick(this);
   Log.e("LEILOG","onClick()end-"+android.os.Process.myTid()+"-"+Thread.currentThread().getName());
   ```
+  
 * **新线程的start函数** 
 * **新线程的run函数** 
 * **Handler对象的sandMessage函数** 
+  * 在return queue.enqueueMessage(msg, uptimeMillis);的前面打log，分别输出发送异步消息的线程id和name与处理异步消息的线程名，实现获取获取从子线程到主线程的异步调用因果关系
+  
+   ```
+   if (!msg.isAsynchronous()){   
+    Log.e("LEILOG","enqueueMessage()start-"+android.os.Process.myTid()+"-"+Thread.currentThread().getName()+"-"+msg.target.mLooper.mThread.getName());
+   }
+   return queue.enqueueMessage(msg, uptimeMillis);
+   ```
+
 * **Handler对象的handleMessage函数** 
