@@ -1,5 +1,8 @@
 本周工作进展和下周计划
 
+>> chyyuu serverless service+的综述在问题？值得与SGX结合的地方在哪里？目前已有的研究现状如何？ 你对此serverless service+SGX的想法啥？有何创新性？ 希望周四能够看到你的汇报。
+
+
 2017.04.13~2017.04.20
 
 - 本周工作计划点1: Reading the Intel SGX explained.
