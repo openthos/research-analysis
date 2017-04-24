@@ -35,9 +35,12 @@ AppInsight论文主要针对applications层APP的二进制代码进行动态插�
     * postAtTime(Runnable r, long uptimeMillis)、postAtTime(Runnable r, Object token, long uptimeMillis)、sendEmptyMessageAtTime(int what, long uptimeMillis)会调用sendMessageAtTime(getPostMessage(r), uptimeMillis)最终调用enqueueMessage(queue, msg, uptimeMillis)方法实现异步消息的发送
     * postAtFrontOfQueue(Runnable r)会调用sendMessageAtFrontOfQueue(getPostMessage(r))最终调用enqueueMessage(queue, msg, 0)方法实现异步消息的发送
   * 不论Handler对象使用哪种发送异步消息的方法，最终都会调用enqueueMessage(queue, msg, 0)（632行）方法实现异步消息的发送，所以在这个函数里进行插桩
-   * enqueueMessage(queue, msg, 0)中通过queue.enqueueMessage(msg, uptimeMillis)将异步消息放入创建Handler对象的线程队列中，最后通过Looper循环取出消息进行处理
+  * enqueueMessage(queue, msg, 0)中通过queue.enqueueMessage(msg, uptimeMillis)将异步消息放入创建Handler对象的线程队列中，最后通过Looper循环取出消息进行处理
   * 根据对Message、Handler、Looper机制的学习，得到msg.target保存的是创建Handler对象的线程，即异步消息最终进行处理的线程，根据Message、Handler、Looper的关系，可以通过msg.target.mLooper.mThread.getName()获取到异步消息最终进行处理的线程名（**线程id没有想到有效的方法获取**）
 * **Handler对象的handleMessage函数** 
+  * frameworks/base/core/java/android/os/Handler.java 93行 
+  * dispatchMessage(Message msg)中通过handleMessage(msg);调用Applications层APP的handleMessage函数
+  * Handler对象有多种发送异步消息的方法，所以有多种处理异步消息的方法，并且Handler对象的构造函数也有多种，而dispatchMessage(Message msg)先对多种情况进行了判断，然后根据不同的情况调用不同的函数进行异步消息的处理，所以在dispatchMessage(Message msg)的首尾插桩
 ### 4.log应该输出什么内容？
 * **开启新线程的onClick函数** 
   * 在li.mOnClickListener.onClick(this)的前后分别打log，分别输出线程的id和name，实现获取主线程处理click事件的执行时间
@@ -55,9 +58,33 @@ AppInsight论文主要针对applications层APP的二进制代码进行动态插�
   
    ```
    if (!msg.isAsynchronous()){   
-    Log.e("LEILOG","enqueueMessage()start-"+android.os.Process.myTid()+"-"+Thread.currentThread().getName()+"-"+msg.target.mLooper.mThread.getName());
+    Log.e("LEILOG","enqueueMessage()start-"+android.os.Process.myTid()+"-"+Thread.currentThread().
+    getName()+"-"+msg.target.mLooper.mThread.getName());
    }
    return queue.enqueueMessage(msg, uptimeMillis);
    ```
-
+  * **获取的log中有很多无关的post和enqueueMessage出现，初步分析和Choreographer等有关，为了更清楚的获取我们打的log，判断log是否正确且有用，此处使用!msg.isAsynchronous()对系统其他的log实现过滤，原理还有待进一步研究，之后会继续分析系统的log是为何产生的，从而获得系统与应用运行的影响**
 * **Handler对象的handleMessage函数** 
+  * 在dispatchMessage(Message msg)函数的首尾分别打log，分别输出线程的id和name，实现获取主线程更新ui的执行时间
+  ```
+  public void dispatchMessage(Message msg) {
+         if (!msg.isAsynchronous() ){
+             Log.e("LEILOG","callback or handle start-"+android.os.Process.myTid()+"-"+Thread.
+             currentThread().getName());
+         }
+         if (msg.callback != null) {
+             handleCallback(msg);
+         } else {
+             if (mCallback != null) {
+                 if (mCallback.handleMessage(msg)) {
+                     return;
+                 }
+             }
+             handleMessage(msg);
+         }
+         if (!msg.isAsynchronous()){
+             Log.e("LEILOG","callback or handle end-"+android.os.Process.myTid()+"-"+Thread.
+             currentThread().getName());
+         }
+     }
+  ```
