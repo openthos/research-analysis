@@ -1,6 +1,8 @@
 import z3
 import copy
 
+#Hold a counter '#' to record 'name'
+#Give a thesaurus of 'name' with 'name.#'
 def fresh_name(name, map={}):
     if name in map:
         map[name] += 1
@@ -28,8 +30,10 @@ class Result(object):
         new.state = If(cond, self.state, other.state)
         return new
 
+
 class State(object):
     def __init__(self):
+	# a rename of 'inode_nlink'
         self.inode_nlink = z3.Function(fresh_name('inode_nlink'), z3.IntSort(), z3.IntSort())
         self.fname_inode = z3.Function(fresh_name('fname_inode'), z3.IntSort(), z3.IntSort())
 
