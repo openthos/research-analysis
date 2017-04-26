@@ -26,8 +26,40 @@ AppInsight论文主要针对applications层APP的二进制代码进行动态插�
   * frameworks/base/core/java/android/view/View.java 4798行
   * performClick()中通过li.mOnClickListener.onClick(this);调用Applications层APP的onClick函数
 * **新线程的start函数** 
-  * 
+  * libcore/libart/src/main/java/java/lang/Thread.java 1061行
+  * thread.start()方法的执行交给了nativeCreate方法，并且把当前Thread的实例自己传了进去
+  ```
+  public synchronized void start() {
+         checkNotStarted();
+         hasBeenStarted = true;
+         nativeCreate(this, stackSize, daemon);
+     }
+  ```
+  * art/runtime/native/java_lang_Thread.cc 47行
+  * nativeCreate方法，换了方法名，名字换成了CreateNativeThread
+  ```
+  static void Thread_nativeCreate(JNIEnv* env, jclass, jobject java_thread, jlong stack_size,jboolean daemon) {
+   Thread::CreateNativeThread(env, java_thread, stack_size, daemon == JNI_TRUE);
+ }
+  ```
+  * art/runtime/thread.cc 288行
+  * 把java层的run方法实体传递给子线程
+  ```
+  child_thread->tlsPtr_.jpeer = env->NewGlobalRef(java_peer);
+  ```
+  * 创建新线程的方法，返回一个标志
+  ```
+  int pthread_create_result = pthread_create(&new_pthread, &attr, Thread::CreateCallback, child_thread);
+  ```
+  * Invoke the 'run' method of our java.lang.Thread.
+  ```
+  mirror::Object* receiver = self->tlsPtr_.opeer;
+  jmethodID mid = WellKnownClasses::java_lang_Thread_run;
+  InvokeVirtualOrInterfaceWithJValues(soa, receiver, mid, nullptr);
+  ```
 * **新线程的run函数** 
+  * libcore/libart/src/main/java/java/lang/Thread.java 816行
+  * **现在只是在run函数的头和结尾处打log，调用新线程的run函数的函数位于native层，应该在那个函数里打log，如何打？**  
 * **Handler对象的sandMessage函数** 
   * frameworks/base/core/java/android/os/Handler.java 511行
   * Handler对象有多种发送异步消息的方法，通过对这些方法进行分析，总结如下：
@@ -53,6 +85,19 @@ AppInsight论文主要针对applications层APP的二进制代码进行动态插�
   
 * **新线程的start函数** 
 * **新线程的run函数** 
+  * 在run函数的头和结尾处打log，分别输出线程的id和name，实现获取工作线程异步工作的执行时间
+  
+  ```
+  public void run() {
+         Logger logger = Logger.getLogger("LEILOG");
+         logger.info("run()start"+Thread.currentThread().getId()+"-"+Thread.     currentThread().getName());
+         if (target != null) {
+             target.run();
+         }
+         logger.info("run()end"+Thread.currentThread().getId()+"-"+Thread.cu     rrentThread().getName());
+     }
+  ```
+  
 * **Handler对象的sandMessage函数** 
   * 在return queue.enqueueMessage(msg, uptimeMillis);的前面打log，分别输出发送异步消息的线程id和name与处理异步消息的线程名，实现获取获取从子线程到主线程的异步调用因果关系
   
