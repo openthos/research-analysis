@@ -26,8 +26,8 @@ AppInsight论文主要针对applications层APP的二进制代码进行动态插�
   * frameworks/base/core/java/android/view/View.java 4798行
   * performClick()中通过li.mOnClickListener.onClick(this);调用Applications层APP的onClick函数
 * **新线程的start函数** 
-  * libcore/libart/src/main/java/java/lang/Thread.java 1061行
-  * thread.start()方法的执行交给了nativeCreate方法，并且把当前Thread的实例自己传了进去
+  * libcore/libart/src/main/java/java/lang/Thread.java 1061行 start()
+  * 交给了nativeCreate方法执行，并且把当前Thread的实例自己传了进去
   
   ```
   public synchronized void start() {
@@ -37,7 +37,7 @@ AppInsight论文主要针对applications层APP的二进制代码进行动态插�
      }
   ```
   
-  * art/runtime/native/java_lang_Thread.cc 47行
+  * art/runtime/native/java_lang_Thread.cc 47行 nativeCreate
   * nativeCreate方法，换了方法名，名字换成了CreateNativeThread
   
   ```
@@ -47,7 +47,7 @@ AppInsight论文主要针对applications层APP的二进制代码进行动态插�
   }
   ```
   
-  * art/runtime/thread.cc 288行
+  * art/runtime/thread.cc 288行 CreateNativeThread
   * 把java层的run方法实体传递给子线程
   
   ```
@@ -60,6 +60,7 @@ AppInsight论文主要针对applications层APP的二进制代码进行动态插�
   int pthread_create_result = pthread_create(&new_pthread, &attr, Thread::CreateCallback, child_thread);
   ```
   
+  * art/runtime/thread.cc 145行 CreateCallback
   * Invoke the 'run' method of our java.lang.Thread.
   
   ```
@@ -67,6 +68,7 @@ AppInsight论文主要针对applications层APP的二进制代码进行动态插�
   jmethodID mid = WellKnownClasses::java_lang_Thread_run;
   InvokeVirtualOrInterfaceWithJValues(soa, receiver, mid, nullptr);
   ```
+  * **如何找到主线程和工作线程的因果关系？** 
   
 * **新线程的run函数** 
   * libcore/libart/src/main/java/java/lang/Thread.java 816行
