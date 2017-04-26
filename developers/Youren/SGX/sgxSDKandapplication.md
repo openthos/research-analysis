@@ -244,6 +244,7 @@ ret = _create_enclave(!!debug, fd, file, NULL, launch_token, launch_token_update
 ## Attestation
 ### Local Attestation
 创建DH key 交换的过程：
+这个过程和普通的DKE 交换相比，多了互相report 和 verifer 的过程。
 create_session函数
 1. Enclave 1 调用sgx_dh_init_session，作为一个session的发起者
 2. Ocall 向 untrusted 请求帮助，发送请求给enclave 2
@@ -251,10 +252,10 @@ create_session函数
 4. Enclave 2 调用 sgx_dh_init_session 来初始化自己作为session 的responer（session_request）
 5. Enclave 2 生成DH message 1 （ga || TARGETINFO）
 6. DH message 1 发给Enclave 1 ，通过Ocall 和Ecall
-7. Enclave 处理Messgae 1，生成DH message 2
+7. Enclave 处理Messgae 1，生成DH message 2 gb||[Report Enclave 1(h(ga || gb))]SMK.
 8. DH message 2 发送给 Enclave 2， 通过Ocall 和Ecall
 9. Enclave 2 处理Message 2 并生成Message 3，并将Message 通过Untrusted code 发送给Enclave 1.
-10. Enclave 2 处理Message 3 ，建立session
+10. Enclave 2 处理Message 3[ReportEnclave2(h(gb || ga)) || Optional Payload]SMK. ，建立session
 11. 接下来的消息就在AEK 的保护下进行
 
 ### 如何进行私密的通信

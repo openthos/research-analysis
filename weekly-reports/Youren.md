@@ -1,7 +1,36 @@
 本周工作进展和下周计划
+2017.04.13~2017.04.20
+
+- 本周工作计划点1: Know serverless.
+
+- 完成情况： finished.
+
+- 本周工作计划点2: Reading papers and find new ideas/problems.
+
+- 完成情况： Finished.
+
+
+- 下周计划：
+	1. Know serverless and it's tech, and think about what's the benefit with sgx, what's the challenge it might encounter.
 
 >> chyyuu： serverless service+的综述在问题？值得与SGX结合的地方在哪里？目前已有的研究现状如何？ 你对此serverless service+SGX的想法啥？有何创新性？ Tian Hongliang's Ph.D Thesis有关第4章的内容，请分析如何定位问题的，发现了哪些问题，具体解决方法是什么，如何做测试分析评价的，还有哪些问题没有解决，引入了哪些新问题，能否重现其实验结果？希望周四能够看到你的汇报。
 
+如何定位问题
+实际在使用SGX 的SDK 开发应用程序时，这些问题很快就会暴露出来。
+发现了哪些问题
+SGX中的Library OS 需要syscall的支持，而Syscall需要换入换出Enclave
+具体解决方法
+实现异步的换入换出和可抢占的enclave 内多线程
+如何测试分析评价
+分别对单线程和多线程的程序进行性能测试。
+哪些问题没有解决
+SGX 内存过小的问题。
+
+引入了哪些新问题
+将非核心功能下放至host 操作系统，SGXkernel 对kernel 的需求更多，attack surface 更大。
+
+重现实验结果
+可以基于开源的graphene系统，将他的工作重现，并测试。
 
 2017.04.13~2017.04.20
 
