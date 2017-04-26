@@ -28,6 +28,7 @@ AppInsight论文主要针对applications层APP的二进制代码进行动态插�
 * **新线程的start函数** 
   * libcore/libart/src/main/java/java/lang/Thread.java 1061行
   * thread.start()方法的执行交给了nativeCreate方法，并且把当前Thread的实例自己传了进去
+  
   ```
   public synchronized void start() {
          checkNotStarted();
@@ -35,28 +36,38 @@ AppInsight论文主要针对applications层APP的二进制代码进行动态插�
          nativeCreate(this, stackSize, daemon);
      }
   ```
+  
   * art/runtime/native/java_lang_Thread.cc 47行
   * nativeCreate方法，换了方法名，名字换成了CreateNativeThread
+  
   ```
-  static void Thread_nativeCreate(JNIEnv* env, jclass, jobject java_thread, jlong stack_size,jboolean daemon) {
-   Thread::CreateNativeThread(env, java_thread, stack_size, daemon == JNI_TRUE);
- }
+  static void Thread_nativeCreate(JNIEnv* env, jclass, jobject java_thread, jlong stack_size,
+  jboolean daemon) {
+     Thread::CreateNativeThread(env, java_thread, stack_size, daemon == JNI_TRUE);
+  }
   ```
+  
   * art/runtime/thread.cc 288行
   * 把java层的run方法实体传递给子线程
+  
   ```
   child_thread->tlsPtr_.jpeer = env->NewGlobalRef(java_peer);
   ```
+  
   * 创建新线程的方法，返回一个标志
+  
   ```
   int pthread_create_result = pthread_create(&new_pthread, &attr, Thread::CreateCallback, child_thread);
   ```
+  
   * Invoke the 'run' method of our java.lang.Thread.
+  
   ```
   mirror::Object* receiver = self->tlsPtr_.opeer;
   jmethodID mid = WellKnownClasses::java_lang_Thread_run;
   InvokeVirtualOrInterfaceWithJValues(soa, receiver, mid, nullptr);
   ```
+  
 * **新线程的run函数** 
   * libcore/libart/src/main/java/java/lang/Thread.java 816行
   * **现在只是在run函数的头和结尾处打log，调用新线程的run函数的函数位于native层，应该在那个函数里打log，如何打？**  
@@ -90,11 +101,11 @@ AppInsight论文主要针对applications层APP的二进制代码进行动态插�
   ```
   public void run() {
          Logger logger = Logger.getLogger("LEILOG");
-         logger.info("run()start"+Thread.currentThread().getId()+"-"+Thread.     currentThread().getName());
+         logger.info("run()start"+Thread.currentThread().getId()+"-"+Thread.currentThread().getName());
          if (target != null) {
              target.run();
          }
-         logger.info("run()end"+Thread.currentThread().getId()+"-"+Thread.cu     rrentThread().getName());
+         logger.info("run()end"+Thread.currentThread().getId()+"-"+Thread.currentThread().getName());
      }
   ```
   
@@ -108,9 +119,11 @@ AppInsight论文主要针对applications层APP的二进制代码进行动态插�
    }
    return queue.enqueueMessage(msg, uptimeMillis);
    ```
+   
   * **获取的log中有很多无关的post和enqueueMessage出现，初步分析和Choreographer等有关，为了更清楚的获取我们打的log，判断log是否正确且有用，此处使用!msg.isAsynchronous()对系统其他的log实现过滤，原理还有待进一步研究，之后会继续分析系统的log是为何产生的，从而获得系统与应用运行的影响**
 * **Handler对象的handleMessage函数** 
   * 在dispatchMessage(Message msg)函数的首尾分别打log，分别输出线程的id和name，实现获取主线程更新ui的执行时间
+  
   ```
   public void dispatchMessage(Message msg) {
          if (!msg.isAsynchronous() ){
