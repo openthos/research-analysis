@@ -148,3 +148,18 @@ AppInsight论文主要针对applications层APP的二进制代码进行动态插�
          }
      }
   ```
+  ## 5.实验结果
+  
+  ```
+  04-27 14:45:03.978 25162 25162 E LEILOG  : onClick()start-25162-main
+  04-27 14:45:03.978 25162 25162 E art     : LEILOG CreateNativeThread 
+  04-27 14:45:03.978 25162 25162 E LEILOG  : onClick()end-25162-main
+  04-27 14:45:03.978 25162 25162 E LEILOG  : callback or handle end-25162-main
+  04-27 14:45:03.978 25162 25162 E LEILOG  : callback or handle start-25162-main
+  04-27 14:45:03.978 25162 25162 E LEILOG  : callback or handle end-25162-main
+  04-27 14:45:03.978 25162 25187 I LEILOG  : run()start-140017608083456-Thread-172
+  04-27 14:45:03.978 25162 25187 E LEILOG  : enqueueMessage()start-25187-Thread-172-main
+  04-27 14:45:03.978 25162 25187 I LEILOG  : run()end-140017608083456-Thread-172
+  04-27 14:45:03.985 25162 25162 E LEILOG  : callback or handle start-25162-main
+  04-27 14:45:03.986 25162 25162 E LEILOG  : callback or handle end-25162-main
+  ```
