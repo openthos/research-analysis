@@ -30,21 +30,28 @@
 
 ```
 #### thread开启事件
-  - thread开启事件，因为thread的开启是调用的java.lang包的thread.java文件，不好对其修改，所以对thread.run()调用的handleCallback()进行插Log，具体代码如下：
+  - thread开启事件，因为thread的开启是调用的java.lang包的thread.java文件，应用层的start首先调用的是libcore的start，然后转调C++层，最后调libcore的run()方法，因此添加的Log如下：
 ```
-代码地址：frameworks/base/core/java/android/os/handler.java
-    /×
-    handleCallback只调用一个函数：message.callback.run()，callback在Message.java中是Runnable的对象，
-    所以最后handleCallback调用的就是Runnable的run方法
-    ×/
-       
-       private static void handleCallback(Message message) {
-761        message.callback.run();
-762       //  为了防止打印无关的Log，if中进行了条件判断，
-764       if (!message.isAsynchronous() && message.target.getClass().getName() != "android.view.ViewRootImpl$ViewRootHandler"
-765         && message.target.getClass().getName() != "com.android.internal.view.IInputConnectionWrapper$MyHandler"){
-766         Log.i("aaaaaaaa","new Thread start   "+android.os.Process.myTid()+" "+message.target.mLooper.mThread.getName());}
-767     }
+代码地址：libcore/libart/src/main/java/java/lang/Thread.java
+
+1086     public synchronized void start() {
+1087         Log("aaaaaaaa","Thread start");
+1088         checkNotStarted();
+1089 
+1090         hasBeenStarted = true;
+1091 
+1092         nativeCreate(this, stackSize, daemon);
+1093     }
+
+ 842     public void run() {
+ 843         Log("aaaaaaaa","new Thread start  ");
+ 844         if (target != null) {
+ 845             target.run();
+ 846         }
+ 847         Log("aaaaaaaa","new Thread end  " );
+ 848     }
+   
+   
 ```
 #### sendMessage事件
   - handler.sendMessage事件，应用层的Handler发送消息在子线程完成，且有send和post两种方式，但是不管那种方式最后的调用函数归结为为sendMessageAtTime和
