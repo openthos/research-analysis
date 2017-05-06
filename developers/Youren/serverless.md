@@ -62,6 +62,8 @@ SGX feature
 
 Serverless + SGX
 首先，FaaS 作为一个云计算的模式，能够被SGX secure本身就是一个不错的工作。
+同时，可以改变已有的thread model。既然Function
+
 microservices with unikernel
 
 Why unikernel?

@@ -1,5 +1,19 @@
 本周工作进展和下周计划
-2017.04.13~2017.04.20
+2017.04.27~2017.05.6
+
+- 本周工作计划点1: Read more papers
+
+- 完成情况： finished.
+
+- 本周工作计划点2: find new idea
+
+- 完成情况： Finished.
+
+
+- 下周计划：
+	1. give a sketch of solution of current ideas
+
+2017.04.20~2017.04.27
 
 - 本周工作计划点1: Know serverless.
 
