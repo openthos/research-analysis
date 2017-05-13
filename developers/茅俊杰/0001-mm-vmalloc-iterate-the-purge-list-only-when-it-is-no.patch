@@ -1,0 +1,95 @@
+From 9a5504113926c697e8efb6369da69eefecfbd71a Mon Sep 17 00:00:00 2001
+From: Junjie Mao <junjie.mao@enight.me>
+Date: Sat, 13 May 2017 10:18:16 +0800
+Subject: [PATCH] mm/vmalloc: iterate the purge list only when it is not NULL
+
+Clang -O2, without the explicit check, generates wrong code which
+executes the loop body regardless of the condition and thus leads to
+invalid memory accesses.
+
+A minimal example that illustrates the bug is attached below.
+
+------------------------------------------------------------------------
+
+struct llist_head {
+	struct llist_node *first;
+};
+
+struct llist_node {
+	struct llist_node *next;
+};
+
+	const typeof( ((type *)0)->member ) *__mptr = (ptr);	\
+	(type *)( (char *)__mptr - offsetof(type,member) );})
+
+/**
+ * llist_entry - get the struct of this entry
+ * @ptr:	the &struct llist_node pointer.
+ * @type:	the type of the struct this is embedded in.
+ * @member:	the name of the llist_node within the struct.
+ */
+	container_of(ptr, type, member)
+
+	for ((pos) = llist_entry((node), typeof(*(pos)), member);	\
+	     &(pos)->member != NULL;					\
+	     (pos) = llist_entry((pos)->member.next, typeof(*(pos)), member))
+
+struct va {
+	int i;
+	struct llist_node purge_list;
+};
+
+struct llist_node *valist = 0;
+
+int main(int argc, char *argv[]) {
+	struct va *va;
+	int nr = 0;
+
+	llist_for_each_entry(va, valist, purge_list) {
+		nr += 1;
+		if (nr > 10) {
+			printf("Buggy!\n");
+			return 1;
+		}
+	}
+
+	printf("%d\n", nr);
+	return 0;
+}
+
+------------------------------------------------------------------------
+
+With Clang 3.6.2 or 4.0.1, the program compiled with 'clang -O0' prints
+'0', while that with 'clang -O2' prints 'Buggy!'.
+
+Signed-off-by: Junjie Mao <junjie.mao@enight.me>
+---
+ mm/vmalloc.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index cf7ad1a53be0..f683440a6880 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -647,6 +647,9 @@ static void __purge_vmap_area_lazy(unsigned long *start, unsigned long *end,
+ 		purge_fragmented_blocks_allcpus();
+ 
+ 	valist = llist_del_all(&vmap_purge_list);
++	if (valist == NULL)
++		goto end;
++
+ 	llist_for_each_entry(va, valist, purge_list) {
+ 		if (va->va_start < *start)
+ 			*start = va->va_start;
+@@ -667,6 +670,8 @@ static void __purge_vmap_area_lazy(unsigned long *start, unsigned long *end,
+ 			__free_vmap_area(va);
+ 		spin_unlock(&vmap_area_lock);
+ 	}
++
++end:
+ 	spin_unlock(&purge_lock);
+ }
+ 
+-- 
+1.9.3
+
