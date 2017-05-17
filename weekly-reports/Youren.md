@@ -1,4 +1,20 @@
 本周工作进展和下周计划
+2017.05.07~2017.05.18
+
+- 本周工作计划点1: give a sketch of solution of current ideas
+
+- 完成情况： No
+
+- 本周工作计划点2: Know more about SGX
+
+- 完成情况：YES.
+
+- 下周计划：
+  1. Reading papers about blob storage
+	2. give a sketch of solution of current ideas
+	3. Try Minio and read its code( which is a open source blob storage solution)
+
+
 2017.04.27~2017.05.6
 
 - 本周工作计划点1: Read more papers

@@ -1,4 +1,4 @@
-#SGX-related paper survey
+#SGX-related summary
 
 目前来看，SGX 相关的论文主要可以分为以下几种用途：
 1. 分布式系统中使用SGX
@@ -13,3 +13,13 @@ Eleos针对SGX的硬件限制，包括内存大小和系统调用需要退出enc
 第四点是针对SGX 内部的code 实际上也可能有bug，SGXBounds发现现有的memory safety 机制在SGX 中难以直接使用，所以依赖于SGX 中的内存地址只有32位，实现了性能可以容忍的memory safety方案。
 
 以上可以看出，sgx 目前的工作中并不是一定要有很巧的user case才能作出contribution。
+
+# brief summary and comments of SGX
+
+事实上，Intel SGX的功能主要包括三个部分，即：
+1. 内存隔离
+2. 内存加密
+3. attestation and launch control
+前两者基于硬件，而最后的部分因为过于复杂，因此作为一种policy，这个部分是基于软件实现的，即SDK所提供的platform service。还有一部分CPU核心中为这些功能所提供的指令因为涉及到微指令，因此并没有公开的资料。
+
+前两者的实现可以参考Intel的文章 《A Memory Encryption Engine Suitable for General Purpose Processors》或我的总结, 后者可以看目录下的SDK analysis一点点分析。
