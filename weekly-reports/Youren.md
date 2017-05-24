@@ -1,6 +1,26 @@
 本周工作进展和下周计划
 2017.05.07~2017.05.18
 
+- 本周工作计划点1: Reading papers about blob storage
+
+- 完成情况： half
+
+- 本周工作计划点2: Try Minio and read its code
+
+- 完成情况：Begining.
+
+I have tried several open source SGX program (TaLoS, Panoply and Graphene). The Graphene is the most complete project. I have build a simple file server with SSL and encryption and decryption on files on graphene and carefully work around all the bugs in Graphene. Trying to figure out the data path and control should be in our project.   
+However, things turns out that most of people still do not know how to write SGX programs: Is the compatibility really important? Is it necessary to run POSIX program inside SGX? Is the library OS is the ultimate way runnning inside the SGX?
+What we need is not put everything in SGX, but separate sensitive path of the program.
+
+- 下周计划：
+  1. Reading papers about blob storage
+	2. give a sketch of solution of current ideas
+	3.
+
+
+2017.05.07~2017.05.18
+
 - 本周工作计划点1: give a sketch of solution of current ideas
 
 - 完成情况： No

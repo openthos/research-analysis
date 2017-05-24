@@ -11,8 +11,11 @@ Treat the system as a distributed system among multiple enclaves. When an enclav
 1. Store the persistent state of enclave in a non-volatile memory
 2. maintain integrity information for protected applications in a separate trusted server.
 
-#### Drawback of SGX SDK Monotonic Counter 
+#### Drawback of SGX SDK Monotonic Counter
 Although less documented, the author found:
 1. Tooks so long 250 ms to one increment
 2. after remove SGX SDK or remove BIOS will remove all counter.
 3. SGX Counter service needs internet
+
+## Design
+ROTE use other platform to assist the system keep secure
