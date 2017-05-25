@@ -5,6 +5,13 @@
  * Memory Safety for Low-Level Software/Hardware Interactions
  * Virtual Ghost: Protecting Applications from Hostile Operating Systems
 
+## BLOB storage
+  * Finding a needle in Haystack: Facebook’s photo storage
+  * Object Storage on CRAQ
+  * f4: Facebook’s Warm BLOB Storage System
+  * Ambry: LinkedIn’s Scalable Geo-Distributed Object Store
+  * Windows Azure Storage: A Highly Available Cloud Storage Service with Strong Consistency
+  
 ## Keep application from OS
   * Iago Attacks: Why the System Call API is a Bad Untrusted RPC Interface.
 ## Library OS
@@ -37,7 +44,7 @@
 
  Glimmers: Resolving the Privacy/Trust Quagmire
  David Lie (University of Toronto/Google); Petros Maniatis (Google)
- 
+
  Hardware is the new software
  Andrew Baumann (Microsoft Research)
 ### Ref

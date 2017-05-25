@@ -1,3 +1,5 @@
+
+
 2017-04-24
 田洪亮提到的三个点：
 1. file system 的安全目前还没有人做，sgx 是runtime 的，而filesystem最后是要存储的，没法保证交给OS 的存储确实完成了 这个工作已经有人做了，security'16 Ariadne
