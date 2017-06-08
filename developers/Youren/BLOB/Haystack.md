@@ -1,7 +1,7 @@
 # Reading notes for Haystack
 Finding a needle in Haystack: Facebook’s photo storage
 
-## Movitation
+## Motivation
 Normal previous filesystem is suit for facebook Photo storages due to lots of disk operations for filesystem metadata. New approach needed to meet facebook rapidly increasing photo uploads.
 ### Goal
 The haystack targat to the use case with: written once, read often, never modified and rarely deleted.

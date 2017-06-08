@@ -1,5 +1,12 @@
 本周工作进展和下周计划
-2017.05.07~2017.05.18
+2017.05.26~2017.06.07
+
+- 本周工作计划点1: Give a sketch of solution
+
+- 完成情况： Gived a model of Data layer, called Replication on Intel SGX.
+
+
+2017.05.18~2017.05.25
 
 - 本周工作计划点1: Reading papers about blob storage
 
