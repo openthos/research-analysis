@@ -1,4 +1,19 @@
 本周工作进展和下周计划
+
+2017.06.08~2017.06.16
+
+- 本周工作计划点1: Give a full solution of replication of SGX
+
+- 完成情况： finished execpt the network traffic attack remains to be fix
+
+For now, the discussion of idea for Date 2018 is almost finished. Here is my plan:
+1. Finish the project and paper of this paper before August.
+2. Start discuss Fast paper once I finished prior works (expected to be finished at July).
+3. Finished the project at August
+4. Start to write the paper at begining of September.
+
+
+
 2017.05.26~2017.06.07
 
 - 本周工作计划点1: Give a sketch of solution
