@@ -1,3 +1,14 @@
+## 20170619-20170623
+- 茅俊杰：rt-linux bug analysis等，给荔老师和我讲解了semantics bug analysis的综述, category theory的相关进展
+- 毛英明/张蔚/杨兴杲：参与 rt-linux analysis on lkp的事情，希望通过分析rt-linux的设计实现和bug，更好地理解rt-linux，给开发者建议，初步计划是两个月的实现形成一篇论文。定好下周计划。 
+- 沈游人：给陈老师和我讲解了论文思路，但不够清晰，需要通过写和做实验逐步完成。要求在7月底有可以看得见的一些成果。周六离开学校去实习。
+- 薛海龙，雷蕾：直接参与start menu的分析与改进，准备论文素材
+
+## 20170612-20170616
+- 茅俊杰：rt-linux bug analysis等
+- 薛海龙，雷蕾：直接参与start menu的分析与改进
+- 沈游人：讨论流程，建议投稿，并根据陈老师建议准备实现
+- 何钦尧：完成毕业相关事宜
 
 ## 20170605-20170609
 - 茅俊杰：category theory, rid, seda, rt-linux等
