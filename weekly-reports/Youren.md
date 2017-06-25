@@ -1,4 +1,62 @@
 本周工作进展和下周计划
+
+2017.06.08~2017.06.16
+
+- 本周工作计划点1: Give a full solution of replication of SGX
+
+- 完成情况： finished execpt the network traffic attack remains to be fix
+
+For now, the discussion of idea for Date 2018 is almost finished. Here is my plan:
+1. Finish the project and paper of this paper before August.
+2. Start discuss Fast paper once I finished prior works (expected to be finished at July).
+3. Finished the project at August
+4. Start to write the paper at begining of September.
+
+
+
+2017.05.26~2017.06.07
+
+- 本周工作计划点1: Give a sketch of solution
+
+- 完成情况： Gived a model of Data layer, called Replication on Intel SGX.
+
+
+2017.05.18~2017.05.25
+
+- 本周工作计划点1: Reading papers about blob storage
+
+- 完成情况： half
+
+- 本周工作计划点2: Try Minio and read its code
+
+- 完成情况：Begining.
+
+I have tried several open source SGX program (TaLoS, Panoply and Graphene). The Graphene is the most complete project. I have build a simple file server with SSL and encryption and decryption on files on graphene and carefully work around all the bugs in Graphene. Trying to figure out the data path and control should be in our project.   
+However, things turns out that most of people still do not know how to write SGX programs: Is the compatibility really important? Is it necessary to run POSIX program inside SGX? Is the library OS is the ultimate way runnning inside the SGX?
+What we need is not put everything in SGX, but separate sensitive path of the program.
+
+- 下周计划：
+  1. Reading papers about blob storage
+	2. give a sketch of solution of current ideas
+	3.
+
+
+2017.05.07~2017.05.18
+
+- 本周工作计划点1: give a sketch of solution of current ideas
+
+- 完成情况： No
+
+- 本周工作计划点2: Know more about SGX
+
+- 完成情况：YES.
+
+- 下周计划：
+  1. Reading papers about blob storage
+	2. give a sketch of solution of current ideas
+	3. Try Minio and read its code( which is a open source blob storage solution)
+
+
 2017.04.27~2017.05.6
 
 - 本周工作计划点1: Read more papers

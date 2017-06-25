@@ -1,10 +1,10 @@
-### 基于framework实现AppInsight的大致思路
+## 基于framework实现AppInsight的大致思路
  - 应用层的所有override的函数都是从framework层进行调用的，因此可以在framework层找到对应的函数位置插入log，通过log信息知道调用函数的关系，从而确定线程之间的关系，最后找到异步调用的路径
-### 实验过程
+## 实验过程
  - 自定义一个简单App进行实验，该App可以实现多线程的模式
  - 了解从点击事件到界面更新的整个函数调用流程，从onCreate->onClick->thread.start->thread.run->handler.sendMessage->handler.handlerMessage->onCreate
  - 根据应用层的函数调用关系找到framework层的函数关系，具体关系如下：
-#### onClick点击事件
+### onClick点击事件
   - onClick点击事件，调用的是performClick()，插入的Log为4799和4801行，具体代码如下：
 ```
 代码地址：frameworks/base/core/java/android/view/View.java 
@@ -29,7 +29,7 @@
  4810     }
 
 ```
-#### thread开启事件
+### thread开启事件
   - thread开启事件，因为thread的开启是调用的java.lang包的thread.java文件，应用层的start首先调用的是libcore的start，然后转调C++层，最后调libcore的run()方法，因此添加的Log如下：
 ```
 代码地址：libcore/libart/src/main/java/java/lang/Thread.java
@@ -131,9 +131,46 @@
 117     }
 
   ```
-### 实验结果
+  
+## IntentService开启新线程的Log添加
+```
+源码地址：frameworks/base/core/java/android/app/IntentService.java
+
+//新线程开启的Log
+public void onCreate() {
+104         // TODO: It would be nice to have an option to hold a partial wakelock
+105         // during processing, and to have a static startService(Context, Intent)
+106         // method that would launch the service & hand off a wakelock.
+107 
+108         super.onCreate();
+109         HandlerThread thread = new HandlerThread("IntentService[" + mName + "]");
+110         Log.d("IntentService","Thread start "+ android.os.Process.myTid());
+111         thread.start();
+112         Log.d("IntentService","Thread end "+ android.os.Process.myTid());
+113         mServiceLooper = thread.getLooper();
+114         mServiceHandler = new ServiceHandler(mServiceLooper);
+115     }
+
+
+// 新线程开启后处理异步任务的Log
+private final class ServiceHandler extends Handler {
+ 59         public ServiceHandler(Looper looper) {
+ 60             super(looper);
+ 61         }
+ 62 
+ 63         @Override
+ 64         public void handleMessage(Message msg) {
+ 65             Log.d("IntentService","new Thread start  "+ android.os.Process.myTid());
+ 66             onHandleIntent((Intent)msg.obj);
+ 67             stopSelf(msg.arg1);
+ 68                 Log.d("IntentService","new Thread end  "+ android.os.Process.myTid());
+ 69         }
+ 70     }
+
+```
+## 实验结果
   - 现在点击事件、sendMessage和handlerMessage的Log已经可以看到，具体如下,但thread.run的log还存在问题
-### 仍存在的问题
+## 仍存在的问题
   - 虽然目前对log已经进行了一定的筛选，不会大规模的打印无关的log，但是对于复杂的App(例如GT),仍然会有非常多的无关log
   - 对于多线程调用的时间点不够准确
   

@@ -1,4 +1,4 @@
-# Storage as Service
+# MOTE
 Storage as Service 是指云服务商提供给用户存储空间，通过Restful API，用户可以不管任何平台，直接存取自己的文件。同时，Storage as Service还具有一定的共享文件的功能。
 主流的Storage as Service 服务提供商有Amazon S3， Aliyun OSS 和七牛云存储
 ## Storage as Service开发流程
@@ -13,4 +13,8 @@ Cloud Platform provider会提供一对secret id 和key 给自己的租户，而�
 1. 多租户问题
 
 2. 分布式存储问题
-做Storage as service必须要能够支持分布式存储
+做Storage as service必须要能够支持分布式存储，也就是需要能够防止数据的丢失
+
+3. Rollback attack
+既然是在分布式存储的环境下，那么，enclave 之间可以互相的进行协助。
+能否有一个counter，借助分布式一致性协议或者比特币的特性，能够多机共享。除非攻击者将所有机器上的数据清空，否则无法进行rollback 攻击

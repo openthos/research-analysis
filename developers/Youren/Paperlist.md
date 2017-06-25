@@ -5,6 +5,13 @@
  * Memory Safety for Low-Level Software/Hardware Interactions
  * Virtual Ghost: Protecting Applications from Hostile Operating Systems
 
+## BLOB storage
+  * Finding a needle in Haystack: Facebook’s photo storage
+  * Object Storage on CRAQ
+  * f4: Facebook’s Warm BLOB Storage System
+  * Ambry: LinkedIn’s Scalable Geo-Distributed Object Store
+  * Windows Azure Storage: A Highly Available Cloud Storage Service with Strong Consistency
+
 ## Keep application from OS
   * Iago Attacks: Why the System Call API is a Bad Untrusted RPC Interface.
 ## Library OS
@@ -13,7 +20,12 @@
 
 ## Serverless
   * Will Serverless End Linux’s Dominance in the Cloud?
-## SGX:
+
+## Security
+ * Platform Embedded Security Technology Revealed
+
+
+## SGX
 ### In kernel
  * Shielding Applications from an Untrusted Cloud with Haven.
  * SCONE: Secure Linux containers with Intel SGX.
@@ -27,6 +39,9 @@
  * Observing and Preventing Leakage in MapReduce
  * SecureKeeper: Confidential ZooKeeper using Intel SGX
  * Ariadne: A Minimal Approach to State Continuity
+ * [DATE17]SecureCloud-Secure Big Data Processing in Untrusted Clouds
+ * [DAIS17]Secure Cloud Micro Services Using Intel SGX.pdf
+
 
 ### MISC:
  * AsyncShock: Exploiting synchronisation bugs in intel SGX enclaves
@@ -37,7 +52,7 @@
 
  Glimmers: Resolving the Privacy/Trust Quagmire
  David Lie (University of Toronto/Google); Petros Maniatis (Google)
- 
+
  Hardware is the new software
  Andrew Baumann (Microsoft Research)
 ### Ref
