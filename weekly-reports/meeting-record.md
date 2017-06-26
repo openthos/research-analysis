@@ -1,3 +1,6 @@
+## 20170626-20170630
+- 薛海龙，雷蕾：开始写论文框架和准备实验素材。讨论产品经理和研发的一些想法。
+
 ## 20170619-20170623
 - 茅俊杰：rt-linux bug analysis等，给荔老师和我讲解了semantics bug analysis的综述, category theory的相关进展
 - 毛英明/张蔚/杨兴杲：参与 rt-linux analysis on lkp的事情，希望通过分析rt-linux的设计实现和bug，更好地理解rt-linux，给开发者建议，初步计划是两个月的实现形成一篇论文。定好下周计划。 
