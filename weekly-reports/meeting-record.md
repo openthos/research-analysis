@@ -1,5 +1,6 @@
 ## 20170626-20170630
 - 薛海龙，雷蕾：开始写论文框架和准备实验素材。讨论产品经理和研发的一些想法。
+- 茅俊杰：交流了一下对目标的理解，这几天他会写一个脚本，能够尽可能地把linux kernel vM.N-rt---v.Y.Z-rt中的unique patch找出来，包括patch的起始时间和结束时间。可便于我们接下来对patch的分析。简单聊了论文准备情况。需要明确毕业的条件。
 
 ## 20170619-20170623
 - 茅俊杰：rt-linux bug analysis等，给荔老师和我讲解了semantics bug analysis的综述, category theory的相关进展
