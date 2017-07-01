@@ -23,13 +23,17 @@
 ## 4 详细设计方案
 
 ### 4.1 点击事件
+http://blog.csdn.net/baidu_23287903/article/details/52032035
+简介点击事件的四种实现方式
+几种实现方式都是调用framework的onClick，所以添加log的位置为：
 
 ### 4.2 消息处理
+Handler线程传递消息机制解析，并确定添加Log的位置
 
 ### 4.3 子线程开启器的五种方式
 
 #### 4.3.1 Thread
-
+http://blog.csdn.net/kesalin/article/details/37659547/   Thread开启的流程=》确定添加Log的位置
 #### 4.3.2  handlerThread
 
 #### 4.3.3 TntentService
