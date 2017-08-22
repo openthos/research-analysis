@@ -207,6 +207,58 @@ emulator -avd Galaxy_Nexus_API_16 -system ~/ANDROID_SOURCE_4.1.2_IMG/system.img 
 
 ##### 8.The scripts in the tools/ directory may be helpful for parsing and interpretting the logs.
 
+xhl@xhl-SMBIOS:~$ ssh lh@192.168.0.180
+lh@server2:~/ll$ docker start -ai ll-5.1
+root@dd34e340243a:~/ll/ANDROID_SOURCE4/packages/apps
+root@dd34e340243a:~/ll# git clone https://github.com/EmbeddedAtUM/panappticon-tools.git
+root@dd34e340243a:~/ll/panappticon-tools# git branch -a
+root@dd34e340243a:~/ll/panappticon-tools# cd EventLogging
+root@dd34e340243a:~/ll/panappticon-tools# cp -rf EventLogging ~/ll/ANDROID_SOURCE4/packages/apps/
+root@dd34e340243a:~/ll/panappticon-tools# cd -
+/root/ll/panappticon-tools/EventLogging
+root@dd34e340243a:~/ll/ANDROID_SOURCE4/packages/apps/EventLogging# vi Android.mk看什么。。。。packagename？
+root@dd34e340243a:~/ll/ANDROID_SOURCE4/build# vi target/product/core.mk    EventLogging加入编译系统build/target/product/core.mk:PRODUCT_PACKAGES
+
+root@dd34e340243a:~/ll/ANDROID_SOURCE4# source build/envsetup.sh
+root@dd34e340243a:~/ll/ANDROID_SOURCE4# lunch 1
+root@dd34e340243a:~/ll/ANDROID_SOURCE4/packages/apps/EventLogging# mm
+
+root@dd34e340243a:~/ll/panappticon-tools/EventLoggingServer# ./compile.sh
+
+root@dd34e340243a:~/ll/panappticon-tools/EventLoggingServer# mkdir bin
+root@dd34e340243a:~/ll/panappticon-tools/EventLoggingServer# ./compile.sh 
+added manifest
+adding: servers/Collector.class(in = 531) (out= 367)(deflated 30%)
+adding: servers/CollectorWorker.class(in = 3911) (out= 2263)(deflated 42%)
+adding: common/BaseServer.class(in = 3068) (out= 1819)(deflated 40%)
+adding: common/BaseWorker.class(in = 1969) (out= 1121)(deflated 43%)
+adding: common/Definition.class(in = 1288) (out= 626)(deflated 51%)
+adding: common/PrefixParser.class(in = 919) (out= 531)(deflated 42%)
+root@dd34e340243a:~/ll/panappticon-tools/EventLoggingServer# ls
+bin  compile.sh  config.txt  manifest  src
+root@dd34e340243a:~/ll/panappticon-tools/EventLoggingServer# ls bin/
+Collector.jar  common  servers
+
+root@dd34e340243a:~/ll/panappticon-tools/EventLoggingServer/bin# java -jar Collector.jar 
+
+root@dd34e340243a:~/ll/panappticon-tools/EventLoggingServer/bin# netstat -tpln
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp6       0      0 :::5204                 :::*                    LISTEN      2734/java       
+root@dd34e340243a:~/ll/panappticon-tools/EventLoggingServer/bin# fg
+java -jar Collector.jar
+
+emulator -avd Galaxy_Nexus_API_16 -kernel ~/mygit/panappticon/kernel/panappticon-kernel/linux_out/arch/arm/boot/zImage -system ~/ANDROID_SOURCE_4.1.2_IMG/system.img -show-kernel
+打印kernel信息
+
+xhl@xhl-SMBIOS:~/Android/Sdk/tools$ emulator -avd Galaxy_Nexus_API_16 -kernel ~/mygit/panappticon/kernel/panappticon-kernel/linux_out/arch/arm/boot/zImage -system ~/ANDROID_SOURCE_4.1.2_IMG/system.img -help|grep -i kernel
+
+模拟器gpu加速
+xhl@xhl-SMBIOS:~/Android/Sdk/tools$ glxinfo
+The program 'glxinfo' is currently not installed. You can install it by typing:
+sudo apt-get install mesa-utils
+xhl@xhl-SMBIOS:~/Android/Sdk/tools$ sudo apt-get install mesa-utils
+
 
 
 
