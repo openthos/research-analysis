@@ -200,29 +200,6 @@ emulator -avd Galaxy_Nexus_API_16 -system ~/ANDROID_SOURCE_4.1.2_IMG/system.img 
 ```
 
 ##### 5.Build and install on your server the EventLoggingServer application in the tools/ directory.  Panappticon traces will be uploaded by the phone.
-
-##### 6.Update the EventLogging application in the tools/ directory to point to your server's URL.
-
-##### 7.Build the EventLogging application and install the resulting *.apk.
-
-##### 8.The scripts in the tools/ directory may be helpful for parsing and interpretting the logs.
-
-xhl@xhl-SMBIOS:~$ ssh lh@192.168.0.180
-lh@server2:~/ll$ docker start -ai ll-5.1
-root@dd34e340243a:~/ll/ANDROID_SOURCE4/packages/apps
-root@dd34e340243a:~/ll# git clone https://github.com/EmbeddedAtUM/panappticon-tools.git
-root@dd34e340243a:~/ll/panappticon-tools# git branch -a
-root@dd34e340243a:~/ll/panappticon-tools# cd EventLogging
-root@dd34e340243a:~/ll/panappticon-tools# cp -rf EventLogging ~/ll/ANDROID_SOURCE4/packages/apps/
-root@dd34e340243a:~/ll/panappticon-tools# cd -
-/root/ll/panappticon-tools/EventLogging
-root@dd34e340243a:~/ll/ANDROID_SOURCE4/packages/apps/EventLogging# vi Android.mk看什么。。。。packagename？
-root@dd34e340243a:~/ll/ANDROID_SOURCE4/build# vi target/product/core.mk    EventLogging加入编译系统build/target/product/core.mk:PRODUCT_PACKAGES
-
-root@dd34e340243a:~/ll/ANDROID_SOURCE4# source build/envsetup.sh
-root@dd34e340243a:~/ll/ANDROID_SOURCE4# lunch 1
-root@dd34e340243a:~/ll/ANDROID_SOURCE4/packages/apps/EventLogging# mm
-
 root@dd34e340243a:~/ll/panappticon-tools/EventLoggingServer# ./compile.sh
 
 root@dd34e340243a:~/ll/panappticon-tools/EventLoggingServer# mkdir bin
@@ -248,6 +225,37 @@ tcp6       0      0 :::5204                 :::*                    LISTEN      
 root@dd34e340243a:~/ll/panappticon-tools/EventLoggingServer/bin# fg
 java -jar Collector.jar
 
+##### 6.Update the EventLogging application in the tools/ directory to point to your server's URL.
+
+
+##### 7.Build the EventLogging application and install the resulting *.apk.
+因为EventLogging有Android.mk文件，需要在放在源码环境里编译，进入docker，把EventLogging放到到ANDROID_SOURCE4/packages/apps的文件夹下
+```
+xhl@xhl-SMBIOS:~$ ssh lh@192.168.0.180
+lh@server2:~/ll$ docker start -ai ll-5.1
+root@dd34e340243a:~/ll/ANDROID_SOURCE4/packages/apps
+root@dd34e340243a:~/ll# git clone https://github.com/EmbeddedAtUM/panappticon-tools.git
+root@dd34e340243a:~/ll/panappticon-tools# git branch -a
+root@dd34e340243a:~/ll/panappticon-tools# cd EventLogging
+root@dd34e340243a:~/ll/panappticon-tools# cp -rf EventLogging ~/ll/ANDROID_SOURCE4/packages/apps/
+-r 递归处理，指定目录下的文件和子目录一并处理
+-f 强行复制，无论目标是否存在
+root@dd34e340243a:~/ll/panappticon-tools# cd -
+cd -是返回到上一次的工作目录
+/root/ll/panappticon-tools/EventLogging
+root@dd34e340243a:~/ll/ANDROID_SOURCE4/packages/apps/EventLogging# vi Android.mk
+看LOCAL_PACKAGE_NAME := EventLogging
+
+root@dd34e340243a:~/ll/ANDROID_SOURCE4/build# vi target/product/core.mk    EventLogging加入编译系统build/target/product/core.mk:PRODUCT_PACKAGES
+
+root@dd34e340243a:~/ll/ANDROID_SOURCE4# source build/envsetup.sh
+root@dd34e340243a:~/ll/ANDROID_SOURCE4# lunch 1
+root@dd34e340243a:~/ll/ANDROID_SOURCE4/packages/apps/EventLogging# mm  只编译这个应用
+```
+##### 8.The scripts in the tools/ directory may be helpful for parsing and interpretting the logs.
+
+
+其他：
 emulator -avd Galaxy_Nexus_API_16 -kernel ~/mygit/panappticon/kernel/panappticon-kernel/linux_out/arch/arm/boot/zImage -system ~/ANDROID_SOURCE_4.1.2_IMG/system.img -show-kernel
 打印kernel信息
 
