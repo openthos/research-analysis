@@ -200,6 +200,7 @@ emulator -avd Galaxy_Nexus_API_16 -system ~/ANDROID_SOURCE_4.1.2_IMG/system.img 
 ```
 
 ##### 5.Build and install on your server the EventLoggingServer application in the tools/ directory.  Panappticon traces will be uploaded by the phone.
+```
 root@dd34e340243a:~/ll/panappticon-tools/EventLoggingServer# ./compile.sh
 
 root@dd34e340243a:~/ll/panappticon-tools/EventLoggingServer# mkdir bin
@@ -224,7 +225,7 @@ Proto Recv-Q Send-Q Local Address           Foreign Address         State       
 tcp6       0      0 :::5204                 :::*                    LISTEN      2734/java       
 root@dd34e340243a:~/ll/panappticon-tools/EventLoggingServer/bin# fg
 java -jar Collector.jar
-
+```
 ##### 6.Update the EventLogging application in the tools/ directory to point to your server's URL.
 
 
