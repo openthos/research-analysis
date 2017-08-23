@@ -1,4 +1,21 @@
 本周工作进展和下周计划
+2017.08.14~2017.08.20
+
+- 本周工作计划点1: give three ideas/problem for PhD Thesis Proposal.  
+
+
+- 完成情况： 
+Our topic is the security for enterprises using public clouds. We have found three points:
+1. The security of Storage resouce.
+2. The security of storage resouce
+For computer resource in SGX, we consider two potential idea: Enclave migration and malicious code detecition.
+3. The security of communication
+we may leverage the trusted execution environment to develop an decentralized anonymous communication system under fully compirsed infrastructure.
+
+- 下周计划：
+1. For the code of storage project, finished remote attestation.
+2. For the Phd proposal, read two papers about process migration on ASPLOS 2017 and anonymous communication system on OSDI 16.
+
 
 2017.06.08~2017.06.16
 
