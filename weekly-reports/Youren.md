@@ -1,16 +1,31 @@
 本周工作进展和下周计划
+
+2017.08.21~2017.08.28
+
+- 本周工作计划点1: Think more detailed about Problem in Phd proposal.
+For Enclave migration, I have consider three problem:  
+1. Is it worth to do it? Is it needed in Datacenter?   
+Of course it is. For one aspect, the load-balance is needed for energy efficiency(Online migration). On the other hand, the machine requires update(Off line).   
+2. How can we do it?  (functionality)
+It's not possible to do it from host application/OS since the Intel SGX is designed to against them. And one of important principles is that every chips keeps there secret themselves. So only the enclave can do it.   
+How to do it is a subtle job. we can implement an module in enclave or a LibOS in enclave to migrate the whole enclave. The other way is we defined some jobs and only transform the pre-defined states in enclave.   
+3. How to make it secure?(security)  
+How to make sure the migration How to persuade the customer that the migration/transform will not break the security guarantee.   
+
+
+
 2017.08.14~2017.08.20
 
 - 本周工作计划点1: give three ideas/problem for PhD Thesis Proposal.  
 
 
-- 完成情况： 
+- 完成情况：
 Our topic is the security for enterprises using public clouds. We have found three points:
-1. The security of Storage resouce.
-2. The security of storage resouce
-For computer resource in SGX, we consider two potential idea: Enclave migration and malicious code detecition.
+1. The security of Storage resource.
+2. The security of Compute resource
+For computer resource in SGX, we consider two potential idea: Enclave migration and malicious code detection.
 3. The security of communication
-we may leverage the trusted execution environment to develop an decentralized anonymous communication system under fully compirsed infrastructure.
+we may leverage the trusted execution environment to develop an decentralized anonymous communication system under fully compromised infrastructure.
 
 - 下周计划：
 1. For the code of storage project, finished remote attestation.
