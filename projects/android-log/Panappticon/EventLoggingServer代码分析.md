@@ -19,3 +19,5 @@
 
 ## 6、Collector.java和CollectorWorker.java
 具体实现的Server
+
+最终log收集在bin目录下
