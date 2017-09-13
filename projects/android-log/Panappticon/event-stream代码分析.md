@@ -19,7 +19,17 @@
     * cat ../EventLoggingServer/bin/5284047f4ffb4e04824a2fd1d1f0cd62/kernel/1505200252970778 | ./event-read-sorted
 
 1. event-fork-extracter
+
+    * 输入：标准输入，多个文件名
+    
+    * 输出：标准输出
+    
 1. event-merger-splitter
+
+    * 输入：标准输入，多个文件名
+    
+    * 输出：通过path参数指定
+    
 1. event-timestamp-fixer
 1. events.h
 1. events.py
