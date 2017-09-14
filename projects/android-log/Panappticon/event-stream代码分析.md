@@ -21,6 +21,7 @@
 1. event-fork-extracter
 
     * 输入：标准输入，多个文件名
+    * 如果写死为[‘/home/xhl/mygit/panappticon/tools/panappticon-tools/EventLoggingServer/bin/5284047f4ffb4e04824a2fd1d1f0cd62/kernel/1505200252970778.txt’]可以执行但没有输出
     
     * 输出：标准输出
     
