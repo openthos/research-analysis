@@ -44,3 +44,28 @@
     * cat ../../../EventLoggingServer/bin/5284047f4ffb4e04824a2fd1d1f0cd62/user/1505199593553371 | ./parse
 
 ## 3、关键路径构建
+1. ComputeDependencies.py
+```
+import sys
+import Event
+from EventHandlerMap import event_handler_map
+            from EventHandlers import *
+from Global import Global
+from EventReordering import ReorderEvents
+
+cat ../EventLoggingServer/bin/5284047f4ffb4e04824a2fd1d1f0cd62/kernel/1505200252970778 | python kernel_analysis.py
+ImportError: No module named numpy
+首先python2.7：sudo apt-get install python-numpy
+
+其次python3.4：sudo apt-get install python3-numpy
+
+然后分别进入各版本的shell 测试import numpy是否成功。
+
+ImportError: No module named matplotlib.pyplot
+
+
+    sudo apt-get install python-matplotlib  
+
+cat ../EventLoggingServer/bin/5284047f4ffb4e04824a2fd1d1f0cd62/kernel/1505200252970778 | ./event-read-sorted|./event-timestamp-fixer
+
+```
