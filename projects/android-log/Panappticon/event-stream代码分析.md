@@ -51,7 +51,7 @@
      ```
      **结论：该文件提取的是整理好的json格式的kernel数据的FORK和THREAD_NAME记录**
     
-1. event-merger-splitter
+1. event-merger-splitter(压缩文件为压缩包，与网站提供的数据打包方式一致，包括命名)
 
     * 输入：标准输入，多个文件名
     
