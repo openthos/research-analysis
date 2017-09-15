@@ -44,7 +44,12 @@
       >>> 
       ```
       **问题：<open file '<fdopen>', mode 'rb' at 0x7f880cbad540>  这是什么意思？？？为什么执行下一条语句后没有输出？？？？**
-     
+      
+     **测试代码**
+     ```
+     filenames = ['/home/xhl/2012-study/3c0e6a88c8c5f30f0d0ca1bf7412cab6/kernel/2012-10-31.json/2012-10-31.json']
+     ```
+     **结论：该文件提取的是整理好的json格式的kernel数据的FORK和THREAD_NAME记录**
     
 1. event-merger-splitter
 
