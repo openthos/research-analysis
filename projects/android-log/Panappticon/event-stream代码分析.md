@@ -45,7 +45,7 @@
       ```
       **问题：<open file '<fdopen>', mode 'rb' at 0x7f880cbad540>  这是什么意思？？？为什么执行下一条语句后没有输出？？？？**
       
-     **测试代码**
+     **测试代码**（用网站提供的数据可以运行）
      ```
      filenames = ['/home/xhl/2012-study/3c0e6a88c8c5f30f0d0ca1bf7412cab6/kernel/2012-10-31.json/2012-10-31.json']
      ```
