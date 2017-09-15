@@ -25,6 +25,27 @@
     
     * 输出：标准输出
     
+    **测试代码**
+      ```
+      xhl@xhl-SMBIOS:~$ python
+      >>> import sys
+      >>> import subprocess
+      >>> f = open('/home/xhl/mygit/panappticon/tools/panappticon-tools/
+      EventLoggingServer/bin/5284047f4ffb4e04824a2fd1d1f0cd62/kernel/1505200252970778.txt', 'r')
+      >>> a = ["egrep"]
+      >>> args = ["FORK|THREAD_NAME"]
+      >>> a.extend(args)
+      >>> a
+      ['egrep', 'FORK|THREAD_NAME']
+      >>> p = subprocess.Popen(['egrep', 'FORK|THREAD_NAME'], stdin=f, stdout=subprocess.PIPE)
+      >>> p.stdout
+      <open file '<fdopen>', mode 'rb' at 0x7f880cbad540>  这是什么意思？？？为什么执行下一条语句后没有输出？？？？
+      >>> sys.stdout.writelines(p.stdout)
+      >>> 
+      ```
+      **问题：<open file '<fdopen>', mode 'rb' at 0x7f880cbad540>  这是什么意思？？？为什么执行下一条语句后没有输出？？？？**
+     
+    
 1. event-merger-splitter
 
     * 输入：标准输入，多个文件名
