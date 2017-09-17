@@ -2,6 +2,21 @@
 
 2017.09.05~2017.09.10
 
+- 本周工作计划点1: give a talk to about proposal of Phd Thesis.
+- 完成情况：Finished but one idea missing
+Maybe Database is an good idea. We do not need to consider the memory limit, just think about oblivious store.
+
+- 本周工作计划点1: PA3 of Complier course
+- 完成情况：Finished two feature of five.
+
+- 下周计划：
+- Finish project of Intel SGX storage.
+- Finish another idea.
+- Finish PA3 of Compiler.
+
+
+2017.09.05~2017.09.10
+
 - 本周工作计划点1: Give full version of Phd Proposal
 - 完成情况：Finsh almostly except I still need one idea.
 在目前这个我们想出来的场景“OS不安全的云中心中保护用户的数据”，用户是谁？用户的特点是啥？用户的应用特点是啥？用户最想得到的安全保证是哪些？这些安全保证是否有个优先级？针对哪些用户应用，我们可以解决哪些安全保证？当前是否已经有一些安全保证的相关/类似实现了？我们比它们好在哪里？或者我们是最早做的，没有可比性？如何评价我们的技术方案？
