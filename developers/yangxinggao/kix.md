@@ -1,5 +1,7 @@
 代码在https://github.com/XingGaoY/kix
 
+到移植完只有82599的驱动函数，已经有20k sloc了。
+
 ## ixgbe driver
 当ix完成一般的cpu，内存和内存池初始化后，开始初始化网络设备
 
