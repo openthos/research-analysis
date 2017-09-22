@@ -1,6 +1,24 @@
 本周工作进展和下周计划
 
-2017.09.05~2017.09.10
+2017.09.16~2017.09.22
+
+- 本周工作计划点1: Finish project of Intel SGX storage.
+- 完成情况：Starting
+
+- 本周工作计划点2:Finish another idea.
+- 完成情况：Finished. For more detail, check the proposal repo in github.
+
+- 本周工作计划点3:Finish PA3 of Compiler.
+- 完成情况：Finished
+
+
+- 下周计划：
+- Give the final talk of Phd proposal
+- Finish project of Intel SGX storage
+
+
+
+2017.09.11~2017.09.15
 
 - 本周工作计划点1: give a talk to about proposal of Phd Thesis.
 - 完成情况：Finished but one idea missing
