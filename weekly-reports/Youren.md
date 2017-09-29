@@ -1,5 +1,21 @@
 本周工作进展和下周计划
 
+
+2017.09.23~2017.09.30
+
+- 本周工作计划点1: Finish project of Intel SGX storage.
+- 完成情况：Almost finished outside part. build an RPC server as network connection part. 
+
+- 本周工作计划点2:Finish the PHD thesis proposal
+- 完成情况：Failed.
+
+- 本周工作计划点3:Finish Compiler PA2 testcase and homework.
+- 完成情况：Finished
+
+
+- 下周计划：
+- Finish project of Intel SGX storage.
+
 2017.09.16~2017.09.22
 
 - 本周工作计划点1: Finish project of Intel SGX storage.
