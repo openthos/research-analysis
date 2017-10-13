@@ -1,10 +1,19 @@
 本周工作进展和下周计划
 
+2017.10.09~2017.10.13
+
+- 本周工作计划点1: Finish project of Intel SGX storage.
+- 完成情况：Finished outside enclave world including rpc server and client, file server. Finished some enclave function. Finished the interface between enclave and host Application.
+The problem is I have to understand oblivious store to continue the functionality inside enclave.
+
+- 下周计划：
+- Finish project of Intel SGX storage.
+- Understanding Oblivious Memory and store.
 
 2017.09.23~2017.09.30
 
 - 本周工作计划点1: Finish project of Intel SGX storage.
-- 完成情况：Almost finished outside part. build an RPC server as network connection part. 
+- 完成情况：Almost finished outside part. build an RPC server as network connection part.
 
 - 本周工作计划点2:Finish the PHD thesis proposal
 - 完成情况：Failed.
