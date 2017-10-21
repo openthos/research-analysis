@@ -1,5 +1,16 @@
 本周工作进展和下周计划
 
+2017.10.16~2017.10.22
+
+- 本周工作计划点1: Understanding Oblivious storage.
+- 完成情况：Finished
+- 本周工作计划点1: Find the fix of our approach
+- 完成情况：Finished
+
+- 下周计划：
+- Update the draft of paper.
+- Finish project of Intel SGX storage.
+
 2017.10.09~2017.10.13
 
 - 本周工作计划点1: Finish project of Intel SGX storage.
