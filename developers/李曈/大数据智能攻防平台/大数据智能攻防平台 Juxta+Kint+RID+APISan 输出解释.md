@@ -1,5 +1,43 @@
 # 大数据智能攻防平台 Juxta+Kint+RID+APISan 输出解释
 
+## 0 代码位置
+
+肖络元对所有代码位置都很熟悉。
+
+(1) Juxta
+
+​	代码位置：/home/chy/secProjects/juxta
+
+​	kernel代码位置：/home/chy/secProjects/linux，但是kernel要checkout到特定版本，并用/home/chy/secProjects/juxta/config中的config，复制到kernel代码中。这些在README里写清了已经。
+
+(2) Kint
+
+​	代码位置：/home/chy/secProjects/kint
+
+​	kernel 代码位置：同上
+
+​	备注：系统里有两个版本的llvm，默认的是3.1版本的，也就是Kint要用的版本，不需要改。
+
+(3)Rid
+
+​	代码位置：/home/chy/secProjects/rid
+
+​	kernel代码位置：/home/chy/secProjects/rid_llvm/linux-3.17
+
+​	备注：rid要用3.6版本的llvm，在运行前要想把当前shell的path改一下。在shell运行一句：
+
+```shell
+export PATH=/home/chy/secProjects/rid_llvm/llvm/build-cmake/install/bin:$PATH
+```
+
+(4)APISan
+
+​	代码位置：/home/chy/secProjects/apisan
+
+​	备注：APISan没有运行过，直接把源码文件夹里它发现的bug列了出来。
+
+
+
 ## 1 Juxta
 
 ![juxta_output](/Users/lt/Documents/Pictures/插图-本地图床/juxta_output.png)
