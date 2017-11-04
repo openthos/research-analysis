@@ -1,5 +1,16 @@
 本周工作进展和下周计划
 
+2017.10.23~2017.11.4
+
+- 本周工作计划点1: Reading paper of sosp 17 and attend it.
+- 完成情况：Finished
+- 本周工作计划点1: Finished Slides of intel sgx storage
+- 完成情况：Finished
+
+- 下周计划：
+- Finish project of Intel SGX storage.
+- Finish introduction part.
+
 2017.10.16~2017.10.22
 
 - 本周工作计划点1: Understanding Oblivious storage.
