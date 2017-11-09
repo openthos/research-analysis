@@ -1,0 +1,278 @@
+
+diff --git a/luni/src/main/java/java/util/EventLogging.java b/luni/src/main/java/java/util/EventLogging.java
+new file mode 100644
+index 0000000..e88f08e
+--- /dev/null
++++ b/luni/src/main/java/java/util/EventLogging.java
+@@ -0,0 +1,162 @@
++package java.util;
++
++import java.io.BufferedOutputStream;
++import java.io.IOException;
++import java.net.Socket;
++import java.nio.ByteBuffer;
++import java.nio.ByteOrder;
++import java.lang.System;
++
++import java.io.FileReader;
++import java.io.FileNotFoundException;
++import java.io.BufferedReader;
++/**
++ * @hide
++*/
++public class EventLogging {
++  private static EventLogging instance = new EventLogging();
++
++  //Event types
++  public static final int MSG_ENQUEUE = 0;/* enqueue a message*/
++  public static final int MSG_ENQUEUE_DELAYED = 1;/* dequeue a message*/
++  public static final int MSG_DEQUEUE = 2;/* dequeue a message*/
++  public static final int UI_TRAVERSAL = 3;/* trigger a UI update*/
++  public static final int UI_INPUT = 4;/* a new user input*/
++  public static final int EVENT_FOREGROUND = 5;/* start a foreground app*/
++  public static final int EVENT_EXIT_FOREGROUND = 6;/* exit a foreground app*/
++  public static final int EVENT_SUBMIT_ASYNCTASK = 7;/* submit an asynctask from one thread */ 
++  public static final int EVENT_CONSUME_ASYNCTASK = 8; /* consume an asynctask on another thread */
++  public static final int EVENT_UPLOAD_TRACE = 9; /* start to upload a trace from the collector */----------------------------------------kernel
++  public static final int EVENT_UPLOAD_DONE = 10;/* finish the uploading */--------------------------------------------------------------kernel
++  public static final int EVENT_WRITE_TRACE = 11;/* start write trace to sdcard*/--------------------------------------------------------kernel
++  public static final int EVENT_WRITE_DONE = 12;/* write trace done */-------------------------------------------------------------------kernel
++  public static final int MSG_POLL_NATIVE = 13;/* before poll message from the native queue */
++  public static final int MSG_POLL_DONE = 14;/* poll message done */
++  public static final int EVENT_SWITCH_CONFIG = 15;/* the client program changes the core/dvfs config of the device */-----------------------kernel
++  public static final int UI_KEY_BEGIN_BATCH = 16;/* key input from IME */
++  public static final int UI_KEY_CLEAR_META = 17;/* key input from IME */
++  public static final int UI_KEY_COMMIT_COMPLETION = 18;/* key input from IME */
++  public static final int UI_KEY_COMMIT_CORRECTION = 19;/* key input from IME */
++  public static final int UI_KEY_COMMIT_TEXT = 20;/* key input from IME */????????????????????????????????????和framework插桩类型不一样EventLogging.UI_KEY_COMMIT_COMPLETION
++  public static final int UI_KEY_DELETE_TEXT = 21;/* key input from IME */
++  public static final int UI_KEY_END_BATCH = 22;/* key input from IME */
++  public static final int UI_KEY_FINISH_COMPOSING = 23;/* key input from IME */
++  public static final int UI_KEY_GET_CAPS = 24;/* key input from IME */
++  public static final int UI_KEY_PERFORM_EDITOR_ACTION = 25;/* key input from IME */
++  public static final int UI_KEY_PERFORM_CONTEXT_MENU = 26;/* key input from IME */
++  public static final int UI_KEY_PERFORM_PRIVATE_COMMAND = 27;/* key input from IME */
++  public static final int UI_KEY_SET_COMPOSING_TEXT = 28;/* key input from IME */
++  public static final int UI_KEY_SET_COMPOSING_REGION = 29;/* key input from IME */
++  public static final int UI_KEY_SET_SELECTION = 30;/* key input from IME */
++  public static final int UI_KEY_SEND_KEY = 31;/* key input from IME */
++  public static final int UI_KEY_GET_TEXT_AFTER = 32;/* key input from IME */
++  public static final int UI_KEY_GET_TEXT_BEFORE = 33;/* key input from IME */
++  public static final int UI_KEY_GET_SELECTED_TEXT = 34;/* key input from IME */ 
++  public static final int UI_KEY_GET_EXTRACTED_TEXT = 35;/* key input from IME */ 
++
++
++  public static final int EVENT_OPENGL = 36;/* event indicating openGL usage */
++  public static final int UI_INVALIDATE = 37;/* invalidate the UI */
++
++  public static final int UI_UPDATE_VSYNC_SCHEDULE = 38;/*schedule the vsync update */
++  public static final int UI_UPDATE_DISPATCH = 39;/* dispatch vsync update */
++  //Queue size parameters
++  private static final int EVENT_BYTES = 8 + 4*4;// 24 bytes total for each event
++  private static final int QUEUE_SIZE = EVENT_BYTES * 5000; //Number of bytes in each buffer, 120K bytes total	
++  
++  private static final int COLLECTOR_PORT = 1234;
++
++  public static EventLogging getInstance(){
++    return instance;
++  }
++  
++  private ByteBuffer [] EventQueue;
++  private int [] QueueLength;
++  private int CurQueue;
++
++  private EventLogging(){
++    EventQueue = new ByteBuffer [2];
++    EventQueue[0] = ByteBuffer.allocate(QUEUE_SIZE);
++    EventQueue[1] = ByteBuffer.allocate(QUEUE_SIZE);
++    EventQueue[0].order(ByteOrder.LITTLE_ENDIAN);
++    EventQueue[1].order(ByteOrder.LITTLE_ENDIAN);
++    QueueLength = new int [2];
++    QueueLength[0] = 0;
++    QueueLength[1] = 0;
++    CurQueue = 0;
++  }
++
++  public void addEvent(int eventtype, int qid, int mid){
++     long timestamp = getTime();
++     int tid = getMyTid();
++     synchronized (this){
++     	EventQueue[CurQueue].putLong(timestamp).putInt(eventtype).putInt(tid).putInt(qid).putInt(mid);
++	QueueLength[CurQueue] += EVENT_BYTES;
++        if (QueueLength[CurQueue] + EVENT_BYTES >= QUEUE_SIZE){
++	  exportQueue();
++	}
++      }
++  }
++
++  public void addEvent(int eventtype, int runnable_code){
++      addEvent(eventtype, runnable_code, 0);
++  }
++
++  public void addEvent(int eventtype, boolean traversal_scheduled){
++    int traversal = 0;
++    if (traversal_scheduled)
++       traversal = 1;
++    addEvent(eventtype, traversal, 0);
++  }
++
++  public void addEvent(int eventtype){
++     addEvent(eventtype, 0, 0);
++  }
++
++  public void onPauseExport(){
++    synchronized(this){
++	exportQueue();
++    }
++  }
++
++  private void exportQueue(){
++     byte [] cur_array = new byte [QueueLength[CurQueue]];
++     System.arraycopy(EventQueue[CurQueue].array(), 0, cur_array, 0, QueueLength[CurQueue]);
++     Send sender = new Send(cur_array, QueueLength[CurQueue]);
++     Thread senderThread = new Thread(sender);
++     senderThread.start();
++     EventQueue[CurQueue].rewind();
++     QueueLength[CurQueue] = 0;
++     CurQueue = 1 - CurQueue;
++  }
++  
++  private class Send implements Runnable{
++    private byte [] buffer_to_send;
++    private int buffer_length;
++    
++    public Send(byte [] buffer, int length){
++      buffer_to_send = buffer;
++      buffer_length = length;
++    }
++    
++    @Override
++    public void run(){
++      try{
++          Socket senderSocket = new Socket("localhost", COLLECTOR_PORT);
++          BufferedOutputStream out = new BufferedOutputStream(senderSocket.getOutputStream(),1024);
++	  out.write(Integer.toString(buffer_length).getBytes());
++          out.write(0);
++          out.write(buffer_to_send); 
++          out.flush();
++          senderSocket.close();       
++        }catch(IOException e){
++          e.printStackTrace();
++        }            
++  
++    }
++  }
++
++  private native long getTime();
++  private native int getMyTid();
++}
++ 
+diff --git a/luni/src/main/java/java/util/concurrent/ThreadPoolExecutor.java b/luni/src/main/java/java/util/concurrent/ThreadPoolExecutor.java
+index 6622af8..f9b6f35 100644
+--- a/luni/src/main/java/java/util/concurrent/ThreadPoolExecutor.java
++++ b/luni/src/main/java/java/util/concurrent/ThreadPoolExecutor.java
+@@ -9,6 +9,10 @@ import java.util.concurrent.locks.*;
+ import java.util.concurrent.atomic.*;
+ import java.util.*;
+ 
++//BEGIN CONFIG_EVENT_LOGGING
++import java.io.*;
++import java.util.EventLogging;
++//END
+ /**
+  * An {@link ExecutorService} that executes each submitted task using
+  * one of possibly several pooled threads, normally configured
+@@ -1073,6 +1077,11 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
+                     beforeExecute(w.thread, task);
+                     Throwable thrown = null;
+                     try {
++			//BEGIN CONFIG_EVENT_LOGGING
++			EventLogging eventLogging = EventLogging.getInstance();
++			int runnable_code = System.identityHashCode(task);
++			eventLogging.addEvent(EventLogging.EVENT_CONSUME_ASYNCTASK, runnable_code);	
++			//END
+                         task.run();
+                     } catch (RuntimeException x) {
+                         thrown = x; throw x;
+@@ -1286,6 +1295,11 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
+          * thread.  If it fails, we know we are shut down or saturated
+          * and so reject the task.
+          */
++	//BEGIN CONFIG_EVENT_LOGGING
++ 	EventLogging eventLogging = EventLogging.getInstance();
++	int runnable_code = System.identityHashCode(command);	
++	eventLogging.addEvent(EventLogging.EVENT_SUBMIT_ASYNCTASK, runnable_code);	
++	//END
+         int c = ctl.get();
+         if (workerCountOf(c) < corePoolSize) {
+             if (addWorker(command, true))
+diff --git a/luni/src/main/native/Register.cpp b/luni/src/main/native/Register.cpp
+index 36abd7b..e5075de 100644
+--- a/luni/src/main/native/Register.cpp
++++ b/luni/src/main/native/Register.cpp
+@@ -71,6 +71,7 @@ int JNI_OnLoad(JavaVM* vm, void*) {
+     REGISTER(register_org_apache_harmony_dalvik_NativeTestTarget);
+     REGISTER(register_org_apache_harmony_xml_ExpatParser);
+     REGISTER(register_org_apache_harmony_xnet_provider_jsse_NativeCrypto);
++    REGISTER(register_java_util_EventLogging);
+ #undef REGISTER
+     return JNI_VERSION_1_6;
+ }
+diff --git a/luni/src/main/native/java_util_EventLogging.cpp b/luni/src/main/native/java_util_EventLogging.cpp
+new file mode 100644
+index 0000000..d18bc9a
+--- /dev/null
++++ b/luni/src/main/native/java_util_EventLogging.cpp
+@@ -0,0 +1,40 @@
++/* This is to return the elapsed microseconds and current thread ID
++ * author: Lide Zhang
++*/
++
++#include <unistd.h>
++#include <sys/time.h>
++#include "JniConstants.h"
++#include <sys/syscall.h>
++
++
++#if !defined(HAVE_ANDROID_OS)
++#define __KERNEL__
++# include <linux/unistd.h>
++#ifdef _syscall0
++_syscall0(pid_t,gettid)
++#else
++pid_t gettid() { return syscall(__NR_gettid);}
++#endif
++#undef __KERNEL__
++#endif
++
++static jlong EventLogging_getTime(JNIEnv*, jobject){
++	struct timeval time;
++	gettimeofday(&time, NULL);
++	long long timestamp = (long long)time.tv_sec * 1000000 + (long long)time.tv_usec;
++	return timestamp;
++}
++
++static jint EventLogging_getMyTid(JNIEnv*, jobject){
++	pid_t myTid = gettid();
++	return (jint)myTid;
++}
++
++static JNINativeMethod gMethods[] = {
++	NATIVE_METHOD(EventLogging, getTime, "()J"),
++	NATIVE_METHOD(EventLogging, getMyTid, "()I"),
++};
++void register_java_util_EventLogging(JNIEnv * env){
++	jniRegisterNativeMethods(env, "java/util/EventLogging", gMethods, NELEM(gMethods));
++}
+diff --git a/luni/src/main/native/sub.mk b/luni/src/main/native/sub.mk
+index b67348b..4bfdb1f 100644
+--- a/luni/src/main/native/sub.mk
++++ b/luni/src/main/native/sub.mk
+@@ -30,6 +30,7 @@ LOCAL_SRC_FILES := \
+ 	java_util_zip_CRC32.cpp \
+ 	java_util_zip_Deflater.cpp \
+ 	java_util_zip_Inflater.cpp \
++	java_util_EventLogging.cpp \
+ 	libcore_icu_ICU.cpp \
+ 	libcore_icu_NativeBreakIterator.cpp \
+ 	libcore_icu_NativeCollation.cpp \

@@ -1,0 +1,700 @@
+diff --git a/core/java/android/app/Activity.java b/core/java/android/app/Activity.java
+index f20fd33..c8ebbc0 100644
+--- a/core/java/android/app/Activity.java
++++ b/core/java/android/app/Activity.java
+@@ -83,6 +83,9 @@ import java.io.PrintWriter;
+ import java.util.ArrayList;
+ import java.util.HashMap;
+ 
++//BEGIN CONFIG_EVENT_LOGGING
++import java.util.EventLogging;
++//END
+ /**
+  * An activity is a single, focused thing that the user can do.  Almost all
+  * activities interact with the user, so the Activity class takes care of
+@@ -1030,6 +1033,10 @@ public class Activity extends ContextThemeWrapper
+         }
+ 
+         getApplication().dispatchActivityStarted(this);
++    	//BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventLogging = EventLogging.getInstance();
++	eventLogging.addEvent(EventLogging.EVENT_FOREGROUND, 0,0);-----------------------------------------------进入前台
++	//END
+     }
+ 
+     /**
+@@ -1270,6 +1277,11 @@ public class Activity extends ContextThemeWrapper
+         if (DEBUG_LIFECYCLE) Slog.v(TAG, "onPause " + this);
+         getApplication().dispatchActivityPaused(this);
+         mCalled = true;
++        //BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventLogging = EventLogging.getInstance();
++	eventLogging.addEvent(EventLogging.EVENT_EXIT_FOREGROUND, 0,0);-------------------------------------------退出前台
++	eventLogging.onPauseExport();
++	//END
+     }
+ 
+     /**
+@@ -1358,6 +1370,9 @@ public class Activity extends ContextThemeWrapper
+         if (mActionBar != null) mActionBar.setShowHideAnimationEnabled(false);
+         getApplication().dispatchActivityStopped(this);
+         mCalled = true;
++        //BEGIN CONFIG_EVENT_LOGGING
++	Log.i("Lide","onStop is called");
++	//END
+     }
+ 
+     /**
+
+diff --git a/core/java/android/os/Handler.java b/core/java/android/os/Handler.java
+index b892c81..2ae4618 100644
+--- a/core/java/android/os/Handler.java
++++ b/core/java/android/os/Handler.java
+@@ -19,8 +19,13 @@ package android.os;
+ import android.util.Log;
+ import android.util.Printer;
+ 
++//BEGIN CONFIG_EVENT_LOGGING
++import android.os.Process;
++import java.util.EventLogging;
++//END CONFIG_EVENT_LOGGING
+ import java.lang.reflect.Modifier;
+ 
++
+ /**
+  * A Handler allows you to send and process {@link Message} and Runnable
+  * objects associated with a thread's {@link MessageQueue}.  Each Handler
+@@ -88,7 +93,11 @@ public class Handler {
+      * Handle system messages here.
+      */
+     public void dispatchMessage(Message msg) {
+-        if (msg.callback != null) {
++        //BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventLogging = EventLogging.getInstance();
++	eventLogging.addEvent(EventLogging.MSG_DEQUEUE, mQueue.queueid, msg.messageid);-------------------------------------------退出前台
++	//END CONFIG_EVENT_LOGGING
++	if (msg.callback != null) {
+             handleCallback(msg);
+         } else {
+             if (mCallback != null) {
+@@ -443,7 +452,13 @@ public class Handler {
+         if (delayMillis < 0) {
+             delayMillis = 0;
+         }
+-        return sendMessageAtTime(msg, SystemClock.uptimeMillis() + delayMillis);
++        //BEGIN CONFIG_EVENT_LOGGING
++	if(delayMillis > 0){                   -------------------------------------------???????????????????????
++		EventLogging eventLogging = EventLogging.getInstance();
++		eventLogging.addEvent(EventLogging.MSG_ENQUEUE_DELAYED, (int)delayMillis, 0);-------------------------------------------退出前台
++	}
++	//END CONFIG_EVENT_LOGGING
++	return sendMessageAtTime(msg, SystemClock.uptimeMillis() + delayMillis);
+     }
+ 
+     /**
+diff --git a/core/java/android/os/Message.java b/core/java/android/os/Message.java
+index 0abc149..60ce1ca 100644
+--- a/core/java/android/os/Message.java
++++ b/core/java/android/os/Message.java
+@@ -100,6 +100,13 @@ public final class Message implements Parcelable {
+     private static final int MAX_POOL_SIZE = 50;
+ 
+     /**
++     * BEGIN CONFIG_EVENT_LOGGING
++     * @hide
++     */
++    public int messageid;
++   // private static int TotalCount = 0;
++    //END CONFIG_EVENT_LOGGING
++    /**
+      * Return a new Message instance from the global pool. Allows us to
+      * avoid allocating new objects in many cases.
+      */
+@@ -110,10 +117,21 @@ public final class Message implements Parcelable {
+                 sPool = m.next;
+                 m.next = null;
+                 sPoolSize--;
++		
++		//BEGIN CONFIG_EVENT_LOGGING
++		//m.messageid = TotalCount;
++		//TotalCount ++;
++		//END CONFIG_EVENT_LOGGING
+                 return m;
+             }
+         }
+-        return new Message();
++	//BEGIN CONFIG_EVENT_LOGGING
++	Message m = new Message();
++//	m.messageid = TotalCount;         ---------------效果不是一样的吗  有用吗  未改
++//	TotalCount ++;
++	return m;
++	//END CONFIG_EVENT_LOGGING
++        //return new Message();
+     }
+ 
+     /**
+diff --git a/core/java/android/os/MessageQueue.java b/core/java/android/os/MessageQueue.java
+index 5ad60ec..298f9cb 100644
+--- a/core/java/android/os/MessageQueue.java
++++ b/core/java/android/os/MessageQueue.java
+@@ -21,6 +21,10 @@ import android.util.Log;
+ 
+ import java.util.ArrayList;
+ 
++//BEGING CONFIG_EVENT_LOGGING
++import java.util.EventLogging;
++import android.os.Process;
++//END CONFIG_EVENT_LOGGING
+ /**
+  * Low-level class holding the list of messages to be dispatched by a
+  * {@link Looper}.  Messages are not added directly to a MessageQueue,
+@@ -54,6 +58,14 @@ public class MessageQueue {
+     private native void nativeWake(int ptr);
+ 
+     /**
++     * BEGIN CONFIG_EVENT_LOGGING
++     * @hide
++     */
++    public int queueid;
++    private static int TotalCount = 0;
++    //END CONFIG_EVENT_LOGGING
++
++    /**
+      * Callback interface for discovering when a thread is going to block
+      * waiting for more messages.
+      */
+@@ -101,9 +113,13 @@ public class MessageQueue {
+     }
+ 
+     MessageQueue(boolean quitAllowed) {
+-        mQuitAllowed = quitAllowed;
++        //BEGIN CONFIG_EVENT_LOGGING
++	queueid = Process.myTid();
++	//END CONFIG_EVENT_LOGGING
++	mQuitAllowed = quitAllowed;
+         nativeInit();
+-    }
++        
++	}
+ 
+     @Override
+     protected void finalize() throws Throwable {
+@@ -122,8 +138,14 @@ public class MessageQueue {
+             if (nextPollTimeoutMillis != 0) {
+                 Binder.flushPendingCommands();
+             }
++	    //BEGIN CONFIG_EVENT_LOGGING
++	    EventLogging eventlogging = EventLogging.getInstance();
++	    eventlogging.addEvent(EventLogging.MSG_POLL_NATIVE, queueid);
++	    //END
+             nativePollOnce(mPtr, nextPollTimeoutMillis);
+-
++	    //BEGIN CONFIG_EVENT_LOGGING
++	    eventlogging.addEvent(EventLogging.MSG_POLL_DONE, queueid);
++	    //END
+             synchronized (this) {
+                 if (mQuiting) {
+                     return null;
+@@ -287,7 +309,6 @@ public class MessageQueue {
+         if (msg.target == null) {
+             throw new AndroidRuntimeException("Message must have a target.");
+         }
+-
+         boolean needWake;
+         synchronized (this) {
+             if (mQuiting) {
+@@ -296,6 +317,12 @@ public class MessageQueue {
+                 Log.w("MessageQueue", e.getMessage(), e);
+                 return false;
+             }
++	    //BEGING CONFIG_EVENT_LOGGING
++	    msg.messageid = TotalCount;
++	    TotalCount ++;
++	    EventLogging eventlogging = EventLogging.getInstance();	
++	    eventlogging.addEvent(EventLogging.MSG_ENQUEUE, queueid, msg.messageid);
++	    //END CONFIG_EVENT_LOGGING
+ 
+             msg.when = when;
+             Message p = mMessages;
+
+diff --git a/core/java/android/view/DisplayEventReceiver.java b/core/java/android/view/DisplayEventReceiver.java
+index 6c2e540..de47b6e 100644
+--- a/core/java/android/view/DisplayEventReceiver.java
++++ b/core/java/android/view/DisplayEventReceiver.java
+@@ -22,6 +22,9 @@ import android.os.Looper;
+ import android.os.MessageQueue;
+ import android.util.Log;
+ 
++//BEGIN CONFIG_EVENT_LOGGING
++import java.util.EventLogging;
++//END CONFIG_EVENT_LOGGING
+ /**
+  * Provides a low-level mechanism for an application to receive display events
+  * such as vertical sync.
+@@ -107,6 +110,10 @@ public abstract class DisplayEventReceiver {
+             Log.w(TAG, "Attempted to schedule a vertical sync pulse but the display event "
+                     + "receiver has already been disposed.");
+         } else {
++	    //BEGIN CONFIG_EVENT_LOGGING
++	    EventLogging eventlogging = EventLogging.getInstance();
++	    eventlogging.addEvent(EventLogging.UI_UPDATE_VSYNC_SCHEDULE);
++	    //END CONFIG_EVENT_LOGGING
+             nativeScheduleVsync(mReceiverPtr);
+         }
+     }
+@@ -114,6 +121,10 @@ public abstract class DisplayEventReceiver {
+     // Called from native code.
+     @SuppressWarnings("unused")
+     private void dispatchVsync(long timestampNanos, int frame) {
++        //BEGIN CONFIG_EVENT_LOGGING
++        EventLogging eventlogging = EventLogging.getInstance();
++        eventlogging.addEvent(EventLogging.UI_UPDATE_DISPATCH);
++        //END CONFIG_EVENT_LOGGING
+         onVsync(timestampNanos, frame);
+     }
+ }
+
+diff --git a/core/java/android/view/ViewRootImpl.java b/core/java/android/view/ViewRootImpl.java
+index ad850da..0492617 100644
+--- a/core/java/android/view/ViewRootImpl.java
++++ b/core/java/android/view/ViewRootImpl.java
+@@ -86,6 +86,9 @@ import java.lang.ref.WeakReference;
+ import java.util.ArrayList;
+ import java.util.HashSet;
+ 
++//BEGIN CONFIG_EVENT_LOGGING
++import java.util.EventLogging;
++//END CONFIG_EVENT_LOGGING
+ /**
+  * The top of a view hierarchy, implementing the needed protocol between View
+  * and the WindowManager.  This is for the most part an internal implementation
+@@ -968,7 +971,11 @@ public final class ViewRootImpl implements ViewParent,
+     }
+ 
+     void scheduleTraversals() {
+-        if (!mTraversalScheduled) {
++        //BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.UI_INVALIDATE, mTraversalScheduled);
++	//END CONFIG_EVENT_LOGGING
++	if (!mTraversalScheduled) {
+             mTraversalScheduled = true;
+             mTraversalBarrier = mHandler.getLooper().postSyncBarrier();
+             mChoreographer.postCallback(
+
+@@ -4211,6 +4218,11 @@ public final class ViewRootImpl implements ViewParent,
+     final class TraversalRunnable implements Runnable {
+         @Override
+         public void run() {
++	    //BEGING CONFIG_EVENT_LOGGING
++	    //Log.d("Lide", "update display in ViewRootIml");
++	    EventLogging eventLogging = EventLogging.getInstance();
++	    eventLogging.addEvent(EventLogging.UI_TRAVERSAL, 0,0);
++	    //END CONFIG_EVENT_LOGGING
+             doTraversal();
+         }
+     }
+@@ -4223,7 +4235,12 @@ public final class ViewRootImpl implements ViewParent,
+ 
+         @Override
+         public void onInputEvent(InputEvent event) {
+-            enqueueInputEvent(event, this, 0, true);
++            //BEGIN CONFIG_EVENT_LOGGING
++	    //Log.i("Lide", "input event!");
++	    EventLogging eventLogging = EventLogging.getInstance();
++	    eventLogging.addEvent(EventLogging.UI_INPUT, 0,0);
++	    //END CONFIG_EVENT_LOGGING
++	    enqueueInputEvent(event, this, 0, true);
+         }
+ 
+         @Override
+diff --git a/core/java/android/view/inputmethod/BaseInputConnection.java b/core/java/android/view/inputmethod/BaseInputConnection.java
+index 7ec5398..2e2de52 100644
+--- a/core/java/android/view/inputmethod/BaseInputConnection.java
++++ b/core/java/android/view/inputmethod/BaseInputConnection.java
+@@ -35,6 +35,9 @@ import android.view.KeyEvent;
+ import android.view.View;
+ import android.view.ViewRootImpl;
+ 
++//BEGIN CONFIG_EVENT_LOGGING
++import java.util.EventLogging;
++//END CONFIG_EVENT_LOGGING
+ class ComposingText implements NoCopySpan {
+ }
+ 
+@@ -166,7 +169,11 @@ public class BaseInputConnection implements InputConnection {
+      * MetaKeyKeyListener.clearMetaKeyState(long, int)} to clear the state.
+      */
+     public boolean clearMetaKeyStates(int states) {
+-        final Editable content = getEditable();
++        //BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.UI_KEY_CLEAR_META);
++	//END CONFIG_EVENT_LOGGING
++	final Editable content = getEditable();
+         if (content == null) return false;
+         MetaKeyKeyListener.clearMetaKeyState(content, states);
+         return true;
+@@ -193,7 +200,11 @@ public class BaseInputConnection implements InputConnection {
+      */
+     public boolean commitText(CharSequence text, int newCursorPosition) {
+         if (DEBUG) Log.v(TAG, "commitText " + text);
+-        replaceText(text, newCursorPosition, false);
++        //BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.UI_KEY_COMMIT_COMPLETION);
++	//END CONFIG_EVENT_LOGGING
++	replaceText(text, newCursorPosition, false);
+         sendCurrentText();
+         return true;
+     }
+@@ -205,7 +216,12 @@ public class BaseInputConnection implements InputConnection {
+      * @param afterLength
+      */
+     public boolean deleteSurroundingText(int beforeLength, int afterLength) {
+-        if (DEBUG) Log.v(TAG, "deleteSurroundingText " + beforeLength
++        //BEGIN CONFIG_EVENT_LOGGING
++	Log.d("Lide", "new input!");
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.UI_KEY_DELETE_TEXT);
++	//END CONFIG_EVENT_LOGGING
++	if (DEBUG) Log.v(TAG, "deleteSurroundingText " + beforeLength
+                 + " / " + afterLength);
+         final Editable content = getEditable();
+         if (content == null) return false;
+@@ -264,6 +280,10 @@ public class BaseInputConnection implements InputConnection {
+      */
+     public boolean finishComposingText() {
+         if (DEBUG) Log.v(TAG, "finishComposingText");
++        //BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.UI_KEY_FINISH_COMPOSING);
++	//END CONFIG_EVENT_LOGGING
+         final Editable content = getEditable();
+         if (content != null) {
+             beginBatchEdit();
+@@ -281,6 +301,10 @@ public class BaseInputConnection implements InputConnection {
+      */
+     public int getCursorCapsMode(int reqModes) {
+         if (mDummyMode) return 0;
++        //BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.UI_KEY_GET_CAPS);
++	//END CONFIG_EVENT_LOGGING
+         
+         final Editable content = getEditable();
+         if (content == null) return 0;
+@@ -309,6 +333,10 @@ public class BaseInputConnection implements InputConnection {
+      * current cursor position in the buffer.
+      */
+     public CharSequence getTextBeforeCursor(int length, int flags) {
++        //BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.UI_KEY_GET_TEXT_BEFORE);
++	//END CONFIG_EVENT_LOGGING
+         final Editable content = getEditable();
+         if (content == null) return null;
+ 
+@@ -340,6 +368,10 @@ public class BaseInputConnection implements InputConnection {
+      * selected.
+      */
+     public CharSequence getSelectedText(int flags) {
++        //BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.UI_KEY_GET_SELECTED_TEXT);
++	//END CONFIG_EVENT_LOGGING
+         final Editable content = getEditable();
+         if (content == null) return null;
+ 
+@@ -365,7 +397,12 @@ public class BaseInputConnection implements InputConnection {
+      * current cursor position in the buffer.
+      */
+     public CharSequence getTextAfterCursor(int length, int flags) {
+-        final Editable content = getEditable();
++        //BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.UI_KEY_GET_TEXT_AFTER);
++	//END CONFIG_EVENT_LOGGING
++        
++	final Editable content = getEditable();
+         if (content == null) return null;
+ 
+         int a = Selection.getSelectionStart(content);
+@@ -397,7 +434,12 @@ public class BaseInputConnection implements InputConnection {
+      * The default implementation turns this into the enter key.
+      */
+     public boolean performEditorAction(int actionCode) {
+-        long eventTime = SystemClock.uptimeMillis();
++        //BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.UI_KEY_PERFORM_EDITOR_ACTION);
++	//END CONFIG_EVENT_LOGGING
++        
++	long eventTime = SystemClock.uptimeMillis();
+         sendKeyEvent(new KeyEvent(eventTime, eventTime,
+                 KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER, 0, 0,
+                 KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
+@@ -431,12 +473,21 @@ public class BaseInputConnection implements InputConnection {
+      * in a composing state with the composing style.
+      */
+     public boolean setComposingText(CharSequence text, int newCursorPosition) {
+-        if (DEBUG) Log.v(TAG, "setComposingText " + text);
++        //BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.UI_KEY_SET_COMPOSING_TEXT);
++	//END CONFIG_EVENT_LOGGING
++       
++	 if (DEBUG) Log.v(TAG, "setComposingText " + text);
+         replaceText(text, newCursorPosition, true);
+         return true;
+     }
+ 
+     public boolean setComposingRegion(int start, int end) {
++        //BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.UI_KEY_SET_COMPOSING_REGION);
++	//END CONFIG_EVENT_LOGGING
+         final Editable content = getEditable();
+         if (content != null) {
+             beginBatchEdit();
+@@ -477,7 +528,11 @@ public class BaseInputConnection implements InputConnection {
+      * current editable text.
+      */
+     public boolean setSelection(int start, int end) {
+-        if (DEBUG) Log.v(TAG, "setSelection " + start + ", " + end);
++        //BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.UI_KEY_SET_SELECTION);
++	//END CONFIG_EVENT_LOGGING
++	if (DEBUG) Log.v(TAG, "setSelection " + start + ", " + end);
+         final Editable content = getEditable();
+         if (content == null) return false;
+         int len = content.length();
+@@ -505,7 +560,11 @@ public class BaseInputConnection implements InputConnection {
+      */
+     public boolean sendKeyEvent(KeyEvent event) {
+         synchronized (mIMM.mH) {
+-            ViewRootImpl viewRootImpl = mTargetView != null ? mTargetView.getViewRootImpl() : null;
++            //BEGIN CONFIG_EVENT_LOGGING
++	    EventLogging eventlogging = EventLogging.getInstance();
++	    eventlogging.addEvent(EventLogging.UI_KEY_SEND_KEY);
++	    //END CONFIG_EVENT_LOGGING
++	    ViewRootImpl viewRootImpl = mTargetView != null ? mTargetView.getViewRootImpl() : null;
+             if (viewRootImpl == null) {
+                 if (mIMM.mServedView != null) {
+                     viewRootImpl = mIMM.mServedView.getViewRootImpl();
+@@ -530,7 +589,6 @@ public class BaseInputConnection implements InputConnection {
+         if (!mDummyMode) {
+             return;
+         }
+-        
+         Editable content = getEditable();
+         if (content != null) {
+             final int N = content.length();
+@@ -592,7 +650,7 @@ public class BaseInputConnection implements InputConnection {
+ 
+     private void replaceText(CharSequence text, int newCursorPosition,
+             boolean composing) {
+-        final Editable content = getEditable();
++	final Editable content = getEditable();
+         if (content == null) {
+             return;
+         }
+diff --git a/core/java/android/webkit/BrowserFrame.java b/core/java/android/webkit/BrowserFrame.java-----------------???????????????
+index 5108990..9ec0ad0 100644
+--- a/core/java/android/webkit/BrowserFrame.java
++++ b/core/java/android/webkit/BrowserFrame.java
+@@ -1170,7 +1170,8 @@ class BrowserFrame extends Handler {
+     }
+ 
+     private void didFinishLoading() {
+-      if (mKeyStoreHandler != null) {
++        Log.i(LOGTAG,"Lide: page finish loading");
++	if (mKeyStoreHandler != null) {
+           mKeyStoreHandler.installCert(mContext);
+           mKeyStoreHandler = null;
+       }
+diff --git a/core/java/com/android/internal/widget/EditableInputConnection.java b/core/java/com/android/internal/widget/EditableInputConnection.java
+index 4cbdf78..2683c5a 100644
+--- a/core/java/com/android/internal/widget/EditableInputConnection.java
++++ b/core/java/com/android/internal/widget/EditableInputConnection.java
+@@ -29,6 +29,9 @@ import android.view.inputmethod.ExtractedText;
+ import android.view.inputmethod.ExtractedTextRequest;
+ import android.widget.TextView;
+ 
++//BEGIN CONFIG_EVENT_LOGGING
++import java.util.EventLogging;
++//END CONFIG_EVENT_LOGGING
+ public class EditableInputConnection extends BaseInputConnection {
+     private static final boolean DEBUG = false;
+     private static final String TAG = "EditableInputConnection";
+@@ -57,7 +60,12 @@ public class EditableInputConnection extends BaseInputConnection {
+     @Override
+     public boolean beginBatchEdit() {
+         synchronized(this) {
+-            if (mBatchEditNesting >= 0) {
++            //BEGIN CONFIG_EVENT_LOGGING
++	    EventLogging eventlogging = EventLogging.getInstance();
++            eventlogging.addEvent(EventLogging.UI_KEY_BEGIN_BATCH);
++            //END CONFIG_EVENT_LOGGING
++ 
++	    if (mBatchEditNesting >= 0) {
+                 mTextView.beginBatchEdit();
+                 mBatchEditNesting++;
+                 return true;
+@@ -69,6 +77,10 @@ public class EditableInputConnection extends BaseInputConnection {
+     @Override
+     public boolean endBatchEdit() {
+         synchronized(this) {
++            //BEGIN CONFIG_EVENT_LOGGING
++	    EventLogging eventlogging = EventLogging.getInstance();
++            eventlogging.addEvent(EventLogging.UI_KEY_END_BATCH);
++            //END CONFIG_EVENT_LOGGING
+             if (mBatchEditNesting > 0) {
+                 // When the connection is reset by the InputMethodManager and reportFinish
+                 // is called, some endBatchEdit calls may still be asynchronously received from the
+@@ -97,6 +109,10 @@ public class EditableInputConnection extends BaseInputConnection {
+ 
+     @Override
+     public boolean clearMetaKeyStates(int states) {
++        //BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventlogging = EventLogging.getInstance();
++        eventlogging.addEvent(EventLogging.UI_KEY_CLEAR_META);
++        //END CONFIG_EVENT_LOGGING
+         final Editable content = getEditable();
+         if (content == null) return false;
+         KeyListener kl = mTextView.getKeyListener();
+@@ -113,6 +129,10 @@ public class EditableInputConnection extends BaseInputConnection {
+ 
+     @Override
+     public boolean commitCompletion(CompletionInfo text) {
++        //BEGIN CONFIG_EVENT_LOGGING
++        EventLogging eventlogging = EventLogging.getInstance();
++        eventlogging.addEvent(EventLogging.UI_KEY_COMMIT_COMPLETION);
++        //END CONFIG_EVENT_LOGGING
+         if (DEBUG) Log.v(TAG, "commitCompletion " + text);
+         mTextView.beginBatchEdit();
+         mTextView.onCommitCompletion(text);
+@@ -125,6 +145,10 @@ public class EditableInputConnection extends BaseInputConnection {
+      */
+     @Override
+     public boolean commitCorrection(CorrectionInfo correctionInfo) {
++        //BEGIN CONFIG_EVENT_LOGGING
++        EventLogging eventlogging = EventLogging.getInstance();
++        eventlogging.addEvent(EventLogging.UI_KEY_COMMIT_CORRECTION);
++        //END CONFIG_EVENT_LOGGING
+         if (DEBUG) Log.v(TAG, "commitCorrection" + correctionInfo);
+         mTextView.beginBatchEdit();
+         mTextView.onCommitCorrection(correctionInfo);
+@@ -134,6 +158,10 @@ public class EditableInputConnection extends BaseInputConnection {
+ 
+     @Override
+     public boolean performEditorAction(int actionCode) {
++    	//BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.UI_KEY_PERFORM_EDITOR_ACTION);
++	//END CONFIG_EVENT_LOGGING
+         if (DEBUG) Log.v(TAG, "performEditorAction " + actionCode);
+         mTextView.onEditorAction(actionCode);
+         return true;
+@@ -141,6 +169,10 @@ public class EditableInputConnection extends BaseInputConnection {
+     
+     @Override
+     public boolean performContextMenuAction(int id) {
++    	//BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.UI_KEY_PERFORM_CONTEXT_MENU);
++	//END CONFIG_EVENT_LOGGING
+         if (DEBUG) Log.v(TAG, "performContextMenuAction " + id);
+         mTextView.beginBatchEdit();
+         mTextView.onTextContextMenuItem(id);
+@@ -150,6 +182,10 @@ public class EditableInputConnection extends BaseInputConnection {
+     
+     @Override
+     public ExtractedText getExtractedText(ExtractedTextRequest request, int flags) {
++    	//BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.UI_KEY_GET_EXTRACTED_TEXT);
++	//END CONFIG_EVENT_LOGGING
+         if (mTextView != null) {
+             ExtractedText et = new ExtractedText();
+             if (mTextView.extractText(request, et)) {
+@@ -164,6 +200,10 @@ public class EditableInputConnection extends BaseInputConnection {
+ 
+     @Override
+     public boolean performPrivateCommand(String action, Bundle data) {
++    	//BEGIN CONFIG_EVENT_LOGGING
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.UI_KEY_PERFORM_PRIVATE_COMMAND);
++	//END CONFIG_EVENT_LOGGING
+         mTextView.onPrivateIMECommand(action, data);
+         return true;
+     }
+@@ -173,6 +213,7 @@ public class EditableInputConnection extends BaseInputConnection {
+         if (mTextView == null) {
+             return super.commitText(text, newCursorPosition);
+         }
++
+         if (text instanceof Spanned) {
+             Spanned spanned = ((Spanned) text);
+             SuggestionSpan[] spans = spanned.getSpans(0, text.length(), SuggestionSpan.class);
+
+diff --git a/opengl/java/android/opengl/GLSurfaceView.java b/opengl/java/android/opengl/GLSurfaceView.java
+index 8acbae3..d1b414c 100644
+--- a/opengl/java/android/opengl/GLSurfaceView.java
++++ b/opengl/java/android/opengl/GLSurfaceView.java
+@@ -37,6 +37,9 @@ import android.util.Log;
+ import android.view.SurfaceHolder;
+ import android.view.SurfaceView;
+ 
++//BEGIN CONFIG_EVENT_LOGGING
++import java.util.EventLogging;
++//END CONFIG_EVENT_LOGGING
+ /**
+  * An implementation of SurfaceView that uses the dedicated surface for
+  * displaying OpenGL rendering.
+@@ -344,7 +347,12 @@ public class GLSurfaceView extends SurfaceView implements SurfaceHolder.Callback
+      * @param renderer the renderer to use to perform OpenGL drawing.
+      */
+     public void setRenderer(Renderer renderer) {
+-        checkRenderThreadState();
++        //BEGIN CONFIG_EVENT_LOGGING
++	//Log.d("Lide", "openGL: setRenderer");
++	EventLogging eventlogging = EventLogging.getInstance();
++	eventlogging.addEvent(EventLogging.EVENT_OPENGL);
++	//END CONFIG_EVENT_LOGGING
++	checkRenderThreadState();
+         if (mEGLConfigChooser == null) {
+             mEGLConfigChooser = new SimpleEGLConfigChooser(true);
+         }
+diff --git a/services/java/com/android/server/pm/PackageManagerService.java b/services/java/com/android/server/pm/PackageManagerService.java
+index 75b3f04..3e378d7 100644
+
+--- a/services/java/com/android/server/pm/PackageManagerService.java
++++ b/services/java/com/android/server/pm/PackageManagerService.java
+@@ -1631,6 +1631,16 @@ public class PackageManagerService extends IPackageManager.Stub {
+                     gids = appendInts(gids, basePerm.gids);
+                 }
+ 
++		//BEGIN CONFIG_EVENT_LOGGING
++		// Enforse the network permission for every application, this is a hack
++		if( checkPermission("android.permission.INTERNET", packageName) 
++			== PackageManager.PERMISSION_DENIED)
++		{		
++			final BasePermission basePerm = mSettings.mPermissions.get(
++			android.Manifest.permission.INTERNET);
++			gids = appendInts(gids, basePerm.gids);
++		}
++		//END
+                 return gids;
+             }
+         }
+@@ -1941,7 +1951,7 @@ public class PackageManagerService extends IPackageManager.Stub {
+     }
+ 
+     public int checkPermission(String permName, String pkgName) {
+-        synchronized (mPackages) {
++	synchronized (mPackages) {
+             PackageParser.Package p = mPackages.get(pkgName);
+             if (p != null && p.mExtras != null) {
+                 PackageSetting ps = (PackageSetting)p.mExtras;
