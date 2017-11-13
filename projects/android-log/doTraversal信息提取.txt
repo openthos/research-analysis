@@ -1,0 +1,14 @@
+整体思路：通过Intent中的FLAG定位启动StartupMenu的PID，通过PID定位属于StartupMenu的doTraversal操作，根据操作所消耗的时间证实第一次启动和非第一次启动在某次doTraversal消耗时间上存在明显差异，有较大可能性是性能问题的根源。
+
+从Click到doTraversal路径（参考之前说的文章的1,2两部分）：上传图片
+
+判断Intent包含flag的方法：
+
+AMS中：
+ActivityRecord构造之前：(intent.getFlags() & Intent.FLAG_ACTIVITY_RUN_STARTUP_MENU) != 0
+ActivityRecord构造之后，其命名一般为r：(r.intent.getFlags() & Intent.FLAG_ACTIVITY_RUN_STARTUP_MENU) != 0
+Activity中存在mIntent成员变量：(mIntent.getFlags() & Intent.FLAG_ACTIVITY_RUN_STARTUP_MENU) != 0
+
+进入viewRootImpl之后需要根据前一次log信息锁定执行handleLaunchActivity的PID，以此为依据去索取doTraversal信息。
+
+方法仍待优化，对于路径有疑问或者有错误可以随时提出。
