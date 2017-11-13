@@ -1,4 +1,13 @@
 本周工作进展和下周计划
+2017.10.6~2017.11.10
+
+- 本周工作计划点1: Reading oblivious store papers
+- 完成情况：figure out some consideration.
+- 本周工作计划点1: Finish abstract
+- 完成情况：Finished, but not reviewed by kang chen.
+
+- 下周计划：
+- Finish design of paper
 
 2017.10.23~2017.11.4
 

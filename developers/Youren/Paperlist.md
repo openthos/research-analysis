@@ -24,6 +24,10 @@
 ## Security
  * Platform Embedded Security Technology Revealed
 
+##Oblivious store
+Shroud: Ensuring Private Access to Large-Scale Data in the Data Center
+ObliviStore: High Performance Oblivious Cloud Storage
+TaoStore: Overcoming Asynchronicity in ObliviousData Storage
 
 ## SGX
 ### In kernel
