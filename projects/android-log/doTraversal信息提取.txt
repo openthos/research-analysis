@@ -12,3 +12,5 @@ Activity中存在mIntent成员变量：(mIntent.getFlags() & Intent.FLAG_ACTIVIT
 进入viewRootImpl之后需要根据前一次log信息锁定执行handleLaunchActivity的PID，以此为依据去索取doTraversal信息。
 
 方法仍待优化，对于路径有疑问或者有错误可以随时提出。
+
+更新：通过使用Process.myPid()方法在handleLaunchActivity处获取pid并保存（目前使用Slog中的静态变量保存，之后会思考怎样保存更合适），在ViewRootImpl中再次获取并保证新的pid和保存的pid一致的情况下才打印log，可定向地获取某一个Activity的ViewRootImpl情况。无需重复取log。
