@@ -15,4 +15,4 @@ Activity中存在mIntent成员变量：(mIntent.getFlags() & Intent.FLAG_ACTIVIT
 
 更新：通过使用Process.myPid()方法在handleLaunchActivity处获取pid并保存（目前使用Slog中的静态变量保存，之后会思考怎样保存更合适），在ViewRootImpl中再次获取并保证新的pid和保存的pid一致的情况下才打印log，可定向地获取某一个Activity的ViewRootImpl情况。无需重复取log。
 
-更新：基本锁定在mAttachInfo.mHardwareRenderer.fence()方法在第一次启动StartupMenu时耗费了大量的时间。
+更新：基本锁定在mAttachInfo.mHardwareRenderer.fence()方法在第一次启动StartupMenu时耗费了大量的时间，但这是一个native方法，继续跟下去有一定的难度。
