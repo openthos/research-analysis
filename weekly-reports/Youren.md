@@ -1,9 +1,14 @@
->> chyyuu 2017.11.16   这个文档主要是流水帐，可在此流水帐上给出一些你要读的论文链接，比如读论文的阅读笔记？ 看不到。
-
 本周工作进展和下周计划
+2017.11.13~2017.11.18
+
+- 本周工作计划点1: write introduction
+- 完成情况：finish half
+- 本周工作计划点1: reading oblivious paper
+- 完成情况：summary will be update later
+
 2017.10.6~2017.11.10
 
-- 本周工作计划点1: Reading oblivious store papers （chy>> 论文链接在哪？）
+- 本周工作计划点1: Reading oblivious store papers
 - 完成情况：figure out some consideration.
 - 本周工作计划点1: Finish abstract
 - 完成情况：Finished, but not reviewed by kang chen.
