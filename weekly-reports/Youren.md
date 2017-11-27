@@ -1,4 +1,11 @@
 本周工作进展和下周计划
+2017.11.19~2017.11.26
+
+- 本周工作计划点1: write problem definiation
+- 完成情况：finished
+- 本周工作计划点2: Fix two problem: Oblivious response time issue and Crash may not good under virtual node.
+- 完成情况：Done.
+
 2017.11.13~2017.11.18
 
 - 本周工作计划点1: write introduction
