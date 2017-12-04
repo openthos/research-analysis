@@ -1,4 +1,14 @@
 本周工作进展和下周计划
+2017.11.27~2017.12.3
+
+- 本周工作计划点1: write Design
+- 完成情况：finished
+
+
+- 下周计划：
+- 想想怎么写implement 中的Oblivious shuffle
+- code
+
 2017.11.19~2017.11.26
 
 - 本周工作计划点1: write problem definiation
