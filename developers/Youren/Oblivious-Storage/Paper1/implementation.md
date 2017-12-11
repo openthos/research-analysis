@@ -15,7 +15,7 @@ d. storage table 用来查找当前实际存储了哪些object。
 e. handing request table 用来表示当前机器有哪些请求正在等待返回。
 
 
-access protocol：
+access protocol：   
 1. client发送一个请求
 2. entrynode收到请求后，在index table中找到该object对应的机器ip，并将
 3. 该请求转发给index
@@ -35,15 +35,15 @@ access protocol：
 17. storage 随机找个proxy，将key，value（请求结果转发）
 18. proxy将请求发回给index server。
 19. 当index server收到三个请求的返回（消息18）时，update index table，同时在handling request table中删除该请求。
-20. index Server：如果index 收到了3个消息8，也即是有三个proxy都返回了echo，那么index Server在受到一个消息18之后立刻发送消息20.
-21. entrynode将消息返回给client
+20. index Server：如果index 收到了3个消息8，也即是有三个proxy都返回了echo，那么index Server在受到一个消息18之后立刻发送消息20.  
+21. entrynode将消息返回给client  
 
-为了保证协议的安全性，做出如下规定：
-1. 在协议的任一阶段，当有机器不可达，source 机器需要反复尝试时，此时不应该再直接连接，而应该采用随机选择一个proxy。
-//FIXME 待证明
-整个access 协议最后的结果是集群中：
-每个机器的出流量都是去往随机的机器
-每个机器的入流量都是来自随机的机器
+为了保证协议的安全性，做出如下规定：  
+1. 在协议的任一阶段，当有机器不可达，source 机器需要反复尝试时，此时不应该再直接连接，而应该采用随机选择一个proxy。   
+//FIXME 待证明  
+整个access 协议最后的结果是集群中：  
+每个机器的出流量都是去往随机的机器  
+每个机器的入流量都是来自随机的机器  
 
 
 ![SequenceDiagram1.jpg](resource/sequencediagram2.jpg)
