@@ -1,0 +1,4 @@
+version=88.2 (custom build by David Chan / 20171218)
+arch=x86_64
+minsdk=22
+maxsdk=22

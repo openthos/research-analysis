@@ -1,0 +1,9 @@
+1  Open termial and su to root
+2  unzip xposed_x86_64-by_David_chan_2017-12-18.zip
+3  cd xposed_x86_64-by_David_chan_2017-12-18
+4  ./install_xposed.sh
+5  cd .. && rm -rf xposed_x86_64-by_David_chan_2017-12-18 && reboot -f
+
+
+After reboot you can install the XposedInstaller_3.1.4.apk
+
