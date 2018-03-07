@@ -13,13 +13,27 @@ ptrace采取一种使父进程得以监视和控制其它进程的方式，它�
 
 数的进程称为tracer，被控制的进程称为tracee。
 
-##### 1.2 ptrace功能
+##### 1.3 ptrace功能
 
 拦截一个系统调用，然后修改它的参数
 
 设置断点，插入代码到一个正在运行的程序中
 
 总之就是，潜入到机器内部，偷窥和纂改进程的寄存器和数据段
+
+##### 1.4 ptrace参数
+```
+long ptrace(enum __ptrace_request request,pid_t pid,void addr, void *data);
+```
+参数request：控制ptrace函数的行为，定义在sys/ptrace.h中
+
+参数pid：指定tracee的进程号
+
+以上两个参数是必须的，之后两个参数分别为地址和数据，其含义由参数request控制。
+
+具体request参数的取值及含义可查看帮助文档（控制台输入： man ptrace）
+
+注意返回值，man手册上的说法是返回一个字的数据大小，在32位机器上是4个字节，在64位机器上是8个字节，都对应一个long的长度。
 
 #### 2. 基础知识
 
@@ -83,35 +97,30 @@ int main()
 {
     pid_t child;
     long orig_rax;
-    child = fork();
+    child = fork();             //fork创建出一个我们将要跟踪（trace）的子进程
     if(child == 0)
     {
-        ptrace(PTRACE_TRACEME,0,NULL,NULL);
-        execl("/bin/ls","ls",NULL);
+        ptrace(PTRACE_TRACEME,0,NULL,NULL);   //子进程通过ptrace函数的PTRACE_TRACEME参数来告知内核自己将要被跟踪
+        execl("/bin/ls","ls",NULL); //execl函数实际上会触发execve这个系统调用，这时内核发现0进程为tracee，然后将其暂停，
+                                    //发送一个signal唤醒等待中的tracer(此程序中为主线程)。
     }
     else
     {
         wait(NULL);
-        orig_rax = ptrace(PTRACE_PEEKUSER,child,8*ORIG_RAX,NULL);
+        orig_rax = ptrace(PTRACE_PEEKUSER,child,8*ORIG_RAX,NULL);//当触发系统调用时，内核会将保存调用编号的rax寄存器的内容保存在
+                                                                 //orig_rax中，我们可以通过ptrace的PTRACE_PEEKUSER参数来读取。
+                                                                 //ORIG_RAX为寄存器编号,保存在sys/reg.h中，而在64位系统中，每个
+                                                                 //寄存器有8个字节的大小，所以此处用8*ORIG_RAX来获取该寄存器地址。
         printf("the child made a system call %ld\n",orig_rax);
-        ptrace(PTRACE_CONT,child,NULL,NULL);
+        ptrace(PTRACE_CONT,child,NULL,NULL);//当我们获取到系统调用编号以后，就可以通过ptrace的PTRACE_CONT参数来唤醒暂停中的子进程，
+                                            //让其继续执行。
     }
     return 0;
 }
 
 //输出：the child made a system call 59
 ```
-代码详解：
-
-该程序通过fork创建出一个我们将要跟踪（trace）的子进程，在执行execl之前，子进程通过ptrace函数的PTRACE_TRACEME参数来告知内核自己将要被跟踪。
-
-对于execl，这个函数实际上会触发execve这个系统调用，这时内核发现此进程为tracee，然后将其暂停，发送一个signal唤醒等待中的tracer(此程序中为主线程)。
-
-当触发系统调用时，内核会将保存调用编号的rax寄存器的内容保存在orig_rax中，我们可以通过ptrace的PTRACE_PEEKUSER参数来读取。
-
-ORIG_RAX为寄存器编号,保存在sys/reg.h中，而在64位系统中，每个寄存器有8个字节的大小，所以此处用8*ORIG_RAX来获取该寄存器地址。
-
-当我们获取到系统调用编号以后，就可以通过ptrace的PTRACE_CONT参数来唤醒暂停中的子进程，让其继续执行。
+##### 3.2 获取系统调用编号
 
 
 
@@ -119,6 +128,10 @@ ORIG_RAX为寄存器编号,保存在sys/reg.h中，而在64位系统中，每个
 
 #### 参考资料：
 
-https://www.cnblogs.com/mmmmar/p/6040325.html
+[x86_64平台ptrace的使用](https://www.cnblogs.com/mmmmar/p/6040325.html)
 
-http://blog.csdn.net/sealyao/article/details/6710772
+[x86平台ptrace的使用](http://blog.csdn.net/sealyao/article/details/6710772)
+
+[ptrace官方文档](http://man7.org/linux/man-pages/man2/ptrace.2.html)
+
+[Linux Ptrace 详解](http://blog.csdn.net/u012417380/article/details/60470075)
