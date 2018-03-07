@@ -529,3 +529,5 @@ int main(int argc, char *argv[])
 [ptrace官方文档](http://man7.org/linux/man-pages/man2/ptrace.2.html)
 
 [Linux Ptrace 详解](http://blog.csdn.net/u012417380/article/details/60470075)
+
+[86_64平台ptrace so动态注入](http://blog.csdn.net/u012417380/article/details/60470075)
