@@ -1,5 +1,8 @@
 ## 参考文献
- - S. Amani, P. Chubb, A. F. Donaldson, A. Legg, K. C.
+- Fan Long, Peter Amidon,and Martin Rinard. Automatic 
+ Inference of Code Transforms for Patch Generation, 
+ FSE'17. 2017
+- S. Amani, P. Chubb, A. F. Donaldson, A. Legg, K. C.
 Ong, L. Ryzhyk, and Y. Zhu. Automatic verification of
 active device drivers. In ACM SIGOPS Operating System
 Review, volume 48, pages 106-118, 2014.
