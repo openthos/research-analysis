@@ -164,8 +164,7 @@ tional Conference on Automated Software Engineering
  - D. Weeratunge, X. Zhang, W. N. Sumner, and S. Jagan-
 nathan. Analyzing concurrency bugs using dual slicing.
 In Proceedings of the 19th International Symposium on
-Software Testing and Analysis (ISSTA), pages 253-264,
-2010.
+Software Testing and Analysis (ISSTA), pages 253-264,2010.
  - A. Williams, W. Thies, and M. D. Ernst. Static deadlock
 detection for Java libraries. In Proceedings of the 19th
 European Conference on Object-Oriented Programming
@@ -173,8 +172,7 @@ European Conference on Object-Oriented Programming
  - T. Witkowski, N. Blanc, D. Kroening, and G. Weissen-
 bacher. Model checking concurrent Linux device drivers.
 In Proceedings of the 22nd International Conference on
-Automated Software Engineering (ASE), pages 501-504.
-2007.
+Automated Software Engineering (ASE), pages 501-504.2007.
  - J. Yang, D. Evans, D. Bhardwaj, T. Bhat, and M. Das.
 Perracotta: mining temporal API rules from imperfect
 traces. In Proceedings of 28th International Conference
