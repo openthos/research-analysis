@@ -1,5 +1,55 @@
 本周工作进展和下周计划
-2018.4.9~2018.4.22
+2018.4.29~2018.5.4
+1. knowing llvm
+
+What is llvm infrastructure
+http://www.aosabook.org/en/llvm.html
+
+llvm getting start （build a llvm from source code)
+write a simple Hello world pass
+http://releases.llvm.org/5.0.1/docs/WritingAnLLVMPass.html
+
+how to write a useful pass in llvm:
+http://llvm.org/docs/ProgrammersManual.html
+
+了解 LLVM 的IR格式：
+http://llvm.org/docs/LangRef.html
+
+上述LLVM的文档都是选读略读。
+
+2. knowing compiler background
+
+Reading "Engineering a compiler" chapter 1 and 5.
+Knowing what's IR and the consideration when compiler design a IR format.
+Knowing what's SSA and why ssa can be use for control flow and data flow analysis.
+
+read below course slides 1 and 2:
+http://misailo.web.engr.illinois.edu/courses/526/
+了解SSA form 是什么，为什么要用SSA，因为LLVM的IR是SSA 形式的，我们的代码也是对IR修改，未来的优化也是如此。
+
+3. 代码写了一个简单的开头.
+
+阅读memsentry的源代码.
+write a pass iterator all store/load instructions.
+
+Plan:
+10 May.
+write a minimal working implementation that instruments every store/load and call/ret of a sample enclave program，而且链接初始化MPX的库。
+需要解决问题：如何在SGX中初始化MPX，sgx程序没有初始化阶段。
+target： workable pass
+
+17 May.
+Learning control flow and data-flow opt.
+compare instrumented programs and uninstrumented programs.
+Spec 2006 Benchmark
+
+24 May.
+pass with optimization function.能够对指令的插入进行优化。
+optimized benchmark data. 优化后的数据。
+
+
+
+2018.4.22~2018.4.28
 - 本周工作计划1：了解MPX以及 Software fault isolation 内容
 - 完成情况：大概了解
 - 本周工作计划2：学习llvm
