@@ -1,4 +1,35 @@
 本周工作进展和下周计划
+2018.5.5~2018.5.11
+这周完成拥有最基础功能的software fault isolation 实现，我们需要对一个应用程序进行两个部分的处理：
+1. 数据访问的检查
+2. 代码跳转的检查
+因此这周完成的llvm pass 主要有以下两个功能：
+
+1. 对所有的load store 指令进行插桩
+在IR层，所有对内存的访问都是load 和store 指令
+所以我们对load 进行读内存的检查，只能读取可读区域。
+对store 进行写内存检查，可以读取该程序所有区域。
+
+2. 对所有的indirect call、indirectbr 和ret指令进行修改
+
+IR层区分direct和indirect call/jump，direct指的是直接对某个函数或labeled的地址进行跳转、调用
+indirect是指目标地址来自寄存器或内存，因此我们只需要对indirect进行检查。
+
+因为我们初期只需要模拟性能，在每一个需要检查的跳转指令之前插入一条add指令和一条mpx指令即可。
+对于ret 指令，首先使用llvm.returnaddress 获得当前函数的返回值，再插入add 指令和mpx指令以及jmp指令。
+
+
+下周计划：
+1. benchmark spec 2006基准测试现有实现的性能。
+2. 研究现有SFI的优化技术，设计我们的SFI优化方案。为此，需要读下面几篇论文：
+读论文
+Principles and Implementation Techniques of Software-Based Fault Isolation
+range/loop analysis
+这是一篇关于Software fault isolation的 survey。
+Combining Control-Flow Integrity and Static Analysis for Efficient and Validated Data Sandboxing
+Strato: A Retargetable Framework for Low-Level Inlined-Reference Monitors
+这两篇是Software fault isolation实现优化的文章。
+
 2018.4.29~2018.5.4
 1. knowing llvm
 
