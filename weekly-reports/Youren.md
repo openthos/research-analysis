@@ -1,4 +1,40 @@
 本周工作进展和下周计划
+2018.5.12~2018.5.18
+1. 这周阅读相关的论文，了解相关的使用software fault isolation的实现方式和优化手段。
+结合我们的工作，给出相应的优化手段。
+所有的优化都是针对内存的读写的（即data region 的保护），因为control flow integrity的插桩没有太多优化的余地（每一个call 和ret，jump都必须插桩，无法避免）。
+
+首先我们需要的工作需要分为三个步骤：
+第一个步骤是在IR层对所有可能的load store 指令插入对应的check 函数。这个步骤在上周已经完成。
+第二个步骤是在IR层进行相应的优化处理，有一些无法确定的优化，则放在第三步进行处理。
+第三个步骤是在后端，当寄存器分配完成后，对指令插桩进行检查，如果符合条件，则删除这个插桩。
+
+其中第二个步骤无法确定优化能否apply，主要是因为存在register spill问题。
+register spilling 的意思是，在IR层，虚拟寄存器是无限多的，但是实际上硬件上的寄存器是有限的。因此可能存在某个指针因为硬件寄存器不够用而被写回到内存上之后再读出来的情况。这就是register spill。
+因为根据CFI的威胁模型，内存是不可信的，被写回内存的指针需要重新检查。因此我们几乎所有的优化都必须到寄存器分配之后才能确定该优化是否可行。
+
+因此我确定的优化手段主要有一下三点（都是基于观察的启发式的优化）：
+1. 当一个指针被check过，那么之后使用这个指针进行读取值都不应该再check（如果该指针被写回到内存中后，则需要check）
+2. 对数组读写进行优化，gep指令，如果index不超过guard zone，则只对数组基址check 一次（如果数组基址写回内存，则需要重新check）
+3. 对loop 进行检查，如果循环次数可以大概确定，则可将检查上提。
+
+以上是三个高层次的检查，为了了解清楚如何使用llvm 实现这些检查，同时还阅读了UIUC course CS526
+Iterative Dataflow Framework 123 三节，并对照算法分析llvm 中的 ConstantProp.cpp pass。
+http://misailo.web.engr.illinois.edu/courses/526/  
+
+同时我们对之前的代码进行了一定的改正，例如将之前的调用C函数的内联汇编改为调用LLVM的内联汇编。
+
+阅读的论文主要是上周周报中提到的两篇论文。相应的阅读报告也已放在github上。
+Combining Control-Flow Integrity and Static Analysis for Efficient and Validated Data Sandboxing
+Strato: A Retargetable Framework for Low-Level Inlined-Reference Monitors
+
+洪亮：
+负责benchmark 的移植，使用我们的工作对spec 2006中的程序进行插桩，结果大概是51.3%的overhead。
+
+下周计划：
+1. 实现初步的优化，将spec 2006中51.3%的overhead 降低到20%
+2. 基本完成（90%）论文的内容。
+
 2018.5.5~2018.5.11
 这周完成拥有最基础功能的software fault isolation 实现，我们需要对一个应用程序进行两个部分的处理：
 1. 数据访问的检查
