@@ -1,4 +1,43 @@
 本周工作进展和下周计划
+2018.5.19~2018.5.25
+本周计划目标：
+1. 通过优化将overhead降低到20%以下
+2. 论文完成90%
+
+本周完成工作：
+
+三个优化手段已经实现前两个。
+我们目前的工作目的是验证方案的可行性，因此我们的方案中并不一定要求插桩的正确性和安全性。
+因此目前的实现中我们暂时没有考虑register spill和range analysis。
+
+
+1. 优化：当一个指针被check过，那么之后使用这个指针进行读取值都不应该再check   
+优化实现：对一个指针的操作可以被分为load和store：  
+对于load操作，新建一个PtrLoadList，当一个指针没有被扫描过（不在PtrLoadList)中，则添加对这个指针的check，并且将指针放入PtrLoadList。如果这个指针已经被扫描过，则添加一个llvm metadata（注释信息），指明第一次check的位置，方便之后再进行优化。
+对于Store操作类似。
+每次扫描过一个函数，则将List清空。
+
+2. 优化：对数组读写进行优化，gep指令，如果index不超过guard zone，则只对数组基址check一次
+优化实现：对于顺序数据（包括数组和结构体）的读写，在LLVM IR中需要两步进行，第一步是通过getelementptr指令，计算出需要访问的地址。第二步是使用第一步算出的地址访问。   
+getelementptr接受三个参数：访问数据的类型，访问数据的基址，以及访问数据的索引。
+维护一个BasePtrList，出现新的BasePtr的时候对BasePtr插入load 和store 的check。对于使用baseptr计算出来的指针，则可以跳过插入，并插入一个llvm.metadata。
+每次扫描过一个函数，则将List清空。
+
+3. 对loop 进行检查，如果循环次数可以大概确定，则可将检查上提。
+正在实现。
+
+学习的资料：
+包括一些llvm 的maillist中，试图学习llvm相关的优化。
+http://lists.llvm.org/pipermail/llvm-dev/2016-May/100093.html
+还有LLVM的文档，找llvm 优化pass 学习：
+http://llvm.org/doxygen/classllvm_1_1ScalarEvolution.html
+
+论文周末发修改版。
+
+下周计划：
+周末出数据和论文修改版，方便之后老师review，以及修改。
+
+
 2018.5.12~2018.5.18
 1. 这周阅读相关的论文，了解相关的使用software fault isolation的实现方式和优化手段。
 结合我们的工作，给出相应的优化手段。
