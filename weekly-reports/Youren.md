@@ -1,41 +1,37 @@
 本周工作进展和下周计划
-2018.5.19~2018.5.25
-本周计划目标：
-1. 通过优化将overhead降低到20%以下
-2. 论文完成90%
+2018.5.26~2018.6.3
+这周的主要工作包括：
+1. 测试
+在测试的过程中遇到了不少的问题，spec 2006的源代码比较古老，因此在使用LLVM进行测试的时候遇到了不少的问题。
+首先是ubuntu 下编译spec，会提示没有可用的tools，需要自己编译tools
+因此解压 tools下的源代码文件，然后运行tools/src/buildtools
 
-本周完成工作：
+可能会碰见各种编译错误，可以参考下面三个链接一一解决
+https://www.okqubit.net/runspec.html
+http://ardorem.blogspot.hk/2015/04/spec-2000-build-error.html
+https://blog.csdn.net/koala002/article/details/6362473
 
-三个优化手段已经实现前两个。
-我们目前的工作目的是验证方案的可行性，因此我们的方案中并不一定要求插桩的正确性和安全性。
-因此目前的实现中我们暂时没有考虑register spill和range analysis。
+llvm 编译spec 2006时，还会有一些小问题需要修复
+参考链接：
+https://dmz-portal.mips.com/wiki/LLVM_SPEC_2006
+
+C++程序需要指明 clang++ 处理，否则会报链接错误。
 
 
-1. 优化：当一个指针被check过，那么之后使用这个指针进行读取值都不应该再check   
-优化实现：对一个指针的操作可以被分为load和store：  
-对于load操作，新建一个PtrLoadList，当一个指针没有被扫描过（不在PtrLoadList)中，则添加对这个指针的check，并且将指针放入PtrLoadList。如果这个指针已经被扫描过，则添加一个llvm metadata（注释信息），指明第一次check的位置，方便之后再进行优化。
-对于Store操作类似。
-每次扫描过一个函数，则将List清空。
+发现hmmer的overhead特别的高。使用gprof 分析发现有一个函数占比最多，阅读优化后的llvm IR发现是因为他的C代码中使用了多级指针，翻译成IR以后就是需要反复的从内存中读取指针，再用该指针读取数据。因此我们的三个优化手段都失效。
+进一步我们发现这个函数有多个实现，我们在Makefile 中传参-DSLOW，使用了另一个该函数的直接但是绝对性能稍差的实现，让我们的优化效果稍微好些。
 
-2. 优化：对数组读写进行优化，gep指令，如果index不超过guard zone，则只对数组基址check一次
-优化实现：对于顺序数据（包括数组和结构体）的读写，在LLVM IR中需要两步进行，第一步是通过getelementptr指令，计算出需要访问的地址。第二步是使用第一步算出的地址访问。   
-getelementptr接受三个参数：访问数据的类型，访问数据的基址，以及访问数据的索引。
-维护一个BasePtrList，出现新的BasePtr的时候对BasePtr插入load 和store 的check。对于使用baseptr计算出来的指针，则可以跳过插入，并插入一个llvm.metadata。
-每次扫描过一个函数，则将List清空。
+2. 在测试过程中发现我们发现一些小bug，进行修复。
 
-3. 对loop 进行检查，如果循环次数可以大概确定，则可将检查上提。
-正在实现。
+下一步工作
 
-学习的资料：
-包括一些llvm 的maillist中，试图学习llvm相关的优化。
-http://lists.llvm.org/pipermail/llvm-dev/2016-May/100093.html
-还有LLVM的文档，找llvm 优化pass 学习：
-http://llvm.org/doxygen/classllvm_1_1ScalarEvolution.html
+长期来看，接下来我的主要工作包括两个部分
+1. 继续做优化
+现在的优化没有保证安全性，同时也有一些过优化的地方，我们需要找到一个方法能够完整的实现并进行优化。
+2. loader
+这个loader需要能够将二进制程序加载进Enclave中，将程序块分配到固定的地址空间并且写上CFI_LABEL，保证控制流的完整性。
 
-论文周末发修改版。
-
-下周计划：
-周末出数据和论文修改版，方便之后老师review，以及修改。
+因此，短期我准备两周系统的学习UIUC CS526课程的内容，完成Project，给之后的工作打下基础。
 
 
 2018.5.12~2018.5.18
