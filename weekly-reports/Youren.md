@@ -1,4 +1,36 @@
 本周工作进展和下周计划
+学习内容：
+2018.6.4~2018.6.10
+这周的主要内容是学习，学习的内容比较杂，总结如下：
+
+看Native Client 论文两篇，了解Native Client的工作。
+
+看UIUC CS526，学些lattice 理论以及在data flow analysis中的应用。
+学习了dependence 分析的理论
+
+看了书籍《Engineering a compiler》 第8章，第9章。
+书籍的内容和课程的内容相比比较简单直接，而且更和编译器相关，而不是分析。第8章第9章讲了一些编译器会使用的优化方法，这些方法可以和LLVM 中的一些pass对照来看，详细解释了这些优化方法的算法。是不错的学习参考资料，也值得看。但是和UIUC直接介绍SSA-Form相比（更关注于基于SSA-form的优化），Engineering a compiler 会把优化和SSA-Form 的一些生成方法交叉介绍。
+目前的学习程度只能保证了解，不能保证熟悉。
+
+看了论文：Superset Disassembly: Statically Rewriting x86 Binaries Without Heuristics
+这篇论文是关于如何在没有外界信息帮助（debug信息，不依赖于特定编译器）以及不使用启发式方法来对bianry 反汇编同时重写。可以快速了解如果我们的工作在binary 做会遇见什么困难。
+
+
+那么对我们现在的工作需要解决的问题总结如下：
+如果基于源代码编译时插桩（类似NaCl方案），需要的处理的不限于IR：
+之前有一个简单的不正确的实现版本：
+1. 之前有一些优化是不正确的实现，例如对loop中的check 插桩的优化
+2. register spilling 需要解决
+3. ret 指令没有正确的插桩
+4. 无法处理嵌入式汇编
+
+如果基于binary 进行处理：
+1. 我们需要能够正确的反汇编二进制程序并且静态分析，重建程序的信息，这些应该有一些框架可以使用例如bap，可参考下面的链接[1]。
+2. 我们需要能够正确的插桩，需要除了5个问题（参考 superset 论文的notes）
+
+ref:
+[1].https://reverseengineering.stackexchange.com/questions/10604/how-to-generate-cfg-from-assembly-instructions?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+
 2018.5.26~2018.6.3
 这周的主要工作包括：
 1. 测试
