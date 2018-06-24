@@ -1,5 +1,27 @@
 本周工作进展和下周计划
 
+2018.6.18~2018.6.24
+1. 完成后端的代码编写，完成对CFI 相关的正确插桩。
+完成情况：依然有bug。
+
+这个链接讨论如何创建一个backend pass 来对load 和store 插桩
+http://lists.llvm.org/pipermail/llvm-dev/2017-February/110598.html
+ 
+这个链接里面讨论了如何确定pass 运行的顺序
+http://lists.llvm.org/pipermail/llvm-dev/2015-November/092492.html
+ 
+主要是在TargetMachine.cpp 中，依据添加addPass 函数在不同的位置。
+ 
+LLVM Writing a Backend Pass
+http://aviral.lab.asu.edu/llvm-writing-a-backend-pass/
+
+PassConfig 的调用逻辑是LLVMTargetMachine.cpp  中的LLVMTargetMachine 调用 new PassConfig， 然后调用PassConfig->addMachinePass.
+TargetPassConfig类中 addMachinePass调用各种pass，将IR翻译成 asm code。在addMachinePass中，调用了一系列的hook函数，addpostregalo之类的，由特定的子类override。
+
+因此我们在LLVM后端，addEmitPre2 中添加我们的Pass， 并且进行上周描述中的CFI的插桩。
+
+目前实现仍然有一些问题，可能是对llvm 的后端实现不够了解，因此插桩指令的时候会崩溃，依然在解决中。
+
 2018.6.11~2018.6.17
 
 本周的主要工作依然是学习，并且给出一个对未来工作难点和解决方法的估计：
