@@ -23,4 +23,4 @@ every wednesday or thusday normally
 
 firday normally 
 
-[https://www.ece.ucsb.edu/~yuanxie/Advice.html](Advice Collection for Students)
+[Advice Collection for Students](https://www.ece.ucsb.edu/~yuanxie/Advice.html)
