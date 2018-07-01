@@ -1,4 +1,37 @@
 本周工作进展和下周计划
+2018.6.25~2018.7.01
+本周工作：
+很遗憾，本周没有实质性的进展
+从上周到本周还在进行CFI的查桩。
+首先是因为对caller save和callee save register 的理解失误，使用了错误的寄存器，导致程序行为异常。
+其次是对LLVM后端代码的API理解错误，当指令选择结束以后，应该使用getOpcode 直接判断指令编码，而不是通过isReture/isBranch判断。因为后者保留的是IR的信息，可能在优化中IR翻译成了不同的机器码。例如尾调用
+outfun{
+Infun();}
+被翻译成
+{Call infun
+Ret}
+优化过后，就是{Jmp infun}
+
+最后在使用BuildMI API 插入指令的时候，因为对LLVM后端的实现不熟，也没有详细的文档，难以参考类似的代码，遇到了各种的问题：
+首先是pop指令的插入，使用如下代码插入：
+BuildMI(MBB, MI, DL, TII->get(X86::POP64r)).addReg(X86::R10);
+BuildMI(MBB, MI, DL, TII->get(X86::POP64r)).addDef(X86::R10).addReg(X86::R10);
+BuildMI(MBB, MI, DL, TII->get(X86::POP64r)).addDef(X86::R10);
+
+都会提示将operand插入已经完成的指令的错误。
+改成如下形式就可以了
+BuildMI(MBB, MI, DL, TII->get(X86::POP64r), X86::R10);
+
+类似的，在进行JMP的插桩时，遇见了类似的问题：
+
+BuildMI(MBB, MI, DL, TII->get(X86::JMP64r)).addReg(X86::R10);
+
+后来发现要在td（target description）文件中找到合适的指令编码，这里找到JMP64r。然后得到对应的操作数以及操作数的顺序，可以参考如下命令：
+echo "jmp r10" | llvm-mc -x86-asm-syntax=intel -output-asm-variant=1 -show-inst
+
+目前在进行bndcu的插入的时候，会发生在根据td文件自动生成的代码中，访问第三个操作数的情况。
+而bndcu ptr bndcu;应该只有两个操作数。 这一点可以依据上面给出的指令确定。
+目前没找到问题的原因，以及解决办法，发送邮件给 llvm-dev mail-list 寻求帮助了。
 
 2018.6.18~2018.6.24
 1. 完成后端的代码编写，完成对CFI 相关的正确插桩。
