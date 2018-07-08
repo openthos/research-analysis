@@ -1,4 +1,29 @@
 本周工作进展和下周计划
+2018.7.02~2018.7.08
+本周工作：
+本周先将之前的Control flow integrity 插桩的工作在后端完成，将bug 解决掉，并且通过了spec 2006测试。
+而后继续在后端进行 register spill 的工作。
+首先是参考如下的文章，学习如何在LLVM中进行 control flow analysis
+https://eli.thegreenplace.net/2013/09/16/analyzing-function-cfgs-with-llvm
+
+基于这篇文章，我可以得出结论，基于LLVM的控制流分析是基于LLVM已经组织好的Basic block 结构，使用图算法进行分析。为了实现我们的register spill检测功能，我们需要自己实现算法进行检测。
+算法的大概思路如下：
+首先这个算法基于观察到，该算法本质上是想找到所有的针对某个register check 函数之间是否有 将该register 的值放入内存中的行为。
+首先我们维护一个set，如果一个register 在这个set 中，则证明这个register是被check 过的。
+
+我们基于Function 进行分析，从function的第一个basic block开始扫描，如果找到check函数，且该check函数对应的register 不在set中，则标记该check函数生效，并且将该register放入set中。
+
+扫描完当前的basic block 之后，对该block 标记为visited，接着扫描该basic block 的后继节点（深度优先或者广度优先都可）。当访问到visit 标记的basicblock时，需要继续检查该basicblock，并且停止检查其后继节点。
+
+目前正在实现该算法，需要解决的问题有两个：
+上述文章中是基于IR的分析，后端中实现该算法，需要重新找API实现，而API的文档不是很全，需要试错。
+
+其次是如何将在IR层得到的信息，传递到后端。
+下述邮件中说，可以使用pass直接传递消息或使用metadata。
+http://lists.llvm.org/pipermail/llvm-dev/2014-July/074930.html
+之前是用的metadata，但是根据下面的邮件，IR到machine instr没有一对一的关系，目前没有找到很好地办法将在IR插入的metadata 对应的机器指令找到。
+http://lists.llvm.org/pipermail/llvm-dev/2013-August/064673.html
+
 2018.6.25~2018.7.01
 本周工作：
 很遗憾，本周没有实质性的进展
