@@ -1,4 +1,40 @@
 本周工作进展和下周计划
+2018.7.09~2018.7.15  
+本周工作：  
+前述说到，为了实现Register spill check算法，需要将之前的inline asm 转换为intrinsic。  
+已经将Data sandbox 的check 成功使用Intrinsic实现，期间遇到了一些bug，记入在专门的文件中。  
+
+发现存在三个问题如下：  
+```  
+IR的指令是   
+checkstore %addr //对addr 地址进行check  
+store 100 %addr  // 将100 存入addr指向的内存中  
+翻译成机器指令表示为:  
+mov 10(rsp) eax //将addr 赋值给eax  
+bndcu bnd1 eax  // check eax  
+bndcl bnd1 eax  
+mov 100 10(rsp) //store  
+```  
+1. Intrinsic 插入的时候，依然是一个call，因此有传参的过程，依然会将这个参数传递给一个寄存器，而后对寄存器进行检查，这样就多了一条move 指令，同时这个参数也不是真的要检测的register 。   
+2. 第二个问题是如果rsp 的偏移量进行访问， 如果这个偏移量是一个常数，是不是也可以不用check，只要这个常数不超过 guardzone的大小。  
+3. 第三个问题是bitcast，IR中的bitcase 可能是不同类型的变量，指向同一个地址，因此只需要check 其中一个即可。  
+
+为了解决这三个问题Register spill check 算法实现中采用下面的方法：   
+当扫描到一条进行check 的intrinsic 时，读取上一条指令，这条指令的左操作数是真实的目标地址。然后将左操作数中的寄存器入栈。并且在之后的boundcheck 指令中，只对该真实寄存器进行check。  
+如果左操作数中的偏移量是常数，且不超过guardzone，则我们可以认为这个数和 其寄存器是等同的。如果下一次遇见对16（rsp），也不进行check.（range不会超过）  
+
+因此上面的机器指令可以翻译为：
+bndcu rsp
+bndcl rsp
+mov ebx 10(rsp)
+这种方法的缺陷是虽然少了传参的mov，但是对于eax的占用依然存在（因为这是在寄存器分配之后的工作，寄存器压力无法缓解）
+
+目前下一步工作是，将之前的后端pass重构为三个部分
+第一是constraintcheck，通过之前的扫描算法，将可以移除的intrinsic 标记为可以移除。
+第二是 checklowering， 将check的 intrinsic 展开，可以移除的移除。
+第三是之前的CFIInstrument，对Ret 的CFI插桩在后端进行处理。
+预计该工作两天内可以完成。
+
 2018.7.02~2018.7.08
 本周工作：
 本周先将之前的Control flow integrity 插桩的工作在后端完成，将bug 解决掉，并且通过了spec 2006测试。
