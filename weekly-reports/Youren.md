@@ -1,4 +1,73 @@
 本周工作进展和下周计划
+2018.7.16~2018.7.22  
+目前，整个后端的工作分为了三个部分：
+1. Control Flow Integrity 的插桩
+2. 检查是否要删除一个check的intrinsic（register spill check）
+2. 最后是对这个Intrinsic 的翻译（如何翻译可以最高效，最少指令）
+
+一共三个方面的工作，第一个部分之前已经完成。第二个部分进展如下：
+
+将上周遇见的插入Intrinsic 的bug进一步的修复，并且编写register spill check 算法，并且做了一定的优化：
+一个小的后端可做的优化是，我们可以根据地址的转换，如果是某个已经check过的寄存器的常数偏移量的地址，那么只要常数偏移量不大，也不对这个load store 进行check。
+
+伪代码如下：
+```
+//if a register is checked, we put it in set
+//if a register is changed, remove it from set
+set checked = {}
+Vector Worklist = {}
+FirstBB = function.entrynode();
+ 
+Worklist.push_back(FirstBB);
+ 
+while worklist is not empty:
+	curBB = worklist.pop();
+	If(curBB is not visited)
+		Worklist.push(curBB.all_successor);
+	Scan(curBB);
+
+func Scan(BasicBlock BB):
+	For(InstrIterator I: BB):
+		If(I is checkfunc):
+			movI = I.front();
+			Checkreg = movl.getoperand()
+			If(checkreg not in checked)
+				MarkUnremovable(I)
+				Checked.insert(checkreg)
+			else if (movl.getoperand(others) is constant)
+				continue;
+		Else:
+			If (I modified register R ):
+				If(R in checked):
+					Checked.remove(R)
+
+```
+
+目前残留的问题是，如何判断一个指令是否修改了某个寄存器。
+
+另外load/store指令究竟使用的是哪个寄存器作为指针存取数据也是个问题。找到这个寄存器涉及到编译器如何将一个地址的参数传给Intrinsic的。进行了一个初步的观察，如果是O0 编译，那么编译器会将一个地址传递给一个中间寄存器，然后intrinsic check的是中间寄存器。这种情况我们的实现是错误的（没有正确的跟踪到寄存器）。
+在O3 编译下，编译器可能会优化掉传参的过程，这个时候我们能够轻易的获得对应的寄存器。但是没有100%的把握编译器一定会优化掉传参过程。因此能否直接使用。还是值得商榷的。
+
+另外，还根据review意见，对APSys的论文进行阅读，提出修改计划，周一和洪亮商量之后，将对应的计划发给shepherd:
+
+review 意见：
+1. 详细介绍如何实现的isolation 缩短对intel sgx 的解释，加多对isolation 实现的介绍
+传统的SFI有一些局限性，需要描述清楚局限性，以及tradeoff。
+
+2. 威胁模型不现实，CFI太弱，没有详细描述out of enclave bug
+3. TCB 的问题，如果能够和其他的方案比较一下更好
+
+总结review：
+1. fork 如何实现，以确保不同的CFI_LABEL是不同的
+2. review 中说的一些场景下的攻击方式，如何防御，thread model 需要更加详细的定义。具体的攻击方式是针对CFI_LABEL的，使用fork 函数，对child 进行brute-force attack。
+如何保证syscall不被abuse
+3. 如果解释需要太多的空间，缩减对Intel SGX的解释
+
+我们计划的修改方法：
+1. 修改Intruction 中 关于Out of enclave bug 的描述。
+1. 在Implementation 中加入关于Libos中如何做dynamic loader以及如何插入CFI，包括dynamic loader，以解释第一个问题
+2. 增加部分关于SFI与其他实现的比较，对各种局限性进行描述。
+
 2018.7.09~2018.7.15  
 本周工作：  
 前述说到，为了实现Register spill check算法，需要将之前的inline asm 转换为intrinsic。  
