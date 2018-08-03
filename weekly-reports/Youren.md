@@ -1,4 +1,24 @@
 本周工作进展和下周计划
+2018.7.23~2018.7.29
+
+本周主要工作是讨论APSys 2018的论文reviews，并且进行修改。
+
+review 的意见主要集中在对Security 和Implementation上。
+
+我们主要准备修改的地方包括：
+
+1\. 添加对out-of-enclave bug 的解释，并且写了一个小的sample
+
+2\. 添加对CFI\_LABEL的解释，关于CFI\_LABEL如何生成的，为什么不是sercet.
+
+3\. 为了能够解释关于TCB太大，以及如何支持JIT，我们在最后添加一个future work。描述如何对插桩好的代码进行validate，以及对JIT的支持主要是动态添加的代码验证后再拷贝到用户空间指定位置。
+
+4\. 对于实现，我们添加一个章节，描述更多library OS的内容。
+
+包括syscall 是如何实现的。fork 如何实现，以及context switch 如何实现。
+
+另外为了能够在LLVM后端能够分析寄存器是否是被修改了，对llvm 中的MIR文档进行阅读，了解LLVM后端中对寄存器各种状态的定义。
+
 2018.7.16~2018.7.22  
 目前，整个后端的工作分为了三个部分：
 1. Control Flow Integrity 的插桩
