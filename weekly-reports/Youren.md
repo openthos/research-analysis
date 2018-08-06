@@ -1,4 +1,123 @@
 本周工作进展和下周计划
+2018.7.30~2018.8.06
+
+本周主要有两个方面的工作：
+
+1\. 修改论文，修改之后洪亮再修改。
+
+2\. 继续编写代码。
+
+修改论文主要是对out of enclave 进行解释，对我上周写的sample code 进行解释。
+
+添加未来的工作，写verifier 和支持JIT。
+
+描写我们的系统中Library OS需要做哪些事情。
+
+其中代码的工作主要有以下3点
+
+1\. 之前的工作报告中有一个伪代码，关于在后端如何扫描一个function。但是那个算法在实现的时候发现有问题。
+
+我们在扫描每个basicblock 的时候，如果将checkedRegs 定义为这个basicblock 的状态的话，那么这个basicblock 的进状态应该等于他前驱basicblock的出状态。但是每个basicblock 都会有多个前驱basicblock。因此，当我们在扫描function的时候，发现需要扫描的basicblock，需要将这个basicblock 的前驱节点的出状态也一起入栈。然后按照前驱节点的出状态进行扫描。
+
+为了方便写程序，在算法中，每个check函数都默认是可以消除的，如果扫描的过程中发现了不可消除的check函数，则标记为不可消除的。对basicblock中任意一趟扫描将check函数标记为不可消除，那之后的lowering check过程就会翻译这个check函数，否则直接讲check函数删除。
+
+新版的伪代码如下：
+
+```c
+//if a register is checked, we put it in set
+//if a register is changed, remove it from set
+set checked = {}
+Vector Worklist = {}
+FirstBB = function.entrynode();
+
+Worklist.push_back(FirstBB, checked);
+
+while worklist is not empty:
+	curBB,checked = worklist.pop();
+	Scan(curBB);
+	//after scan, checkedRegs has changed
+	If(curBB is not visited)
+		Worklist.push(curBB.all_successor,checked);
+
+func Scan(BasicBlock BB):
+	For(InstrIterator I: BB):
+		If(I is checkfunc):
+			movI = I.front();
+			Checkreg = movl.getoperand()
+			If(checkreg not in checked)
+				MarkUnremovable(I)
+				checked.insert(checkreg)
+			else if (movl.getoperand(others) is constant)
+				continue;
+		Else:
+			If (I modified register R ):
+				If(R in checked):
+					Checked.remove(R)
+
+```
+
+2\. 我们觉得如果优化又在IR层做，又在后端做，对于安全性比较难解释。另外后端无论如何都要写代码（register spill 检测）而register spill的检测过程的代码和后端优化的代码可以用同一个架构，代码类似。 因此我们决定将优化的工作全部放在后端做。但是如果对于每条指令是否是内存操作，是否需要添加check也放在后端，会增加很多的工作量（在后端判断一个指令是否有内存操作，需要判断每条指令的含义，他们的操作数。而IR层将内存操作单独拿出来两条指令load/store，以及memcpy/memmov等操作）所以我将所有的check 的添加依然保留在check层，但是决定所有的优化都在后端做。
+
+上周的工作之一就是将整个工作的架构改成如上所述。
+
+另外，为了更好的进行优化，我们发现在IR层插入check的时候，最好在三个位置都插入：
+
+a. 每一个内存操作前
+
+b. 每一个指针定义之后
+
+c. 函数的参数如果是指针，则在函数开头插入对这个指针的check.
+
+3\. 为了执行后端的优化，很重要的一点就是根据X64的寻址模式，来进行一系列的优化。
+
+x86有较为复杂的地址模式，SegmentReg:Base + [1,2,4,8] \* IndexReg + disp32
+
+为了能够表示这个寻址模式，LLVM对每一个这种形式的内存操作数，跟踪不少于5个的operands。这意味着类似 mov 中load 有以下的形式：
+
+    Index:        0     |    1        2       3           4          5
+    Meaning:   DestReg, | BaseReg,  Scale, IndexReg, Displacement Segment
+    OperandTy: VirtReg, | VirtReg, UnsImm, VirtReg,   SignExtImm  PhysReg
+
+本质上如下：
+
+    Base + [1,2,4,8] \* IndexReg + Disp32
+
+后端因为直接可以看到寄存器有哪些，因此后端的优化具有比较直观的特性，我们提出如下的优化手段：
+
+如上，X86的寻址本质上是 X + c\*Y + d;（X:basereg, c: Scale, Y: Index, d:Disp32)
+
+如果只有一个变量X，也就是X + d, 我们只要保证X在 region中， d不超过guardzone即可。
+
+如果只有Y变量，c\*Y +d，首先D要在 region中（这个不用check？），其次对Y进行range 分析，如果y\*scale的值不会超过 guardzone，则可以不check，否则都必须将整个数传递进去。
+
+如果x和y都在，那么我们暂时不考虑优化。如果要优化的话，只要Base在region里面，然后IndexReg 具有range，那么也许可以优化。
+
+因此我们只是将X和Y是否check过进行保存。也就是说，我们只check 寄存器，而不是目标地址。
+
+其中第一种优化已经实现。
+
+4\. 为了保证上述所做优化都是对的，我们提出一个invariant：
+
+在每个内存操作之前的任意一个路径，一定有一个check 函数，check 这个内存操作对应的寄存器。
+
+并且在之后的verifier 中对这个invariant进行检查。
+
+另一种优化方法是在Loop中，如果有检查到顺序访问，即每个loop递增一定的偏移量，且偏移量不超过guardzone size，那么可以将这个访问的check 移动到loop 之外。
+
+这个优化正准备做。
+
+之后的工作：
+
+a\. 插CFI\_LABEL
+
+b\. 重新规划优化的代码架构
+
+c\. 对之前总结的优化，还没有实现的进行实现
+
+d\. 总结一下自己的代码中的遍历算法和优化方法，写成文档给人看。
+
+希望这两天可以将所有的优化做完，初步完成这个工作。
+
 2018.7.23~2018.7.29
 
 本周主要工作是讨论APSys 2018的论文reviews，并且进行修改。
