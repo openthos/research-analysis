@@ -1,4 +1,31 @@
 本周工作进展和下周计划
+2018.8.12~2018.8.19
+1. 阅读Tock 的论文，总结，并交流，关于tock的笔记已上传。
+2. 阅读 肖奇学的博士论文并交流
+3. 阅读了一篇Range Analysis的论文：
+http://laure.gonnord.org/pro/research/ER03_2015/RangeAnalysis.pdf
+https://pdfs.semanticscholar.org/83c6/974c1692b930833ed8f8a7f0419a122c1545.pdf
+Range Analysis 也是DataFlow 的一种，我们可以得出我们的Range Analysis的Data Flow equation：
+inrange(n) = outrange(m) 的交集 ,m是n的前驱节点
+Outrange(n) = inrange(n) 并newrange交 killedrange的非  
+其中inrange是一个basic block 的输入range，outrange是一个basic block 的输出range。
+newrange 是分析过程中新确定的range 范围，killedrange是分析中发现失效的range（例如 从内存中读取数据放入register中）
+我们的分析中不包括对指针的alias 和 dependency分析，因为我们不信任内存。
+
+然后为了能够加速分析，论文的作者对SCC（强连通分量，即Loop）单独先分析，之后再综合分析，直接使用之前的强连通分量的结果，可以加速分析速度。我们可以参考这种做法。
+
+4. 阅读Ownership is Theft: Experiences Building an Embedded OS in Rust
+了解Rust 的ownership机制，为什么rust 能够保证内存安全。
+
+下周计划：
+1. 初步实现Range Analysis的框架
+2. 阅读论文：
+XFI: Software Guards for system address spaces.
+Software fault isolation with API  integrity and multi-principal modules
+Enforcing Kernel Security Invariants with Data Flow
+了解之前的工作为了隔离内核模块有哪些手段。
+
+
 2018.8.07~2018.8.12
 本周主要是将上周周报告中的工作进行测试，调通。
 另外希望能够实现一个很强壮的Range analysis，将之前的简单的range analysis 进行升级，能够追踪到每个寄存器大概的值，以此实现更多的优化。
