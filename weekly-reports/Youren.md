@@ -1,3 +1,5 @@
+>>chyyuu20180828 　本周要读的论文在哪？如没有，我可以指定。
+
 本周工作进展和下周计划
 2018.8.12~2018.8.19
 1. 阅读Tock 的论文，总结，并交流，关于tock的笔记已上传。
@@ -14,8 +16,12 @@ newrange 是分析过程中新确定的range 范围，killedrange是分析中发
 
 然后为了能够加速分析，论文的作者对SCC（强连通分量，即Loop）单独先分析，之后再综合分析，直接使用之前的强连通分量的结果，可以加速分析速度。我们可以参考这种做法。
 
+>>chyyuu20180828 这是你认为重要的论文吗？如果是，希望有更详细的阅读报告。
+
 4. 阅读Ownership is Theft: Experiences Building an Embedded OS in Rust
-了解Rust 的ownership机制，为什么rust 能够保证内存安全。
+了解Rust 的ownership机制，为什么rust 能够保证内存安全。 
+
+>>chyyuu20180828 为什么rust 能够保证内存安全？有进一步的简明描述或详细说明吗？
 
 下周计划：
 1. 初步实现Range Analysis的框架
@@ -25,6 +31,7 @@ Software fault isolation with API  integrity and multi-principal modules
 Enforcing Kernel Security Invariants with Data Flow
 了解之前的工作为了隔离内核模块有哪些手段。
 
+>>chyyuu20180828 对于觉得比较重要的论文，这样读论文还不够细致，有进一步的简明描述或详细说明吗？
 
 2018.8.07~2018.8.12
 本周主要是将上周周报告中的工作进行测试，调通。
