@@ -1,6 +1,38 @@
+本周工作进展和下周计划
+2018.8.27~2018.9.2 
+
+
+本周主要工作如下：
+
+1. 不同的线程可能共享同一段代码，也就要求代码中不能有绝对地址，因此需要使用PIC寻址。 PIC寻址的binary中，有部分和RIP地址相关。对于不同的进程，我们需要将RIP寻址的地址指向不同的数据段，所以需要在Kernel前面加入fs相对寻址。  
+因此通过修改编译器后端，对每一个RIP相关的寻址前面加上fs 偏移量。  
+
+下周主要计划：  
+1. 完成range analysis  
+  包括任务   
+a. 跟踪range的结构体  
+b. Range analysis 分析框架   
+c. 测试效果  
+
+阅读论文：  
+XFI: Software Guards for system address spaces.    
+Software fault isolation with API  integrity and multi-principal modules    
+Enforcing Kernel Security Invariants with Data Flow     
+
+
+2018.8.20~2018.8.26
+
+
+这周主要的时间都是在写PPT上，因此上周定下的计划没有按时完成。同时因为在外无法很好地更新周计划。
+
+总结了一个写slides 的经验，给自己之后做参考。
+http://yourenis.me/how-to-make-a-presentation-for-your-paper-as-a-non-native-english-speaker/
+
+已经更新阅读过的论文列表。
+https://github.com/openthos/research-analysis/blob/master/developers/Youren/Paperlist.md
+
 >>chyyuu20180828 　本周要读的论文在哪？如没有，我可以指定。
 
-本周工作进展和下周计划
 2018.8.12~2018.8.19
 1. 阅读Tock 的论文，总结，并交流，关于tock的笔记已上传。
 2. 阅读 肖奇学的博士论文并交流

@@ -62,3 +62,19 @@ TaoStore: Overcoming Asynchronicity in ObliviousData Storage
 ### Ref
  * Are Virtual Machine Monitors Microkernels Done Right?
  * Deconstructing Xen (Something can be implement and compared with SGX)
+
+## Sandboxing
+ * Native Client: A Sandbox for Portable, Untrusted x86 Native Code
+ * Adapting Software Fault Isolation to Contemporary CPU Architectures
+ * Language-Independent Sandboxing of Just-In-Time Compilation and Self-Modifying Code
+  * Combining Control-Flow Integrity and Static Analysis for Efficient and Validated Data Sandboxing
+ * Strato: A Retargetable Framework for Low-Level Inlined-Reference Monitors
+ * Principles and Implementation Techniques of Software-Based Fault Isolation
+
+## OS
+ * Multiprogramming a 64 kB Computer Safely and Efficiently
+ * Ownership is Theft: Experiences Building an Embedded OS in Rust 
+
+## Compiler
+ * Superset Disassembly: Statically Rewriting x86 Binaries Without Heuristics
+ * Speed and Precision in Range Analysis
