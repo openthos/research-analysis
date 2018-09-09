@@ -1,4 +1,24 @@
 本周工作进展和下周计划
+2018.9.3~2018.9.9 
+本周编写 系统的安全分析给出新的威胁模型：
+我们不信任compiler ，系统的可信代码基为library OS 和 verifier。verifier 在检查加载的binary的时候确保以下7点：
+
+C1. All prefix of LABELs is at the start of instructions
+C2. All reachable code in binary is verified.
+C3. Direct call with static target, the target is marked with a LABEL.
+C4. A well-formed control flow guard is before every indirect control flow transfer immediately and they are in one basic block
+C5. The CFI_LABEL of one code domain will never appear at other code domain and library OS.
+C6. All data access can be statically determined within the corresponding range.
+C7. Forbidden instructions is not appear at binary like MPX related or indirect instruction with memory operand
+
+Theorem 1： No control flow guard can be bypassed
+C1 and C2 imply all the code and LABELs are considered.
+C3 and C4 ensure both jump and call can’t jump into middle of control flow guard and control flow transfer. 
+Theorem 2: Code can’t jump to other code domain or library OS
+With T1 and C5, T2 can be ensure.
+Theorem3: 
+Ensured with C6.
+
 2018.8.27~2018.9.2 
 
 
@@ -10,9 +30,9 @@
 下周主要计划：  
 1. 完成range analysis  
   包括任务   
-a. 跟踪range的结构体  
-b. Range analysis 分析框架   
-c. 测试效果  
+a. 跟踪range的结构体(one day)  
+b. Range analysis 分析框架(two day)   
+c. 测试效果(one day)  
 
 阅读论文：  
 XFI: Software Guards for system address spaces.    
