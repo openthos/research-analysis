@@ -1,4 +1,51 @@
 本周工作进展和下周计划
+2018.9.10~2018.9.16 
+本周工作
+
+本周二有了security analysis 的第二版本，在第二个版本中，主要改进是：
+
+1\. 之前没有考虑到的Reliable disassembly问题，现在将其加入到security analysis，主要是描述我们如何能够简单而且正确的对binary 进行disassembly。
+
+2\. 整个工作的结构如下：
+
+Reliable disassembly  
+  function identication and CFG rebuild
+verification
+  invalid instruction check
+  control transfer verification
+  data access verification
+
+这个写法中引入了很多复杂的概念，同时各个section中各个概念交织在一起，非常的混乱难懂。
+
+因此根据第二版本的反馈，这周重写了一遍security analysis，重写的重点主要是：
+
+1\. 从验证的方法上，希望进一步简化各个section，将一些不需要的复杂的概念去除掉。
+
+2\. 将各个section中用到的概念简化之后，希望各个section都是完全正交的，同时给出每个section 中的伪代码。
+
+下周任务：   
+现在第三版本，希望能够达到三个目标：很难，有用，清楚
+
+我们做的每个东西都是有难度的
+
+我们的解决办法是有效的
+
+最后，我们为什么这么做能够说清楚。
+
+洪亮：
+
+上周工作：载入和运行一个Hello World程序（不依赖于libc，直接调用syscall）。为此，完成下面的子任务：
+
+1\. 运行一个创建好的Process Image；
+
+2\. 实现用户态和内核态的切换（即支持syscall）；
+
+3\. 实现write和exit的syscall。
+
+下周目标：实现spawn、open、read、write、close、brk和mmap等syscall
+
+本月目标：移植部分libc以支持一个用C编写的最简单的shell
+
 2018.9.3~2018.9.9 
 本周编写 系统的安全分析给出新的威胁模型：
 我们不信任compiler ，系统的可信代码基为library OS 和 verifier。verifier 在检查加载的binary的时候确保以下7点：
