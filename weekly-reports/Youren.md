@@ -1,4 +1,16 @@
 本周工作进展和下周计划
+2018.9.17~2018.9.30 
+这两周主要工作包括：
+1.  修改LD中的PLT机制，保证其能够符合我们的机制。
+2. 花了3天时间写Linker script，将不同的
+3. 给出论文中verifier设计的伪代码，以弄清楚verifier 的功能。
+4. 写出论文的编译器架构实现部分和安全分析部分。
+5. 测试编译出来的代码在spec 2006上跑的效果。保证插桩后的代码语义没有被修改，运行结果依然一样。同时顺便看看性能如何。
+
+阅读和access pattern 存储相关的论文
+Access pattern disclosure on Searchable Encryption: Ramification, Attack and Mitigation.
+阅读报告在developer/Youren中。
+
 2018.9.10~2018.9.16 
 本周工作
 
