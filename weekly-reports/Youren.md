@@ -18,9 +18,9 @@ Software fault isolation with API integrity and multi-principal modules
 
 对插桩后没有任何优化的程序 进行基本测试：
 
-   |Target |CFI | CFI+L1 |CFI+L2 | 
-	 |--------|-----|-----|------|
-	 |Average | 0.1183125 |0.36502549 |0.56537093|   
+   | Target | CFI | CFI+L1 | CFI+L2 | 
+	 | -------- | ----- | ----- | ------ |
+	 | Average | 0.1183125 | 0.36502549 | 0.56537093 |   
 
 Overhead 较高。未来两周主要精力在优化性能上。
 
