@@ -1,4 +1,26 @@
 本周工作进展和下周计划
+2018.10.1~2018.10.14
+这两周主要的工作包括：
+
+1\. 为了准备开题，阅读了如下方面的论文：
+
+secure storage方向：
+
+Access Pattern disclosure on Searchable Encryption: Ramification, Attack and Mitigation
+
+Generic attacks on secure outsourced database
+
+内核隔离方向：
+
+XFI: Software Guards for System Address Spaces
+
+Software fault isolation with API integrity and multi-principal modules
+
+对插桩后没有任何优化的程序 进行基本测试：
+
+   Target CFI CFI+L1 CFI+L2   401.bzip2 0.19900498 0.50912106 0.75953566   403.gcc 0.10185185 0.29861111 0.38425926   429.mcf -0.001224 0.14810282 0.21787026   445.gobmk 0.17657658 0.47207207 0.68108108   456.hmmer 0.10222222 0.67333333 1.22666667   458.sjeng 0.27591463 0.49390244 0.64939024   462.libquantum 0.01078582 0.05855162 0.0770416   464.h264ref 0.08136792 0.26650943 0.52712264   Average 0.1183125 0.36502549 0.56537093   
+
+Overhead 较高。未来两周主要精力在优化性能上。
 2018.9.17~2018.9.30 
 这两周主要工作包括：
 1.  修改LD中的PLT机制，保证其能够符合我们的机制。
