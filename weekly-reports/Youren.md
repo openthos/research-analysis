@@ -1,4 +1,18 @@
 本周工作进展和下周计划  
+2018.10.1~2018.10.14  
+本周主要工作如下：  
+首先，关于性能测试，目前glibc都是没有被插桩的，因此最终的结果，在对glibc也进行插桩之后，overhead会高于目前的测试结果。  
+1. 测试CFI_LABEL（插入noop 指令和control flow guard 以及将memory call 替换成register call）的overhead 大约是在3%左右。  
+
+2. 阅读论文   
+[Osr 07]Singularity  
+[SP13] SoK:Eternal war in Memory  
+
+下周工作：
+对Data access 进行优化，目前写的overhead大约在26%。使用range analysis看能否将其overheard 降至15%左右。
+
+计划还在讨论。性能直接和论文的有效性相关，因此希望11月之前能够确定性能大概的范围。
+
 2018.10.1~2018.10.14
 这两周主要的工作包括：
 
