@@ -1,5 +1,18 @@
 本周工作进展和下周计划  
-2018.10.1~2018.10.14  
+2018.10.22~2018.10.28  
+十二月开始写论文，在十二月前需要完成论文的实验工作，有五周的时间：  
+1. 花三周的时间完成Range Analysis  
+2. 花两周的时间调查JIT的实现，并且给出在我们的系统中如何实现。  
+
+Range analysis主要分成5个部分：  
+1. 用来表示Range 的数据结构，也是这个算法主要的操作对象  
+2. Basic block 内部依据每个指令对Range 的影响，进行的Range 计算  
+3. Basic block 之间，Range 结构的meet 和join 操作  
+4. Data flow 分析框架，即前向分析。  
+5. 自动测试。  
+三周时间实现上面五个部分。  
+
+2018.10.15~2018.10.21  
 本周主要工作如下：  
 首先，关于性能测试，目前glibc都是没有被插桩的，因此最终的结果，在对glibc也进行插桩之后，overhead会高于目前的测试结果。  
 1. 测试CFI_LABEL（插入noop 指令和control flow guard 以及将memory call 替换成register call）的overhead 大约是在3%左右。  
