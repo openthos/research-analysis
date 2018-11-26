@@ -1,4 +1,14 @@
 本周工作进展和下周计划  
+2018.11.18~2018.11.25  
+1. 论文方面：  
+重新阅读Drawbridge，Haven，Scone，Graphene，Graphene-SGX，比较这些工作和我们工作的相同和不同。有哪些事情是他们不能做，我们能做的，以及为什么我们能做。  
+阅读论文 Deconstruct process isolation。  
+拟出论文大纲  
+
+2. 实现方面：
+本周开始实现RangeAnalysis，已经完成伪代码；
+下周将会完成RangeAnalysis的基本框架，优化一些简单的 场景。并给出优化后Spec 的性能。  
+
 2018.11.05~2018.11.11  
 本周主要工作：
 1. 测试基于MPX的guard 和 传统的基于and 指令的guard 性能的比较。  
