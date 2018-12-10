@@ -22,3 +22,5 @@ every wednesday or thusday normally
 - some student will give a talk about details of some tech-paper or his/her current work
 
 firday normally 
+
+[Advice Collection for Students](https://www.ece.ucsb.edu/~yuanxie/Advice.html)
