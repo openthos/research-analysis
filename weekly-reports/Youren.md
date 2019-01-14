@@ -1,3 +1,13 @@
+================
+本周工作进展和下周计划  
+2019.01.07~2018.01.13   
+本周week day 主要工作在准备投稿ATC 2019. 主要的内容在阅读部分single address space 的操作系统的论文，主要是opal 和mungi，同时在Graphene-SGX上和Occlum 上进行最后的测试，得出测试数据，使用测试数据画图。
+
+周末本来在考虑如何使用SFI隔离kernel Driver，实现LXFI所能达到的目标。
+因此阅读了论文：
+[ATC17] Glamdring: Automatic Application Partitioning for Intel SGX.
+关于Single Address Space OS, 还阅读了
+[HPDC18] Process in Process.
 
 chyyuu:: 2019年可以开始新的研究了
 
