@@ -1,8 +1,81 @@
 ================
 本周工作进展和下周计划  
-2019.01.07~2018.01.13   
-本周week day 主要工作在准备投稿ATC 2019. 主要的内容在阅读部分single address space 的操作系统的论文，主要是opal 和mungi，同时在Graphene-SGX上和Occlum 上进行最后的测试，得出测试数据，使用测试数据画图。
 
+2019.02.12~2018.02.19     
+本周主要工作是测试安全测试集RIPE 在我们的系统下和Graphene 下的比较。  
+RIPE：  
+C语言中有很多的memory 相关的bug，其中memory buffer overflow 是很大的一类。为了防止memory buffer overflow，不同的研究者提出了不同的方法来防止。   
+RIPE是一个用来测试这些方法是否有效的一个测试集，其通过不同的攻击方式构造攻击代码，攻击自己，让程序执行一个创建文件的代码（这段创建文件的代码在正常的程序执行流程中是不可能执行的），如果文件创建成功，则认为攻击成功了。   
+为了覆盖最多的攻击方式，RIPE在构造攻击方式的时候从五个维度出发，这五个维度互相独立，维度之间采用组合的方式来构造攻击。这五个维度分别是：   
+1. 攻击（overflow）的内存的位置：Stack，Heap， BSS， Data Segment   
+2. 攻击的指针类型：返回地址，旧的Base Point， 函数指针，Longjmp buffer， Vulnerable struct  
+3. Overflow 的技术： 直接 或者 间接（可以绕过canary防御）  
+4. 攻击的代码：shellcode（without nop， with nop， with polymorphic nop），return-into-libc， ROP。  
+5. 被滥用的函数（有overflow bug 的函数）： memcpy，strcpy，strncpy， sprintf，snprintf，strcat，strncat，sscanf，fscanf，homebrew  
+  
+五个维度中我们重点关注4。 shellcode 是code injection攻击。  
+  
+目前native 环境下clang有38个攻击可以成功。  
+在我们的系统中， 因为有CFI，因此38个攻击中只有16个return-into-libc可以成功。  
+
+具体使用RIPE进行测试：  
+  
+当前为了测试RIPE不需要将RIPE运行在LibOS中，因为LibOS可以提供的是单地址空间中不会越界写到其他task，而native中地址空间中只有自己。另外一个binary 中除了源代码编译出来的部分，还有libc 插入的部分和crtbegin.o crtend.o。 crtbegin.o 会被libc 调用，但是我们没法对crtbegin进行插桩（因为crtbegin 来自gcc，较难使用clang 编译）。RIPE是针对自身攻击的，不是针对libc 攻击的，因此我们在libc中不插入control guard，但是插入 CFI_LABEL。这样源代码就可以调用到libc 的函数。  
+  
+具体的方法是：构造musl libc时，我们需要修改llvm 的后端，构造一个只插CFI_LABEL，不插control guard 的llvm，然后使用这个版本编译musl。这样编译出来的musl 只有CFI_LABEL，应用程序可以跳转到libc的特定位置，libc中的代码可以任意跳转。这样可以绕过某些不可插桩的代码  
+然后使用我们正常的llvm 后端，对用户代码进行插桩。  
+
+其中有一个小的细节是，用户的代码执行libc的函数需要经过plt，因此我们需要对plt也插上 CFI_LABEL。因此我们需要修改musl-clang 的wapper，加上-fuse-ld = lld，使其使用我们修改过的lld（PLT插入了CFI_LABEL）。  
+
+如何使用graphene-sgx 运行RIPE，并且验证效果：  
+graphene-sgx 可以支持原生的应用程序，但是我们需要配置好应用程序的权限，使其能够执行攻击的操作。  
+同时我们需要修改测试的脚本，符合graphene-sgx的运行，同时保存足够的log 信息方便调试。  
+  
+目前遗留的问题：  
+shellcode 和ROP 依赖于int，会导致 graphene-sgx halt，修改这部分攻击代码，完成graphene-sgx的完整测试。  
+  
+总结，我们有以下几个选择，以及选择所带来的进一步需要讨论的问题：  
+1. RIPE对我们的系统的安全性并没有完全的覆盖，RIPE只是control flow hijack。类似于信息泄漏等没有解决。但是如果return into libc 无法防御，那么也没法说可以防御信息泄漏。  
+另一方面，RIPE可以说从某种角度证明我们系统设计是正确的，提高了一定的安全性。可以结合verifier来讨论。  
+  
+2. 和graphene-sgx 对比，我们在论文中需要解释：  
+可以证明在SGX1 上，我们的系统的内存是可执行的也能够防止code injection，so what。  
+如果描述Graphene-sgx，可能需要解释shell code 攻击sgx 2上失效了（rop还可成功）同时graphene-sgx上还有其他的安全机制（manifest）  
+
+未来工作计划  
+挑选支持的App  
+挑选原则  
+1. graphene-sgx  
+2. 测试集已经有了  
+3. 代码量不大 10万-20万  
+4. 有代表性。  
+5. clang 能编译  
+6. occlum 能支持。  
+
+之后测试应用程序  
+测试应用程序的工作计划：  
+1. （如需要）挑选App，按照之前说的原则进行挑选  
+2. 确定App的测试数据集，测试native上面app的性能，确保测试数据是对的（半天）  
+3. 使用我们的工具链编译我们的应用程序（半天）  
+4. 这些应用程序有哪些地方需要修改？如何修改 （1天半）  
+5. 支持应用程序需要支持哪些syscall，这些syscall 的参数是什么？（半天）  
+6. 测试应用程序的性能（半天）  
+7. 机动：性能结果是否合理，如何解释这个性能？ 为什么不合理，LibOS 中是否有需要解释的地方？（半天）  
+  
+测试顺序，每个大类下面先测试一个，下一轮再做第二个，确保每个类别都有应用测试过。     
+以下应用程序为预估程序非最终程序    
+|  round  | IPC intensive | I/O intensive | CPU intensive |  
+|---------|--------------|---------------|----------------|  
+| round 1 | bash | lighttpd | R |  
+| round 2 | gcc | apache | | AI 框架 |  
+  
+week1: bash, lighttpd  
+week2-3.5: R，bash  
+week3.5-4: apache, AI框架  
+
+2019.01.07~2018.01.13   
+本周week day 主要工作在准备投稿ATC 2019. 主要的内容在阅读部分single address space 的操作系统的论文，主要是opal 和mungi，同时在Graphene-SGX上和Occlum 上进行最后的测试，得出测试数据，使用测试数据画图。  
+  
 周末本来在考虑如何使用SFI隔离kernel Driver，实现LXFI所能达到的目标。
 因此阅读了论文：
 [ATC17] Glamdring: Automatic Application Partitioning for Intel SGX.
