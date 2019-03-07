@@ -1,6 +1,25 @@
 ================
 本周工作进展和下周计划  
-2019.02.12~2018.02.19     
+2019.02.27~2018.03.06     
+本周主要完成的工作是：  
+将bash 中的fork + execve  替换成 posix_spawn  
+
+已经成功的在native 上运行测试集，并且将相关的代码提交到github 上。  
+
+以下是总结出来的fork + execve 替换成posix_spawn 的工作流程：  
+
+1. 运行测试集，得到syscall。判断其工作模式是否是fork + execve。如果出现只有fork没有execve就会比较麻烦  
+2. 依据syscall/gdb 调试去阅读代码，找到测试集中fork + execve 的代码  
+一般来说，fork到execve 之间会有很多的初始化代码和条件判断代码，改写成spawn 主要处理这两个代码  
+3. 找出所有的会让fork + execve 执行的条件，作为spawn 相关操作的前置条件。同时维持其他部分不变，这样原本只执行exec的代码不会被影响  
+4. 将初始化代码中和信号以及setgid等相关的代码，写一份使用posix_spawn接口的版本  
+5. 对于文件相关的初始化，也需要替换成posix_spawn 的函数。对于需要知道file description 的操作，目前没有办法支持。  
+6. 除了posix_spawn支持的操作，其他的都不要执行（会影响parent）。例如对全局变量的修改等。  
+
+下周的主要目标：  
+支持lighttpd  
+  
+2019.02.20~2018.02.27     
 选取App 的标准以及期望的结果：  
 1. graphene-sgx能够支持最好  
 
