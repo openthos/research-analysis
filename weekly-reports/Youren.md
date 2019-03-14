@@ -1,5 +1,25 @@
 ================
 本周工作进展和下周计划  
+2019.03.07~2018.03.13     
+本周的output：  
+1. 静态编译lighttpd  
+2. lighttpd 的测试的配置文件和脚本  
+3. 通过spawn 支持多进程的lighttpd  
+4. 描写编译测试教程的README  
+
+note： 目前没有测试过openssl  
+
+静态编译：Graphene 中的lighttpd 1.4.30版本不能很好地支持make （automake）工具链进行静态编译，因此我们采用lighttpd 1.4.40 编译  
+
+spawn 支持：  
+lighttpd 使用fork ，没有exec。fork 后的多个进程共同处理连接请求。  
+fork 之前 master 初始化好 socket fd.  
+fork 之后worker 共同listen socket fd.  
+
+将lighttpd 支持spawn 的方法：  
+spawn之前 将socket fd 设置为exec 保留,通过pipe 将必要的数据结构发送给spawn 之后的child, child 继续执行必要的初始化操作。和文件socket 相关的初始化 就跳过。  
+测试： 8个worker，杀死之后新启动的8个worker 依然可以正常处理request  
+
 2019.02.27~2018.03.06     
 本周主要完成的工作是：  
 将bash 中的fork + execve  替换成 posix_spawn  
